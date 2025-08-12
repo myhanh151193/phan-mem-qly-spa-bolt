@@ -351,6 +351,61 @@ const Treatments: React.FC = () => {
     }
   };
 
+  const generateRecurringAppointments = (treatmentId: number): Appointment[] => {
+    if (formData.scheduleType === 'manual') return [];
+
+    const appointments: Appointment[] = [];
+    const startDate = new Date(formData.startDate);
+    const endDate = new Date(formData.endDate);
+    let currentDate = new Date(startDate);
+    let appointmentCount = 0;
+
+    // Adjust start date to match the chosen day
+    if (formData.scheduleType === 'weekly' && formData.weekDay !== undefined) {
+      const dayDiff = formData.weekDay - currentDate.getDay();
+      if (dayDiff < 0) {
+        currentDate.setDate(currentDate.getDate() + 7 + dayDiff);
+      } else if (dayDiff > 0) {
+        currentDate.setDate(currentDate.getDate() + dayDiff);
+      }
+    } else if (formData.scheduleType === 'monthly' && formData.monthDay !== undefined) {
+      currentDate.setDate(formData.monthDay);
+      if (currentDate < startDate) {
+        currentDate.setMonth(currentDate.getMonth() + 1);
+      }
+    }
+
+    while (currentDate <= endDate && appointmentCount < formData.totalSessions) {
+      appointments.push({
+        id: Date.now() + appointmentCount,
+        treatmentId,
+        date: currentDate.toISOString().split('T')[0],
+        time: formData.recurringTime,
+        duration: formData.sessionDuration,
+        staff: formData.preferredStaff,
+        status: 'scheduled',
+        services: [...formData.services],
+        notes: `Buổi ${appointmentCount + 1}/${formData.totalSessions}`
+      });
+
+      appointmentCount++;
+
+      // Move to next occurrence
+      if (formData.scheduleType === 'weekly') {
+        currentDate.setDate(currentDate.getDate() + 7);
+      } else if (formData.scheduleType === 'monthly') {
+        currentDate.setMonth(currentDate.getMonth() + 1);
+        // Handle month-end edge cases
+        if (formData.monthDay && formData.monthDay > 28) {
+          const daysInMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0).getDate();
+          currentDate.setDate(Math.min(formData.monthDay, daysInMonth));
+        }
+      }
+    }
+
+    return appointments;
+  };
+
   const getMembershipColor = (level: string) => {
     switch (level) {
       case 'VVIP': return 'bg-gradient-to-r from-purple-500 to-pink-500 text-white';
