@@ -56,7 +56,7 @@ function App() {
             </div>
           </div>
 
-          <div className="flex-1 p-6 overflow-y-auto">
+          <div className="flex-1 p-6 overflow-y-scroll">
             {renderContent()}
           </div>
         </div>
