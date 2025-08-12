@@ -244,7 +244,7 @@ const Products: React.FC = () => {
       {/* Content */}
       {activeTab === 'services' ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {services.map((service) => (
+          {filteredServices.map((service) => (
             <div key={service.id} className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-lg transition-shadow duration-200">
               <img
                 src={service.image}
