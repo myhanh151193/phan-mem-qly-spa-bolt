@@ -48,6 +48,8 @@ interface TreatmentFormData {
 }
 
 const Treatments: React.FC = () => {
+  const { addTreatmentAppointments, getAppointmentsForTreatment, updateAppointment, deleteAppointment: deleteAppointmentFromContext } = useAppointments();
+
   const [treatments, setTreatments] = useState<Treatment[]>([
     {
       id: 1,
@@ -888,7 +890,7 @@ const Treatments: React.FC = () => {
 
                 <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Giá tr��� (VNĐ)
+                  Giá trị (VNĐ)
                 </label>
                 <input
                   type="text"
