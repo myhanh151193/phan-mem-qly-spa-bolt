@@ -1,5 +1,30 @@
 import React, { useState } from 'react';
-import { Search, Plus, Edit, Eye, Package, Star } from 'lucide-react';
+import { Search, Plus, Edit, Eye, Package, Star, Trash2, X } from 'lucide-react';
+
+interface Service {
+  id: number;
+  name: string;
+  category: string;
+  price: string;
+  duration: number;
+  description: string;
+  rating: number;
+  reviews: number;
+  image: string;
+  status: string;
+}
+
+interface Product {
+  id: number;
+  name: string;
+  category: string;
+  price: string;
+  stock: number;
+  description: string;
+  brand: string;
+  image: string;
+  status: string;
+}
 
 const Products: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'services' | 'products'>('services');
