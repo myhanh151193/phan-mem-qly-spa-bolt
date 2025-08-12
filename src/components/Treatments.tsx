@@ -183,7 +183,7 @@ const Treatments: React.FC = () => {
   });
 
   const availableServices = [
-    'Điều trị mụn', 'Tái tạo da', 'Chăm sóc da', 'Chăm sóc da mặt', 
+    'Điều trị mụn', 'Tái t���o da', 'Chăm sóc da', 'Chăm sóc da mặt', 
     'Massage', 'Tắm trắng', 'Giảm béo RF', 'Massage giảm béo', 
     'Tư vấn dinh dưỡng', 'Triệt lông', 'Trị thâm', 'Căng da mặt'
   ];
@@ -434,7 +434,24 @@ const Treatments: React.FC = () => {
   };
 
   const openAppointmentModal = (treatment: Treatment) => {
-    setSelectedTreatment(treatment);
+    // Sync appointments from context
+    const contextAppointments = getAppointmentsForTreatment(treatment.id);
+    const updatedTreatment = {
+      ...treatment,
+      appointments: contextAppointments.map(apt => ({
+        id: apt.id,
+        treatmentId: apt.treatmentId || treatment.id,
+        date: apt.date,
+        time: apt.time,
+        duration: apt.duration,
+        staff: apt.staff,
+        notes: apt.notes,
+        status: apt.status as 'scheduled' | 'completed' | 'cancelled' | 'no-show',
+        services: apt.services
+      }))
+    };
+
+    setSelectedTreatment(updatedTreatment);
     setShowAppointmentModal(true);
   };
 
@@ -1246,7 +1263,7 @@ const Treatments: React.FC = () => {
                 <div>
                   <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center space-x-2">
                     <Calendar className="w-5 h-5 text-blue-600" />
-                    <span>Lịch hẹn s���p tới</span>
+                    <span>Lịch hẹn sắp tới</span>
                   </h3>
                   <div className="space-y-3">
                     {selectedTreatment.appointments
