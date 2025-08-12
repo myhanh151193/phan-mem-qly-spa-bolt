@@ -3,6 +3,7 @@ import Sidebar from './components/Sidebar';
 import Dashboard from './components/Dashboard';
 import Customers from './components/Customers';
 import Schedule from './components/Schedule';
+import Beds from './components/Beds';
 import Products from './components/Products';
 import Treatments from './components/Treatments';
 import Invoices from './components/Invoices';
