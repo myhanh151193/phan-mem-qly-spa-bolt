@@ -53,6 +53,152 @@ const Reports: React.FC<ReportsProps> = ({ selectedBranch }) => {
     { month: 'T1', value: 365 },
   ];
 
+  const staffReports = [
+    {
+      id: 1,
+      name: 'Nguyễn Thị Mai',
+      position: 'Chuyên viên chăm sóc da',
+      revenue: '58.2M',
+      appointments: 145,
+      rating: 4.9,
+      completionRate: '98%',
+      avgServiceTime: '75 phút',
+      topService: 'Chăm sóc da Premium',
+      commission: '8.7M',
+      workDays: 24,
+      efficiency: 'Xuất sắc'
+    },
+    {
+      id: 2,
+      name: 'Trần Văn Hùng',
+      position: 'Massage therapist',
+      revenue: '42.8M',
+      appointments: 98,
+      rating: 4.7,
+      completionRate: '95%',
+      avgServiceTime: '90 phút',
+      topService: 'Massage toàn thân',
+      commission: '6.4M',
+      workDays: 22,
+      efficiency: 'Tốt'
+    },
+    {
+      id: 3,
+      name: 'Lê Thị Hoa',
+      position: 'Chuyên viên điều trị',
+      revenue: '36.5M',
+      appointments: 112,
+      rating: 4.8,
+      completionRate: '96%',
+      avgServiceTime: '65 phút',
+      topService: 'Điều trị mụn',
+      commission: '5.5M',
+      workDays: 26,
+      efficiency: 'Tốt'
+    },
+    {
+      id: 4,
+      name: 'Phạm Minh Tuấn',
+      position: 'Chuyên viên giảm béo',
+      revenue: '31.2M',
+      appointments: 67,
+      rating: 4.6,
+      completionRate: '94%',
+      avgServiceTime: '120 phút',
+      topService: 'Giảm béo RF',
+      commission: '4.7M',
+      workDays: 20,
+      efficiency: 'Khá'
+    },
+    {
+      id: 5,
+      name: 'Hoàng Thị Lan',
+      position: 'Nail technician',
+      revenue: '24.8M',
+      appointments: 89,
+      rating: 4.5,
+      completionRate: '92%',
+      avgServiceTime: '45 phút',
+      topService: 'Nail art',
+      commission: '3.7M',
+      workDays: 25,
+      efficiency: 'Khá'
+    }
+  ];
+
+  const customerReports = [
+    {
+      id: 1,
+      name: 'Nguyễn Thị Linh',
+      phone: '0901.234.567',
+      totalSpent: '12.5M',
+      visits: 28,
+      lastVisit: '2025-01-08',
+      favoriteService: 'Chăm sóc da Premium',
+      membershipLevel: 'VIP Gold',
+      avgSpending: '446K',
+      referrals: 3,
+      satisfaction: 4.9,
+      nextAppointment: '2025-01-15'
+    },
+    {
+      id: 2,
+      name: 'Trần Thị Mai',
+      phone: '0912.345.678',
+      totalSpent: '8.9M',
+      visits: 22,
+      lastVisit: '2025-01-10',
+      favoriteService: 'Massage toàn thân',
+      membershipLevel: 'VIP Silver',
+      avgSpending: '404K',
+      referrals: 2,
+      satisfaction: 4.8,
+      nextAppointment: '2025-01-18'
+    },
+    {
+      id: 3,
+      name: 'Lê Văn Nam',
+      phone: '0923.456.789',
+      totalSpent: '6.7M',
+      visits: 15,
+      lastVisit: '2025-01-05',
+      favoriteService: 'Điều trị mụn',
+      membershipLevel: 'Regular',
+      avgSpending: '447K',
+      referrals: 1,
+      satisfaction: 4.7,
+      nextAppointment: 'Chưa đặt'
+    },
+    {
+      id: 4,
+      name: 'Phạm Thị Hương',
+      phone: '0934.567.890',
+      totalSpent: '15.2M',
+      visits: 35,
+      lastVisit: '2025-01-12',
+      favoriteService: 'Tắm trắng',
+      membershipLevel: 'VIP Platinum',
+      avgSpending: '434K',
+      referrals: 5,
+      satisfaction: 5.0,
+      nextAppointment: '2025-01-16'
+    },
+    {
+      id: 5,
+      name: 'Vũ Thị Nga',
+      phone: '0945.678.901',
+      totalSpent: '4.8M',
+      visits: 12,
+      lastVisit: '2025-01-07',
+      favoriteService: 'Nail art',
+      membershipLevel: 'Regular',
+      avgSpending: '400K',
+      referrals: 0,
+      satisfaction: 4.6,
+      nextAppointment: '2025-01-20'
+    }
+  ];
+
   return (
     <div className="space-y-6">
       {/* Overview Cards */}
