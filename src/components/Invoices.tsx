@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Search, Plus, FileText, Download, Eye, Filter, Edit2, Trash2, X, Save, Calendar, User, ShoppingCart, Package, Percent, CreditCard, DollarSign } from 'lucide-react';
+import { Search, Plus, FileText, Download, Eye, Filter, Edit2, Trash2, X, Save, Calendar, User, ShoppingCart, Package, Percent, CreditCard, DollarSign, Clock } from 'lucide-react';
 
 interface InvoiceItem {
   id: string;
@@ -376,7 +376,7 @@ const Invoices: React.FC = () => {
         <div className="bg-white rounded-lg p-4 border border-gray-200">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600">Đã thanh to��n</p>
+              <p className="text-sm text-gray-600">Đã thanh toán</p>
               <p className="text-2xl font-bold text-green-600">{stats.paid}</p>
             </div>
             <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
