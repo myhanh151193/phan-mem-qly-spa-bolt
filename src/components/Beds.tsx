@@ -118,7 +118,7 @@ const Beds: React.FC = () => {
       room: 'Phòng Massage',
       type: 'massage',
       status: 'maintenance',
-      equipment: ['Hệ thống massage tự động', 'Đèn âm thanh'],
+      equipment: ['H��� thống massage tự động', 'Đèn âm thanh'],
       lastCleaned: '08:00'
     },
     {
@@ -218,14 +218,27 @@ const Beds: React.FC = () => {
   };
 
   const completeBedService = (bedId: number) => {
-    setBeds(prev => prev.map(bed => 
-      bed.id === bedId ? { 
-        ...bed, 
+    setBeds(prev => prev.map(bed =>
+      bed.id === bedId ? {
+        ...bed,
         status: 'cleaning',
         currentAssignment: undefined,
         lastCleaned: getCurrentTime()
       } : bed
     ));
+  };
+
+  const addNewBed = () => {
+    const newBed: TreatmentBed = {
+      id: beds.length + 1,
+      name: `Giường ${beds.length + 1}`,
+      room: 'Phòng Massage',
+      type: 'massage',
+      status: 'available',
+      equipment: ['Hệ thống massage tự động'],
+      lastCleaned: getCurrentTime()
+    };
+    setBeds(prev => [...prev, newBed]);
   };
 
   const calculateAssignmentHeight = (startTime: string, endTime: string) => {
