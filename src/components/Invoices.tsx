@@ -465,7 +465,7 @@ const Invoices: React.FC = () => {
         <div className="bg-white rounded-lg p-4 border border-gray-200">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600">Đ�� thanh toán</p>
+              <p className="text-sm text-gray-600">Đã thanh toán</p>
               <p className="text-2xl font-bold text-green-600">{stats.paid}</p>
             </div>
             <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
@@ -832,7 +832,11 @@ const Invoices: React.FC = () => {
                     : 'bg-blue-50 border-blue-200'
                 }`}>
                   <p className={`text-sm ${
-                    !formData.customerId ? 'text-yellow-700' : 'text-blue-700'
+                    !formData.customerId
+                      ? 'text-yellow-700'
+                      : formData.treatmentId
+                      ? 'text-purple-700'
+                      : 'text-blue-700'
                   }`}>
                     {!formData.customerId ? (
                       <>⚠️ <strong>Lưu ý:</strong> Vui lòng chọn khách hàng trước để xem dịch vụ từ liệu trình của họ.</>
@@ -1059,7 +1063,7 @@ const Invoices: React.FC = () => {
                     <div className="text-center py-12">
                       <Calendar className="w-16 h-16 mx-auto text-gray-300 mb-4" />
                       <h3 className="text-lg font-medium text-gray-900 mb-2">Không có dịch vụ nào</h3>
-                      <p className="text-gray-600">Khách hàng này chưa có liệu trình nào đang hoạt động.</p>
+                      <p className="text-gray-600">Khách hàng này chưa có liệu trình nào đang hoạt đ���ng.</p>
                     </div>
                   );
                 }
