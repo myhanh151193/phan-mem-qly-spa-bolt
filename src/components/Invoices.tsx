@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Search, Plus, FileText, Download, Eye, Filter, Edit2, Trash2, X, Save, Calendar, User, ShoppingCart, Package, Percent, CreditCard, DollarSign, Clock } from 'lucide-react';
 
 interface InvoiceItem {
