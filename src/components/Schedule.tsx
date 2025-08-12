@@ -236,6 +236,25 @@ const Schedule: React.FC = () => {
     setShowModal(true);
   };
 
+  const createAppointmentAtTime = (date: Date, time?: string) => {
+    setSelectedAppointment({
+      id: 0,
+      date: date.toISOString().split('T')[0],
+      time: time || '',
+      duration: 60,
+      customer: '',
+      service: '',
+      services: [],
+      staff: '',
+      status: 'pending',
+      price: '',
+      totalPrice: '',
+      notes: ''
+    });
+    setIsEditing(false);
+    setShowModal(true);
+  };
+
   const closeModal = () => {
     setShowModal(false);
     setSelectedAppointment(null);
