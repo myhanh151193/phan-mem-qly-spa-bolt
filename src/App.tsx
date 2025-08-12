@@ -20,6 +20,7 @@ function App() {
     switch (activeMenu) {
       case 'customers': return <Customers />;
       case 'schedule': return <Schedule />;
+      case 'beds': return <Beds />;
       case 'products': return <Products />;
       case 'treatments': return <Treatments />;
       case 'invoices': return <Invoices />;
