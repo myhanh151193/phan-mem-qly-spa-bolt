@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Search, Plus, Calendar, User, ClipboardCheck, Edit2, Trash2, X, Save, ChevronDown } from 'lucide-react';
+import { Search, Plus, Calendar, User, ClipboardCheck, Edit2, Trash2, X, Save, ChevronDown, Clock, CalendarDays, UserCheck } from 'lucide-react';
 
 interface Treatment {
   id: number;
