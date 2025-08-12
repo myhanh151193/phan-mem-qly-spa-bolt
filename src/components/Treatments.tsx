@@ -47,6 +47,12 @@ interface TreatmentFormData {
   totalSessions: number;
   services: string[];
   totalValue: string;
+  scheduleType: 'manual' | 'weekly' | 'monthly';
+  recurringTime: string;
+  weekDay?: number; // 0 = Sunday, 1 = Monday, etc.
+  monthDay?: number; // 1-31
+  sessionDuration: number;
+  preferredStaff: string;
 }
 
 const Treatments: React.FC = () => {
