@@ -1,6 +1,18 @@
 import React, { useState } from 'react';
 import { Search, Plus, Calendar, User, ClipboardCheck, Edit2, Trash2, X, Save, ChevronDown, Clock, CalendarDays, UserCheck } from 'lucide-react';
 
+interface Appointment {
+  id: number;
+  treatmentId: number;
+  date: string;
+  time: string;
+  duration: number; // in minutes
+  staff?: string;
+  notes?: string;
+  status: 'scheduled' | 'completed' | 'cancelled' | 'no-show';
+  services: string[];
+}
+
 interface Treatment {
   id: number;
   name: string;
@@ -14,6 +26,7 @@ interface Treatment {
   progress: number;
   services: string[];
   totalValue: string;
+  appointments: Appointment[];
 }
 
 interface Customer {
