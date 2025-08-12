@@ -325,110 +325,232 @@ const Schedule: React.FC = () => {
         </div>
       </div>
 
-      {/* Schedule Grid */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100">
-        <div className="grid grid-cols-12 gap-0">
-          {/* Time Column */}
-          <div className="col-span-2 border-r border-gray-200">
-            <div className="h-16 border-b border-gray-200 flex items-center justify-center bg-gray-50">
-              <Clock className="w-4 h-4 text-gray-400" />
+      {/* Schedule Views */}
+      {viewMode === 'day' && (
+        <div className="bg-white rounded-xl shadow-sm border border-gray-100">
+          <div className="grid grid-cols-12 gap-0">
+            {/* Time Column */}
+            <div className="col-span-2 border-r border-gray-200">
+              <div className="h-16 border-b border-gray-200 flex items-center justify-center bg-gray-50">
+                <Clock className="w-4 h-4 text-gray-400" />
+              </div>
+              {timeSlots.map((time) => (
+                <div key={time} className="h-20 border-b border-gray-200 flex items-start justify-center pt-2">
+                  <span className="text-sm text-gray-600 font-medium">{time}</span>
+                </div>
+              ))}
             </div>
-            {timeSlots.map((time) => (
-              <div key={time} className="h-20 border-b border-gray-200 flex items-start justify-center pt-2">
-                <span className="text-sm text-gray-600 font-medium">{time}</span>
+
+            {/* Appointments Column */}
+            <div className="col-span-10">
+              <div className="h-16 border-b border-gray-200 flex items-center px-4 bg-gray-50">
+                <h3 className="font-medium text-gray-900">Lịch hẹn hôm nay</h3>
+              </div>
+              <div className="relative">
+                {timeSlots.map((time, index) => (
+                  <div key={time} className="h-20 border-b border-gray-200 relative">
+                    {filteredAppointments
+                      .filter(apt => apt.time === time)
+                      .map((appointment) => (
+                        <div
+                          key={appointment.id}
+                          className={`absolute left-2 right-2 top-1 border-l-4 rounded-lg p-3 ${getStatusColor(appointment.status)} hover:shadow-md transition-shadow duration-200 cursor-pointer group`}
+                          style={{
+                            height: `${(appointment.duration / 60) * 80 - 8}px`,
+                            zIndex: 10
+                          }}
+                          onClick={() => openAppointmentModal(appointment)}
+                        >
+                          <div className="flex justify-between items-start mb-1">
+                            <h4 className="font-medium text-gray-900 text-sm truncate">
+                              {appointment.customer}
+                            </h4>
+                            <div className="flex items-center space-x-1">
+                              <span className="text-xs text-gray-600">{appointment.totalPrice || appointment.price}</span>
+                              <div className="hidden group-hover:flex items-center space-x-1">
+                                <button
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    openAppointmentModal(appointment);
+                                  }}
+                                  className="p-1 hover:bg-white rounded transition-colors"
+                                >
+                                  <Edit className="w-3 h-3 text-gray-600" />
+                                </button>
+                                <button
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    if (confirm('Bạn có chắc chắn muốn xóa lịch hẹn này?')) {
+                                      deleteAppointment(appointment.id);
+                                    }
+                                  }}
+                                  className="p-1 hover:bg-white rounded transition-colors"
+                                >
+                                  <Trash2 className="w-3 h-3 text-red-600" />
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                          <div className="text-xs text-gray-600 mb-1">
+                            {appointment.services && appointment.services.length > 1 ? (
+                              <div>
+                                <span className="font-medium">{appointment.services.length} dịch vụ:</span>
+                                <div className="mt-1 space-y-1">
+                                  {appointment.services.slice(0, 2).map((service, idx) => (
+                                    <div key={idx} className="truncate">• {service}</div>
+                                  ))}
+                                  {appointment.services.length > 2 && (
+                                    <div className="text-blue-600">+{appointment.services.length - 2} dịch vụ khác</div>
+                                  )}
+                                </div>
+                              </div>
+                            ) : (
+                              <div className="truncate">{appointment.services?.[0] || appointment.service}</div>
+                            )}
+                          </div>
+                          <div className="flex justify-between items-center">
+                            <p className="text-xs text-gray-500">
+                              {appointment.staff} • {appointment.duration}ph
+                            </p>
+                            <span className={`text-xs px-2 py-1 rounded-full ${
+                              appointment.status === 'confirmed' ? 'bg-green-100 text-green-800' :
+                              appointment.status === 'in-progress' ? 'bg-blue-100 text-blue-800' :
+                              appointment.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
+                              appointment.status === 'cancelled' ? 'bg-red-100 text-red-800' :
+                              'bg-gray-100 text-gray-800'
+                            }`}>
+                              {getStatusText(appointment.status)}
+                            </span>
+                          </div>
+                        </div>
+                      ))}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Week View */}
+      {viewMode === 'week' && (
+        <div className="bg-white rounded-xl shadow-sm border border-gray-100">
+          <div className="grid grid-cols-8 gap-0">
+            {/* Time Column */}
+            <div className="col-span-1 border-r border-gray-200">
+              <div className="h-16 border-b border-gray-200 flex items-center justify-center bg-gray-50">
+                <Clock className="w-4 h-4 text-gray-400" />
+              </div>
+              {timeSlots.slice(0, 8).map((time) => (
+                <div key={time} className="h-16 border-b border-gray-200 flex items-center justify-center">
+                  <span className="text-xs text-gray-600 font-medium">{time}</span>
+                </div>
+              ))}
+            </div>
+
+            {/* Week Days */}
+            {getWeekDates(currentDate).map((date, dayIndex) => (
+              <div key={dayIndex} className="col-span-1 border-r border-gray-200 last:border-r-0">
+                <div className="h-16 border-b border-gray-200 flex flex-col items-center justify-center bg-gray-50">
+                  <span className="text-xs text-gray-500">
+                    {date.toLocaleDateString('vi-VN', { weekday: 'short' })}
+                  </span>
+                  <span className={`text-sm font-medium ${
+                    date.toDateString() === new Date().toDateString()
+                      ? 'text-blue-600 bg-blue-100 rounded-full w-6 h-6 flex items-center justify-center'
+                      : 'text-gray-900'
+                  }`}>
+                    {date.getDate()}
+                  </span>
+                </div>
+
+                {timeSlots.slice(0, 8).map((time) => {
+                  const dayAppointments = getAppointmentsForDate(date).filter(apt => apt.time === time);
+                  return (
+                    <div key={time} className="h-16 border-b border-gray-200 relative p-1">
+                      {dayAppointments.map((appointment) => (
+                        <div
+                          key={appointment.id}
+                          className={`absolute inset-1 border-l-2 rounded text-xs p-1 cursor-pointer hover:shadow-sm ${getStatusColor(appointment.status)}`}
+                          onClick={() => openAppointmentModal(appointment)}
+                          title={`${appointment.customer} - ${appointment.services?.[0] || appointment.service}`}
+                        >
+                          <div className="truncate font-medium">{appointment.customer}</div>
+                          <div className="truncate text-xs opacity-75">{appointment.time}</div>
+                        </div>
+                      ))}
+                    </div>
+                  );
+                })}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Month View */}
+      {viewMode === 'month' && (
+        <div className="bg-white rounded-xl shadow-sm border border-gray-100">
+          {/* Month Header */}
+          <div className="grid grid-cols-7 gap-0 border-b border-gray-200">
+            {['T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'CN'].map((day) => (
+              <div key={day} className="p-3 text-center text-sm font-medium text-gray-500 bg-gray-50 border-r border-gray-200 last:border-r-0">
+                {day}
               </div>
             ))}
           </div>
 
-          {/* Appointments Column */}
-          <div className="col-span-10">
-            <div className="h-16 border-b border-gray-200 flex items-center px-4 bg-gray-50">
-              <h3 className="font-medium text-gray-900">Lịch hẹn hôm nay</h3>
-            </div>
-            <div className="relative">
-              {timeSlots.map((time, index) => (
-                <div key={time} className="h-20 border-b border-gray-200 relative">
-                  {filteredAppointments
-                    .filter(apt => apt.time === time)
-                    .map((appointment) => (
-                      <div
-                        key={appointment.id}
-                        className={`absolute left-2 right-2 top-1 border-l-4 rounded-lg p-3 ${getStatusColor(appointment.status)} hover:shadow-md transition-shadow duration-200 cursor-pointer group`}
-                        style={{
-                          height: `${(appointment.duration / 60) * 80 - 8}px`,
-                          zIndex: 10
-                        }}
-                        onClick={() => openAppointmentModal(appointment)}
-                      >
-                        <div className="flex justify-between items-start mb-1">
-                          <h4 className="font-medium text-gray-900 text-sm truncate">
-                            {appointment.customer}
-                          </h4>
-                          <div className="flex items-center space-x-1">
-                            <span className="text-xs text-gray-600">{appointment.totalPrice || appointment.price}</span>
-                            <div className="hidden group-hover:flex items-center space-x-1">
-                              <button
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  openAppointmentModal(appointment);
-                                }}
-                                className="p-1 hover:bg-white rounded transition-colors"
-                              >
-                                <Edit className="w-3 h-3 text-gray-600" />
-                              </button>
-                              <button
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  if (confirm('Bạn có chắc chắn muốn xóa lịch hẹn này?')) {
-                                    deleteAppointment(appointment.id);
-                                  }
-                                }}
-                                className="p-1 hover:bg-white rounded transition-colors"
-                              >
-                                <Trash2 className="w-3 h-3 text-red-600" />
-                              </button>
-                            </div>
-                          </div>
+          {/* Month Grid */}
+          <div className="grid grid-cols-7 gap-0">
+            {(() => {
+              const monthDates = getMonthDates(currentDate);
+              const firstDayOfWeek = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1).getDay();
+              const startPadding = firstDayOfWeek === 0 ? 6 : firstDayOfWeek - 1; // Monday = 0
+
+              // Add empty cells for padding
+              const cells = [];
+              for (let i = 0; i < startPadding; i++) {
+                cells.push(<div key={`padding-${i}`} className="h-24 border-b border-r border-gray-200"></div>);
+              }
+
+              // Add month days
+              monthDates.forEach((date) => {
+                const dayAppointments = getAppointmentsForDate(date);
+                const isToday = date.toDateString() === new Date().toDateString();
+
+                cells.push(
+                  <div key={date.getDate()} className="h-24 border-b border-r border-gray-200 last:border-r-0 p-1">
+                    <div className={`text-sm font-medium mb-1 ${
+                      isToday ? 'text-blue-600 bg-blue-100 rounded-full w-6 h-6 flex items-center justify-center' : 'text-gray-900'
+                    }`}>
+                      {date.getDate()}
+                    </div>
+                    <div className="space-y-1 overflow-hidden">
+                      {dayAppointments.slice(0, 3).map((appointment) => (
+                        <div
+                          key={appointment.id}
+                          className={`text-xs p-1 rounded border-l-2 cursor-pointer hover:shadow-sm ${getStatusColor(appointment.status)}`}
+                          onClick={() => openAppointmentModal(appointment)}
+                          title={`${appointment.time} - ${appointment.customer}: ${appointment.services?.[0] || appointment.service}`}
+                        >
+                          <div className="truncate font-medium">{appointment.time} {appointment.customer}</div>
                         </div>
-                        <div className="text-xs text-gray-600 mb-1">
-                          {appointment.services && appointment.services.length > 1 ? (
-                            <div>
-                              <span className="font-medium">{appointment.services.length} dịch vụ:</span>
-                              <div className="mt-1 space-y-1">
-                                {appointment.services.slice(0, 2).map((service, idx) => (
-                                  <div key={idx} className="truncate">• {service}</div>
-                                ))}
-                                {appointment.services.length > 2 && (
-                                  <div className="text-blue-600">+{appointment.services.length - 2} dịch vụ khác</div>
-                                )}
-                              </div>
-                            </div>
-                          ) : (
-                            <div className="truncate">{appointment.services?.[0] || appointment.service}</div>
-                          )}
+                      ))}
+                      {dayAppointments.length > 3 && (
+                        <div className="text-xs text-blue-600 font-medium">
+                          +{dayAppointments.length - 3} khác
                         </div>
-                        <div className="flex justify-between items-center">
-                          <p className="text-xs text-gray-500">
-                            {appointment.staff} • {appointment.duration}ph
-                          </p>
-                          <span className={`text-xs px-2 py-1 rounded-full ${
-                            appointment.status === 'confirmed' ? 'bg-green-100 text-green-800' :
-                            appointment.status === 'in-progress' ? 'bg-blue-100 text-blue-800' :
-                            appointment.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
-                            appointment.status === 'cancelled' ? 'bg-red-100 text-red-800' :
-                            'bg-gray-100 text-gray-800'
-                          }`}>
-                            {getStatusText(appointment.status)}
-                          </span>
-                        </div>
-                      </div>
-                    ))}
-                </div>
-              ))}
-            </div>
+                      )}
+                    </div>
+                  </div>
+                );
+              });
+
+              return cells;
+            })()}
           </div>
         </div>
-      </div>
+      )}
 
       {/* Quick Stats */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
