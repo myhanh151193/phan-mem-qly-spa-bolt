@@ -33,33 +33,35 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex">
-      <Sidebar activeMenu={activeMenu} setActiveMenu={setActiveMenu} />
-      
-      <div className="flex-1 flex flex-col">
-        <div className="bg-white shadow-sm border-b border-gray-200 px-6 py-4">
-          <div className="flex items-center justify-between">
-            <h1 className="text-2xl font-bold text-gray-900">
-              {activeMenu === 'dashboard' && 'Dashboard'}
-              {activeMenu === 'customers' && 'Quản lý Khách hàng'}
-              {activeMenu === 'schedule' && 'Lịch hẹn'}
-              {activeMenu === 'beds' && 'Quản l�� Giư���ng / Phòng'}
-              {activeMenu === 'products' && 'Sản phẩm & Dịch vụ'}
-              {activeMenu === 'treatments' && 'Liệu trình'}
-              {activeMenu === 'invoices' && 'Hóa đơn'}
-              {activeMenu === 'inventory' && 'Kho vật tư'}
-              {activeMenu === 'staff' && 'Nhân viên'}
-              {activeMenu === 'reports' && 'Báo cáo'}
-            </h1>
-            <BranchSelector selectedBranch={selectedBranch} setSelectedBranch={setSelectedBranch} />
+    <AppointmentProvider>
+      <div className="min-h-screen bg-gray-50 flex">
+        <Sidebar activeMenu={activeMenu} setActiveMenu={setActiveMenu} />
+        
+        <div className="flex-1 flex flex-col">
+          <div className="bg-white shadow-sm border-b border-gray-200 px-6 py-4">
+            <div className="flex items-center justify-between">
+              <h1 className="text-2xl font-bold text-gray-900">
+                {activeMenu === 'dashboard' && 'Dashboard'}
+                {activeMenu === 'customers' && 'Quản lý Khách hàng'}
+                {activeMenu === 'schedule' && 'Lịch hẹn'}
+                {activeMenu === 'beds' && 'Quản lý Giường / Phòng'}
+                {activeMenu === 'products' && 'Sản phẩm & Dịch vụ'}
+                {activeMenu === 'treatments' && 'Liệu trình'}
+                {activeMenu === 'invoices' && 'Hóa đơn'}
+                {activeMenu === 'inventory' && 'Kho vật tư'}
+                {activeMenu === 'staff' && 'Nhân viên'}
+                {activeMenu === 'reports' && 'Báo cáo'}
+              </h1>
+              <BranchSelector selectedBranch={selectedBranch} setSelectedBranch={setSelectedBranch} />
+            </div>
+          </div>
+          
+          <div className="flex-1 p-6 overflow-auto">
+            {renderContent()}
           </div>
         </div>
-        
-        <div className="flex-1 p-6 overflow-auto">
-          {renderContent()}
-        </div>
       </div>
-    </div>
+    </AppointmentProvider>
   );
 }
 
