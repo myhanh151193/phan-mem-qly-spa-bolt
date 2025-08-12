@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Search, Plus, Calendar, User, ClipboardCheck, Edit2, Trash2, X, Save, ChevronDown, Clock, CalendarDays, UserCheck } from 'lucide-react';
+import { Search, Plus, Calendar, User, ClipboardCheck, Edit2, Trash2, X, Save, ChevronDown, Clock, CalendarDays, UserCheck, FileText } from 'lucide-react';
 import { useAppointments, Appointment as ContextAppointment } from '../contexts/AppointmentContext';
 
 // Using Appointment from context
@@ -729,6 +729,13 @@ const Treatments: React.FC = () => {
                 >
                   <CalendarDays className="w-4 h-4" />
                   <span>Lịch hẹn</span>
+                </button>
+                <button
+                  onClick={() => window.location.href = `#invoices?treatmentId=${treatment.id}&customerId=${customers.find(c => c.name === treatment.customer)?.id}`}
+                  className="px-4 py-2 bg-purple-600 text-white text-sm rounded-lg hover:bg-purple-700 transition-colors duration-200 flex items-center justify-center space-x-1"
+                >
+                  <FileText className="w-4 h-4" />
+                  <span>Tạo hóa đơn</span>
                 </button>
                 <div className="flex space-x-2">
                   <button

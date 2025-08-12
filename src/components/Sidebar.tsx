@@ -25,8 +25,8 @@ const Sidebar: React.FC<SidebarProps> = ({ activeMenu, setActiveMenu }) => {
   ];
 
   return (
-    <div className="w-64 bg-gradient-to-b from-blue-600 to-purple-700 text-white flex flex-col">
-      <div className="p-6">
+    <div className="w-64 bg-gradient-to-b from-blue-600 to-purple-700 text-white flex flex-col h-screen overflow-hidden">
+      <div className="p-6 flex-shrink-0">
         <div className="flex items-center space-x-3">
           <div className="bg-white/20 p-2 rounded-lg">
             <Sparkles className="w-8 h-8" />
@@ -38,8 +38,8 @@ const Sidebar: React.FC<SidebarProps> = ({ activeMenu, setActiveMenu }) => {
         </div>
       </div>
 
-      <nav className="flex-1 px-4">
-        <ul className="space-y-2">
+      <nav className="flex-1 px-4 overflow-y-auto">
+        <ul className="space-y-2 pb-4">
           {menuItems.map((item) => {
             const Icon = item.icon;
             return (
@@ -61,7 +61,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activeMenu, setActiveMenu }) => {
         </ul>
       </nav>
 
-      <div className="p-4 border-t border-white/20">
+      <div className="p-4 border-t border-white/20 flex-shrink-0">
         <div className="bg-white/10 rounded-lg p-3">
           <p className="text-sm text-blue-100">Version 2.1.0</p>
           <p className="text-xs text-blue-200">© 2025 Spa Management</p>

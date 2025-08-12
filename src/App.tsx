@@ -34,11 +34,11 @@ function App() {
 
   return (
     <AppointmentProvider>
-      <div className="min-h-screen bg-gray-50 flex">
+      <div className="h-screen bg-gray-50 flex overflow-hidden">
         <Sidebar activeMenu={activeMenu} setActiveMenu={setActiveMenu} />
-        
-        <div className="flex-1 flex flex-col">
-          <div className="bg-white shadow-sm border-b border-gray-200 px-6 py-4">
+
+        <div className="flex-1 flex flex-col overflow-hidden">
+          <div className="bg-white shadow-sm border-b border-gray-200 px-6 py-4 flex-shrink-0">
             <div className="flex items-center justify-between">
               <h1 className="text-2xl font-bold text-gray-900">
                 {activeMenu === 'dashboard' && 'Dashboard'}
@@ -55,8 +55,8 @@ function App() {
               <BranchSelector selectedBranch={selectedBranch} setSelectedBranch={setSelectedBranch} />
             </div>
           </div>
-          
-          <div className="flex-1 p-6 overflow-auto">
+
+          <div className="flex-1 p-6 overflow-y-scroll">
             {renderContent()}
           </div>
         </div>
