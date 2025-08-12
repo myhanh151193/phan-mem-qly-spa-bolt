@@ -241,6 +241,8 @@ const Invoices: React.FC = () => {
     setEditingInvoice(invoice);
     setFormData({
       ...invoice,
+      treatmentId: invoice.treatmentId,
+      treatmentName: invoice.treatmentName,
       discount: (invoice.discount / invoice.subtotal) * 100,
       tax: (invoice.tax / (invoice.subtotal - invoice.discount)) * 100
     });
@@ -925,7 +927,7 @@ const Invoices: React.FC = () => {
                     const selectedCustomer = customers.find(c => c.id === formData.customerId);
                     const customerTreatments = getCustomerTreatments(formData.customerId);
                     if (selectedCustomer && customerTreatments.length > 0) {
-                      return `Dịch vụ từ ${customerTreatments.length} liệu trình hiện tại của ${selectedCustomer.name}`;
+                      return `Dịch v�� từ ${customerTreatments.length} liệu trình hiện tại của ${selectedCustomer.name}`;
                     }
                     return selectedCustomer
                       ? `${selectedCustomer.name} chưa có liệu trình nào - hiển thị tất cả dịch vụ`
