@@ -42,6 +42,7 @@ function App() {
               {activeMenu === 'dashboard' && 'Dashboard'}
               {activeMenu === 'customers' && 'Quản lý Khách hàng'}
               {activeMenu === 'schedule' && 'Lịch hẹn'}
+              {activeMenu === 'beds' && 'Quản lý Giư���ng / Phòng'}
               {activeMenu === 'products' && 'Sản phẩm & Dịch vụ'}
               {activeMenu === 'treatments' && 'Liệu trình'}
               {activeMenu === 'invoices' && 'Hóa đơn'}
