@@ -1025,22 +1025,65 @@ const Treatments: React.FC = () => {
                 </div>
               )}
 
-              {formData.scheduleType !== 'manual' && (
-                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                  <div className="flex items-start space-x-2">
-                    <Calendar className="w-5 h-5 text-blue-600 mt-0.5" />
-                    <div>
-                      <h4 className="text-sm font-medium text-blue-900">Tự động tạo lịch hẹn</h4>
-                      <p className="text-sm text-blue-700 mt-1">
-                        {formData.scheduleType === 'weekly' && formData.weekDay !== undefined && (
-                          <>Hệ thống sẽ tự động tạo {formData.totalSessions} lịch hẹn vào {
-                            ['Chủ Nhật', 'Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy'][formData.weekDay]
-                          } hàng tuần lúc {formData.recurringTime}</>
-                        )}
-                        {formData.scheduleType === 'monthly' && formData.monthDay !== undefined && (
-                          <>Hệ thống sẽ tự động tạo {formData.totalSessions} lịch hẹn vào ngày {formData.monthDay} hàng tháng lúc {formData.recurringTime}</>
-                        )}
-                      </p>
+              {formData.scheduleType !== 'manual' && formData.startDate && formData.endDate && formData.totalSessions > 0 && (
+                <div className="space-y-4">
+                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                    <div className="flex items-start space-x-2">
+                      <Calendar className="w-5 h-5 text-blue-600 mt-0.5" />
+                      <div>
+                        <h4 className="text-sm font-medium text-blue-900">Tự động tạo lịch hẹn</h4>
+                        <p className="text-sm text-blue-700 mt-1">
+                          {formData.scheduleType === 'weekly' && formData.weekDay !== undefined && (
+                            <>Hệ thống sẽ tự động tạo {formData.totalSessions} lịch hẹn vào {
+                              ['Chủ Nhật', 'Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy'][formData.weekDay]
+                            } hàng tuần lúc {formData.recurringTime}</>
+                          )}
+                          {formData.scheduleType === 'monthly' && formData.monthDay !== undefined && (
+                            <>Hệ thống sẽ tự động tạo {formData.totalSessions} lịch hẹn vào ngày {formData.monthDay} hàng tháng lúc {formData.recurringTime}</>
+                          )}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Preview generated appointments */}
+                  <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
+                    <h4 className="text-sm font-medium text-gray-900 mb-3 flex items-center space-x-2">
+                      <ClipboardCheck className="w-4 h-4" />
+                      <span>Xem trước lịch hẹn sẽ được tạo ({(() => {
+                        const previewAppointments = generateRecurringAppointments(0);
+                        return previewAppointments.length;
+                      })()}/{formData.totalSessions} buổi)</span>
+                    </h4>
+                    <div className="max-h-40 overflow-y-auto space-y-2">
+                      {(() => {
+                        const previewAppointments = generateRecurringAppointments(0);
+                        return previewAppointments.slice(0, 10).map((apt, index) => (
+                          <div key={index} className="flex items-center justify-between bg-white rounded p-2 text-sm">
+                            <div className="flex items-center space-x-2">
+                              <span className="w-6 h-6 bg-blue-100 text-blue-800 rounded-full flex items-center justify-center text-xs font-medium">
+                                {index + 1}
+                              </span>
+                              <span className="font-medium">{apt.date}</span>
+                              <span className="text-gray-600">{apt.time}</span>
+                            </div>
+                            <div className="flex items-center space-x-2">
+                              <span className="text-gray-500">{apt.duration}p</span>
+                              {apt.staff && (
+                                <span className="text-blue-600 text-xs">{apt.staff}</span>
+                              )}
+                            </div>
+                          </div>
+                        ));
+                      })()}
+                      {(() => {
+                        const previewAppointments = generateRecurringAppointments(0);
+                        return previewAppointments.length > 10 && (
+                          <div className="text-center text-sm text-gray-500 py-2">
+                            ... và {previewAppointments.length - 10} buổi nữa
+                          </div>
+                        );
+                      })()}
                     </div>
                   </div>
                 </div>
