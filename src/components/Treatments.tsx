@@ -114,7 +114,7 @@ const Treatments: React.FC = () => {
   const [customers] = useState<Customer[]>([
     {
       id: 1,
-      name: 'Nguyễn Thu Hà',
+      name: 'Nguyễn Thu H��',
       phone: '0901234567',
       email: 'thuha@email.com',
       membershipLevel: 'VVIP',
@@ -282,8 +282,17 @@ const Treatments: React.FC = () => {
       return;
     }
 
+    const treatmentId = editingTreatment ? editingTreatment.id : Date.now();
+    const generatedAppointments = editingTreatment
+      ? editingTreatment.appointments
+      : generateRecurringAppointments(treatmentId);
+
+    const nextScheduled = generatedAppointments
+      .filter(a => a.status === 'scheduled' && new Date(a.date) > new Date())
+      .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())[0];
+
     const treatmentData: Treatment = {
-      id: editingTreatment ? editingTreatment.id : Date.now(),
+      id: treatmentId,
       name: formData.name,
       customer: selectedCustomer.name,
       startDate: formData.startDate,
@@ -292,12 +301,14 @@ const Treatments: React.FC = () => {
       services: formData.services,
       totalValue: formData.totalValue,
       completedSessions: editingTreatment ? editingTreatment.completedSessions : 0,
-      nextSession: editingTreatment ? editingTreatment.nextSession : formData.startDate,
+      nextSession: editingTreatment
+        ? editingTreatment.nextSession
+        : (nextScheduled ? nextScheduled.date : null),
       status: editingTreatment ? editingTreatment.status : 'active',
       progress: editingTreatment
         ? Math.round((editingTreatment.completedSessions / formData.totalSessions) * 100)
         : 0,
-      appointments: editingTreatment ? editingTreatment.appointments : []
+      appointments: generatedAppointments
     };
 
     if (editingTreatment) {
@@ -385,7 +396,7 @@ const Treatments: React.FC = () => {
         staff: formData.preferredStaff,
         status: 'scheduled',
         services: [...formData.services],
-        notes: `Buổi ${appointmentCount + 1}/${formData.totalSessions}`
+        notes: `Bu���i ${appointmentCount + 1}/${formData.totalSessions}`
       });
 
       appointmentCount++;
