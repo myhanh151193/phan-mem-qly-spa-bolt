@@ -210,9 +210,29 @@ const Schedule: React.FC = () => {
     return dateMatch && statusMatch;
   });
 
-  const openAppointmentModal = (appointment?: Appointment) => {
-    setSelectedAppointment(appointment || null);
-    setIsEditing(!!appointment);
+  const openAppointmentModal = (appointment?: Appointment, selectedDate?: Date) => {
+    if (appointment) {
+      setSelectedAppointment(appointment);
+      setIsEditing(true);
+    } else {
+      // For new appointments, create a template with the selected or current date
+      const appointmentDate = selectedDate || currentDate;
+      setSelectedAppointment({
+        id: 0,
+        date: appointmentDate.toISOString().split('T')[0],
+        time: '',
+        duration: 60,
+        customer: '',
+        service: '',
+        services: [],
+        staff: '',
+        status: 'pending',
+        price: '',
+        totalPrice: '',
+        notes: ''
+      });
+      setIsEditing(false);
+    }
     setShowModal(true);
   };
 
