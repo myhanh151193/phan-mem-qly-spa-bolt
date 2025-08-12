@@ -28,8 +28,12 @@ interface Product {
 
 const Products: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'services' | 'products'>('services');
+  const [showDialog, setShowDialog] = useState<boolean>(false);
+  const [editingItem, setEditingItem] = useState<Service | Product | null>(null);
+  const [searchTerm, setSearchTerm] = useState<string>('');
+  const [formData, setFormData] = useState<any>({});
 
-  const services = [
+  const [services, setServices] = useState<Service[]>([
     {
       id: 1,
       name: 'Chăm sóc da mặt Premium',
@@ -66,7 +70,7 @@ const Products: React.FC = () => {
       image: 'https://images.pexels.com/photos/3997376/pexels-photo-3997376.jpeg?w=300',
       status: 'active'
     },
-  ];
+  ]);
 
   const products = [
     {
