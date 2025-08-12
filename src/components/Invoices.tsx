@@ -26,18 +26,20 @@ interface Invoice {
   notes?: string;
 }
 
-// Available services from treatments
+// Available services from treatments - this mirrors the services used in treatment plans
 const treatmentServices = [
-  { id: 'srv-001', name: 'Điều trị mụn', price: 500000, duration: 60, category: 'Chăm sóc da' },
-  { id: 'srv-002', name: 'Tái tạo da', price: 800000, duration: 90, category: 'Chăm sóc da' },
-  { id: 'srv-003', name: 'Chăm sóc da mặt', price: 600000, duration: 75, category: 'Chăm sóc da' },
-  { id: 'srv-004', name: 'Massage toàn thân', price: 600000, duration: 120, category: 'Massage' },
-  { id: 'srv-005', name: 'Tắm trắng toàn thân', price: 1200000, duration: 150, category: 'Làm đẹp' },
-  { id: 'srv-006', name: 'Giảm béo RF', price: 800000, duration: 90, category: 'Giảm béo' },
-  { id: 'srv-007', name: 'Massage giảm béo', price: 700000, duration: 100, category: 'Giảm béo' },
-  { id: 'srv-008', name: 'Triệt lông', price: 400000, duration: 45, category: 'Làm đẹp' },
-  { id: 'srv-009', name: 'Trị thâm', price: 350000, duration: 60, category: 'Chăm sóc da' },
-  { id: 'srv-010', name: 'Căng da mặt', price: 1500000, duration: 180, category: 'Làm đẹp' },
+  { id: 'srv-001', name: 'Điều trị mụn', price: 500000, duration: 60, category: 'Chăm sóc da', description: 'Điều trị mụn chuyên sâu với công nghệ hiện đại' },
+  { id: 'srv-002', name: 'Tái tạo da', price: 800000, duration: 90, category: 'Chăm sóc da', description: 'Tái tạo da bằng công nghệ laser và serum đặc biệt' },
+  { id: 'srv-003', name: 'Chăm sóc da mặt', price: 600000, duration: 75, category: 'Chăm sóc da', description: 'Chăm sóc da mặt toàn diện với các bước chuyên nghiệp' },
+  { id: 'srv-004', name: 'Chăm sóc da mặt Premium', price: 800000, duration: 90, category: 'Chăm sóc da', description: 'Dịch vụ chăm sóc da mặt cao cấp với sản phẩm nhập khẩu' },
+  { id: 'srv-005', name: 'Massage toàn thân', price: 600000, duration: 120, category: 'Massage', description: 'Massage thư giãn toàn thân với tinh dầu thiên nhiên' },
+  { id: 'srv-006', name: 'Tắm trắng toàn thân', price: 1200000, duration: 150, category: 'Làm đẹp', description: 'Tắm trắng toàn thân an toàn với công nghệ laser' },
+  { id: 'srv-007', name: 'Giảm béo RF', price: 800000, duration: 90, category: 'Giảm béo', description: 'Giảm béo bằng sóng RF không xâm lấn' },
+  { id: 'srv-008', name: 'Massage giảm béo', price: 700000, duration: 100, category: 'Giảm béo', description: 'Massage chuyên sâu hỗ trợ giảm béo' },
+  { id: 'srv-009', name: 'Tư vấn dinh dưỡng', price: 200000, duration: 30, category: 'Tư vấn', description: 'Tư vấn chế độ dinh dưỡng phù hợp' },
+  { id: 'srv-010', name: 'Triệt lông', price: 400000, duration: 45, category: 'Làm đẹp', description: 'Triệt lông vĩnh viễn bằng laser diode' },
+  { id: 'srv-011', name: 'Trị thâm', price: 350000, duration: 60, category: 'Chăm sóc da', description: 'Điều trị thâm nám, tàn nhang hiệu quả' },
+  { id: 'srv-012', name: 'Căng da mặt', price: 1500000, duration: 180, category: 'Làm đẹp', description: 'Căng da mặt không phẫu thuật bằng Hifu' },
 ];
 
 // Available products
@@ -374,7 +376,7 @@ const Invoices: React.FC = () => {
         <div className="bg-white rounded-lg p-4 border border-gray-200">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600">Đã thanh toán</p>
+              <p className="text-sm text-gray-600">Đã thanh to��n</p>
               <p className="text-2xl font-bold text-green-600">{stats.paid}</p>
             </div>
             <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
@@ -615,20 +617,27 @@ const Invoices: React.FC = () => {
                     <button
                       type="button"
                       onClick={() => setShowServiceModal(true)}
-                      className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2"
+                      className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2 font-medium"
                     >
-                      <Plus className="w-4 h-4" />
-                      <span>Thêm dịch vụ</span>
+                      <Calendar className="w-4 h-4" />
+                      <span>Chọn từ liệu trình</span>
                     </button>
                     <button
                       type="button"
                       onClick={() => setShowProductModal(true)}
                       className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors flex items-center space-x-2"
                     >
-                      <Plus className="w-4 h-4" />
+                      <Package className="w-4 h-4" />
                       <span>Thêm sản phẩm</span>
                     </button>
                   </div>
+                </div>
+
+                {/* Help text */}
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4">
+                  <p className="text-sm text-blue-700">
+                    💡 <strong>Mẹo:</strong> Nhấn "Chọn từ liệu trình" để thêm các dịch vụ có sẵn trong hệ thống liệu trình của spa.
+                  </p>
                 </div>
 
                 {/* Items List */}
@@ -809,35 +818,62 @@ const Invoices: React.FC = () => {
       {/* Service Selection Modal */}
       {showServiceModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-xl shadow-xl max-w-4xl w-full max-h-[80vh] overflow-y-auto">
-            <div className="flex items-center justify-between p-6 border-b border-gray-200">
-              <h2 className="text-xl font-semibold text-gray-900">Chọn dịch vụ từ liệu trình</h2>
-              <button 
+          <div className="bg-white rounded-xl shadow-xl max-w-6xl w-full max-h-[85vh] overflow-hidden">
+            <div className="flex items-center justify-between p-6 border-b border-gray-200 bg-gradient-to-r from-blue-50 to-indigo-50">
+              <div>
+                <h2 className="text-xl font-semibold text-gray-900 flex items-center space-x-2">
+                  <Calendar className="w-6 h-6 text-blue-600" />
+                  <span>Chọn dịch vụ từ liệu trình</span>
+                </h2>
+                <p className="text-sm text-gray-600 mt-1">Các dịch vụ có sẵn trong hệ thống liệu trình spa</p>
+              </div>
+              <button
                 onClick={() => setShowServiceModal(false)}
-                className="text-gray-400 hover:text-gray-600 transition-colors"
+                className="text-gray-400 hover:text-gray-600 transition-colors p-2 hover:bg-white/50 rounded-lg"
               >
                 <X className="w-6 h-6" />
               </button>
             </div>
 
-            <div className="p-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="p-6 overflow-y-auto max-h-[70vh]">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {treatmentServices.map((service) => (
-                  <div key={service.id} className="border border-gray-200 rounded-lg p-4 hover:border-blue-300 transition-colors">
-                    <h3 className="font-medium text-gray-900 mb-2">{service.name}</h3>
-                    <p className="text-sm text-gray-600 mb-2">{service.category}</p>
-                    <div className="flex justify-between items-center mb-3">
-                      <span className="text-lg font-bold text-blue-600">{formatCurrency(service.price)}</span>
-                      <span className="text-sm text-gray-500">{service.duration} phút</span>
+                  <div key={service.id} className="bg-white border-2 border-gray-200 rounded-xl p-5 hover:border-blue-300 hover:shadow-lg transition-all duration-200 group">
+                    <div className="flex items-start justify-between mb-3">
+                      <div className="flex-1">
+                        <h3 className="font-semibold text-gray-900 mb-1 group-hover:text-blue-600 transition-colors">{service.name}</h3>
+                        <span className="inline-block px-2 py-1 bg-blue-100 text-blue-700 text-xs font-medium rounded-full">
+                          {service.category}
+                        </span>
+                      </div>
                     </div>
+
+                    <p className="text-sm text-gray-600 mb-4 leading-relaxed">{service.description}</p>
+
+                    <div className="flex justify-between items-center mb-4">
+                      <div className="text-xl font-bold text-blue-600">{formatCurrency(service.price)}</div>
+                      <div className="flex items-center space-x-1 text-sm text-gray-500">
+                        <Clock className="w-4 h-4" />
+                        <span>{service.duration} phút</span>
+                      </div>
+                    </div>
+
                     <button
                       onClick={() => addService(service)}
-                      className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                      className="w-full px-4 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg hover:from-blue-700 hover:to-blue-800 transition-all duration-200 font-medium shadow-sm flex items-center justify-center space-x-2"
                     >
-                      Thêm vào hóa đơn
+                      <Plus className="w-4 h-4" />
+                      <span>Thêm vào hóa đơn</span>
                     </button>
                   </div>
                 ))}
+              </div>
+
+              {/* Footer info */}
+              <div className="mt-8 p-4 bg-gray-50 rounded-lg">
+                <p className="text-sm text-gray-600 text-center">
+                  💡 Tất cả {treatmentServices.length} dịch vụ này đều có sẵn trong hệ thống liệu trình và có thể được sử dụng để tạo các gói chăm sóc cho khách hàng.
+                </p>
               </div>
             </div>
           </div>
