@@ -280,6 +280,26 @@ const Treatments: React.FC = () => {
     }
   };
 
+  const handleCustomerSelect = (customerId: number) => {
+    const selectedCustomer = customers.find(c => c.id === customerId);
+    if (selectedCustomer) {
+      setFormData(prev => ({
+        ...prev,
+        customerId,
+        customer: selectedCustomer.name
+      }));
+    }
+  };
+
+  const getMembershipColor = (level: string) => {
+    switch (level) {
+      case 'VVIP': return 'bg-gradient-to-r from-purple-500 to-pink-500 text-white';
+      case 'VIP': return 'bg-gradient-to-r from-yellow-400 to-orange-500 text-white';
+      case 'Member': return 'bg-gradient-to-r from-blue-400 to-blue-600 text-white';
+      default: return 'bg-gray-100 text-gray-800';
+    }
+  };
+
   const stats = {
     active: treatments.filter(t => t.status === 'active').length,
     completed: treatments.filter(t => t.status === 'completed').length,
