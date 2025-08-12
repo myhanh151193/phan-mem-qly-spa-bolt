@@ -43,7 +43,7 @@ const Schedule: React.FC = () => {
       price: '800K',
       totalPrice: '800K',
       date: new Date().toISOString().split('T')[0],
-      notes: 'Khách hàng VIP, cần chú ý đặc biệt'
+      notes: 'Khách hàng VIP, c���n chú ý đặc biệt'
     },
     {
       id: 2,
@@ -217,9 +217,15 @@ const Schedule: React.FC = () => {
     } else {
       // For new appointments, create a template with the selected or current date
       const appointmentDate = selectedDate || currentDate;
+      // Use local date formatting to avoid timezone issues
+      const year = appointmentDate.getFullYear();
+      const month = String(appointmentDate.getMonth() + 1).padStart(2, '0');
+      const day = String(appointmentDate.getDate()).padStart(2, '0');
+      const dateString = `${year}-${month}-${day}`;
+
       setSelectedAppointment({
         id: 0,
-        date: appointmentDate.toISOString().split('T')[0],
+        date: dateString,
         time: '',
         duration: 60,
         customer: '',
