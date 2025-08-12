@@ -26,26 +26,73 @@ interface Invoice {
   notes?: string;
 }
 
-// Available services from treatments - this mirrors the services used in treatment plans
-const treatmentServices = [
-  { id: 'srv-001', name: 'Điều trị mụn', price: 500000, duration: 60, category: 'Chăm sóc da', description: 'Điều trị mụn chuyên sâu với công nghệ hiện đại' },
-  { id: 'srv-002', name: 'Tái tạo da', price: 800000, duration: 90, category: 'Chăm sóc da', description: 'Tái tạo da bằng công nghệ laser và serum đặc biệt' },
-  { id: 'srv-003', name: 'Chăm sóc da mặt', price: 600000, duration: 75, category: 'Chăm sóc da', description: 'Chăm sóc da mặt toàn diện với các bước chuyên nghiệp' },
-  { id: 'srv-004', name: 'Chăm sóc da mặt Premium', price: 800000, duration: 90, category: 'Chăm sóc da', description: 'Dịch vụ chăm sóc da mặt cao cấp với sản phẩm nhập khẩu' },
-  { id: 'srv-005', name: 'Massage toàn thân', price: 600000, duration: 120, category: 'Massage', description: 'Massage thư giãn toàn thân với tinh dầu thiên nhiên' },
-  { id: 'srv-006', name: 'Tắm trắng toàn thân', price: 1200000, duration: 150, category: 'Làm đẹp', description: 'Tắm trắng toàn thân an toàn với công nghệ laser' },
-  { id: 'srv-007', name: 'Giảm béo RF', price: 800000, duration: 90, category: 'Giảm béo', description: 'Giảm béo bằng sóng RF không xâm lấn' },
-  { id: 'srv-008', name: 'Massage giảm béo', price: 700000, duration: 100, category: 'Giảm béo', description: 'Massage chuyên sâu hỗ trợ giảm béo' },
-  { id: 'srv-009', name: 'Tư vấn dinh dưỡng', price: 200000, duration: 30, category: 'Tư vấn', description: 'Tư vấn chế độ dinh dưỡng phù hợp' },
-  { id: 'srv-010', name: 'Triệt lông', price: 400000, duration: 45, category: 'Làm đẹp', description: 'Triệt lông vĩnh viễn bằng laser diode' },
-  { id: 'srv-011', name: 'Trị thâm', price: 350000, duration: 60, category: 'Chăm sóc da', description: 'Điều trị thâm nám, tàn nhang hiệu quả' },
-  { id: 'srv-012', name: 'Căng da mặt', price: 1500000, duration: 180, category: 'Làm đẹp', description: 'Căng da mặt không phẫu thuật bằng Hifu' },
+// Sample treatment data - this should come from treatments context in real app
+const sampleTreatments = [
+  {
+    id: 1,
+    customer: 'Nguyễn Thu Hà',
+    customerId: 1,
+    name: 'Liệu trình trị mụn 3 tháng',
+    services: ['Điều trị mụn', 'Tái tạo da', 'Chăm sóc da'],
+    status: 'active'
+  },
+  {
+    id: 2,
+    customer: 'Trần Mai Linh',
+    customerId: 2,
+    name: 'Gói chăm sóc da toàn diện',
+    services: ['Chăm sóc da mặt', 'Massage', 'Tắm trắng'],
+    status: 'active'
+  },
+  {
+    id: 3,
+    customer: 'Lê Minh Châu',
+    customerId: 3,
+    name: 'Liệu trình giảm béo 6 tháng',
+    services: ['Giảm béo RF', 'Massage giảm béo', 'Tư vấn dinh dưỡng'],
+    status: 'completed'
+  },
+  {
+    id: 4,
+    customer: 'Phạm Thị Lan',
+    customerId: 4,
+    name: 'Gói làm đẹp cao cấp',
+    services: ['Chăm sóc da mặt Premium', 'Tắm trắng toàn thân', 'Triệt lông'],
+    status: 'active'
+  },
+  {
+    id: 5,
+    customer: 'Hoàng Văn Nam',
+    customerId: 5,
+    name: 'Liệu trình trị thâm nám',
+    services: ['Trị thâm', 'Chăm sóc da mặt', 'Căng da mặt'],
+    status: 'active'
+  }
 ];
+
+// Service catalog with pricing
+const serviceCatalog = {
+  'Điều trị mụn': { price: 500000, duration: 60, category: 'Chăm sóc da', description: 'Điều trị mụn chuyên sâu với công nghệ hiện đại' },
+  'Tái tạo da': { price: 800000, duration: 90, category: 'Chăm sóc da', description: 'Tái tạo da bằng công nghệ laser và serum đặc biệt' },
+  'Chăm sóc da': { price: 400000, duration: 60, category: 'Chăm sóc da', description: 'Chăm sóc da cơ bản với quy trình chuẩn' },
+  'Chăm sóc da mặt': { price: 600000, duration: 75, category: 'Chăm sóc da', description: 'Chăm sóc da mặt toàn diện với các bước chuyên nghiệp' },
+  'Chăm sóc da mặt Premium': { price: 800000, duration: 90, category: 'Chăm sóc da', description: 'Dịch vụ chăm sóc da mặt cao cấp với sản phẩm nhập khẩu' },
+  'Massage': { price: 500000, duration: 90, category: 'Massage', description: 'Massage thư giãn cơ bản' },
+  'Massage toàn thân': { price: 600000, duration: 120, category: 'Massage', description: 'Massage thư giãn toàn thân với tinh dầu thiên nhiên' },
+  'Tắm trắng': { price: 800000, duration: 120, category: 'Làm đẹp', description: 'Tắm trắng cơ bản' },
+  'Tắm trắng toàn thân': { price: 1200000, duration: 150, category: 'Làm đẹp', description: 'Tắm trắng toàn thân an toàn với công nghệ laser' },
+  'Giảm béo RF': { price: 800000, duration: 90, category: 'Giảm béo', description: 'Giảm béo bằng sóng RF không xâm lấn' },
+  'Massage giảm béo': { price: 700000, duration: 100, category: 'Giảm béo', description: 'Massage chuyên sâu hỗ trợ giảm béo' },
+  'Tư vấn dinh dưỡng': { price: 200000, duration: 30, category: 'Tư vấn', description: 'Tư vấn chế độ dinh dưỡng phù hợp' },
+  'Triệt lông': { price: 400000, duration: 45, category: 'Làm đẹp', description: 'Triệt lông vĩnh viễn bằng laser diode' },
+  'Trị thâm': { price: 350000, duration: 60, category: 'Chăm sóc da', description: 'Điều trị thâm nám, tàn nhang hiệu quả' },
+  'Căng da mặt': { price: 1500000, duration: 180, category: 'Làm đẹp', description: 'Căng da mặt không phẫu thuật bằng Hifu' },
+};
 
 // Available products
 const availableProducts = [
   { id: 'prd-001', name: 'Serum Vitamin C', price: 450000, brand: 'SkinCare Pro', category: 'Serum' },
-  { id: 'prd-002', name: 'Kem dưỡng ẩm ban đêm', price: 320000, brand: 'Beauty Plus', category: 'Kem dưỡng' },
+  { id: 'prd-002', name: 'Kem dưỡng ẩm ban đêm', price: 320000, brand: 'Beauty Plus', category: 'Kem dư��ng' },
   { id: 'prd-003', name: 'Mặt nạ collagen', price: 150000, brand: 'GlowSkin', category: 'Mặt nạ' },
   { id: 'prd-004', name: 'Sữa rửa mặt tạo bọt', price: 280000, brand: 'CleanFace', category: 'Sữa rửa mặt' },
   { id: 'prd-005', name: 'Toner cân bằng pH', price: 200000, brand: 'SkinCare Pro', category: 'Toner' },
@@ -250,14 +297,17 @@ const Invoices: React.FC = () => {
     setShowDeleteConfirm(null);
   };
 
-  const addService = (service: typeof treatmentServices[0]) => {
+  const addService = (serviceName: string) => {
+    const serviceInfo = serviceCatalog[serviceName as keyof typeof serviceCatalog];
+    if (!serviceInfo) return;
+
     const newItem: InvoiceItem = {
       id: `item-${Date.now()}`,
-      name: service.name,
+      name: serviceName,
       type: 'service',
       quantity: 1,
-      price: service.price,
-      total: service.price
+      price: serviceInfo.price,
+      total: serviceInfo.price
     };
 
     setFormData(prev => ({
@@ -265,6 +315,36 @@ const Invoices: React.FC = () => {
       items: [...(prev.items || []), newItem]
     }));
     setShowServiceModal(false);
+  };
+
+  // Get customer's treatments and available services
+  const getCustomerTreatments = (customerId: number | undefined) => {
+    if (!customerId) return [];
+    return sampleTreatments.filter(treatment =>
+      treatment.customerId === customerId && treatment.status === 'active'
+    );
+  };
+
+  const getAvailableServicesForCustomer = (customerId: number | undefined) => {
+    const customerTreatments = getCustomerTreatments(customerId);
+    if (customerTreatments.length === 0) {
+      // If no treatments, show all services
+      return Object.keys(serviceCatalog).map(serviceName => ({
+        name: serviceName,
+        ...serviceCatalog[serviceName as keyof typeof serviceCatalog]
+      }));
+    }
+
+    // Get unique services from all customer's active treatments
+    const uniqueServices = new Set<string>();
+    customerTreatments.forEach(treatment => {
+      treatment.services.forEach(service => uniqueServices.add(service));
+    });
+
+    return Array.from(uniqueServices).map(serviceName => ({
+      name: serviceName,
+      ...serviceCatalog[serviceName as keyof typeof serviceCatalog]
+    }));
   };
 
   const addProduct = (product: typeof availableProducts[0]) => {
@@ -617,7 +697,12 @@ const Invoices: React.FC = () => {
                     <button
                       type="button"
                       onClick={() => setShowServiceModal(true)}
-                      className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2 font-medium"
+                      disabled={!formData.customerId}
+                      className={`px-4 py-2 text-white rounded-lg transition-colors flex items-center space-x-2 font-medium ${
+                        !formData.customerId
+                          ? 'bg-gray-400 cursor-not-allowed'
+                          : 'bg-blue-600 hover:bg-blue-700'
+                      }`}
                     >
                       <Calendar className="w-4 h-4" />
                       <span>Chọn từ liệu trình</span>
@@ -634,9 +719,19 @@ const Invoices: React.FC = () => {
                 </div>
 
                 {/* Help text */}
-                <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4">
-                  <p className="text-sm text-blue-700">
-                    💡 <strong>Mẹo:</strong> Nhấn "Chọn từ liệu trình" để thêm các dịch vụ có sẵn trong hệ thống liệu trình của spa.
+                <div className={`border rounded-lg p-3 mb-4 ${
+                  !formData.customerId
+                    ? 'bg-yellow-50 border-yellow-200'
+                    : 'bg-blue-50 border-blue-200'
+                }`}>
+                  <p className={`text-sm ${
+                    !formData.customerId ? 'text-yellow-700' : 'text-blue-700'
+                  }`}>
+                    {!formData.customerId ? (
+                      <>⚠️ <strong>Lưu ý:</strong> Vui lòng chọn khách hàng trước để xem dịch vụ từ liệu trình của họ.</>
+                    ) : (
+                      <>💡 <strong>Mẹo:</strong> Nhấn "Chọn từ liệu trình" để thêm các dịch vụ từ liệu trình hiện tại của khách hàng này.</>
+                    )}
                   </p>
                 </div>
 
@@ -825,7 +920,18 @@ const Invoices: React.FC = () => {
                   <Calendar className="w-6 h-6 text-blue-600" />
                   <span>Chọn dịch vụ từ liệu trình</span>
                 </h2>
-                <p className="text-sm text-gray-600 mt-1">Các dịch vụ có sẵn trong hệ thống liệu trình spa</p>
+                <p className="text-sm text-gray-600 mt-1">
+                  {(() => {
+                    const selectedCustomer = customers.find(c => c.id === formData.customerId);
+                    const customerTreatments = getCustomerTreatments(formData.customerId);
+                    if (selectedCustomer && customerTreatments.length > 0) {
+                      return `Dịch vụ từ ${customerTreatments.length} liệu trình hiện tại của ${selectedCustomer.name}`;
+                    }
+                    return selectedCustomer
+                      ? `${selectedCustomer.name} chưa có liệu trình nào - hiển thị tất cả dịch vụ`
+                      : 'Các dịch vụ có sẵn trong hệ thống';
+                  })()}
+                </p>
               </div>
               <button
                 onClick={() => setShowServiceModal(false)}
@@ -836,45 +942,86 @@ const Invoices: React.FC = () => {
             </div>
 
             <div className="p-6 overflow-y-auto max-h-[70vh]">
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {treatmentServices.map((service) => (
-                  <div key={service.id} className="bg-white border-2 border-gray-200 rounded-xl p-5 hover:border-blue-300 hover:shadow-lg transition-all duration-200 group">
-                    <div className="flex items-start justify-between mb-3">
-                      <div className="flex-1">
-                        <h3 className="font-semibold text-gray-900 mb-1 group-hover:text-blue-600 transition-colors">{service.name}</h3>
-                        <span className="inline-block px-2 py-1 bg-blue-100 text-blue-700 text-xs font-medium rounded-full">
-                          {service.category}
-                        </span>
+              {(() => {
+                const availableServices = getAvailableServicesForCustomer(formData.customerId);
+                const customerTreatments = getCustomerTreatments(formData.customerId);
+                const selectedCustomer = customers.find(c => c.id === formData.customerId);
+
+                if (availableServices.length === 0) {
+                  return (
+                    <div className="text-center py-12">
+                      <Calendar className="w-16 h-16 mx-auto text-gray-300 mb-4" />
+                      <h3 className="text-lg font-medium text-gray-900 mb-2">Không có dịch vụ nào</h3>
+                      <p className="text-gray-600">Khách hàng này chưa có liệu trình nào đang hoạt động.</p>
+                    </div>
+                  );
+                }
+
+                return (
+                  <>
+                    {/* Show customer's active treatments */}
+                    {customerTreatments.length > 0 && (
+                      <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg">
+                        <h4 className="font-medium text-green-900 mb-2 flex items-center space-x-2">
+                          <User className="w-4 h-4" />
+                          <span>Liệu trình hiện tại của {selectedCustomer?.name}:</span>
+                        </h4>
+                        <div className="space-y-1">
+                          {customerTreatments.map(treatment => (
+                            <div key={treatment.id} className="text-sm text-green-700">
+                              • {treatment.name} ({treatment.services.join(', ')})
+                            </div>
+                          ))}
+                        </div>
                       </div>
+                    )}
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                      {availableServices.map((service, index) => (
+                        <div key={`${service.name}-${index}`} className="bg-white border-2 border-gray-200 rounded-xl p-5 hover:border-blue-300 hover:shadow-lg transition-all duration-200 group">
+                          <div className="flex items-start justify-between mb-3">
+                            <div className="flex-1">
+                              <h3 className="font-semibold text-gray-900 mb-1 group-hover:text-blue-600 transition-colors">{service.name}</h3>
+                              <span className="inline-block px-2 py-1 bg-blue-100 text-blue-700 text-xs font-medium rounded-full">
+                                {service.category}
+                              </span>
+                            </div>
+                          </div>
+
+                          <p className="text-sm text-gray-600 mb-4 leading-relaxed">{service.description}</p>
+
+                          <div className="flex justify-between items-center mb-4">
+                            <div className="text-xl font-bold text-blue-600">{formatCurrency(service.price)}</div>
+                            <div className="flex items-center space-x-1 text-sm text-gray-500">
+                              <Clock className="w-4 h-4" />
+                              <span>{service.duration} phút</span>
+                            </div>
+                          </div>
+
+                          <button
+                            onClick={() => addService(service.name)}
+                            className="w-full px-4 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg hover:from-blue-700 hover:to-blue-800 transition-all duration-200 font-medium shadow-sm flex items-center justify-center space-x-2"
+                          >
+                            <Plus className="w-4 h-4" />
+                            <span>Thêm vào hóa đơn</span>
+                          </button>
+                        </div>
+                      ))}
                     </div>
 
-                    <p className="text-sm text-gray-600 mb-4 leading-relaxed">{service.description}</p>
-
-                    <div className="flex justify-between items-center mb-4">
-                      <div className="text-xl font-bold text-blue-600">{formatCurrency(service.price)}</div>
-                      <div className="flex items-center space-x-1 text-sm text-gray-500">
-                        <Clock className="w-4 h-4" />
-                        <span>{service.duration} phút</span>
-                      </div>
+                    {/* Footer info */}
+                    <div className="mt-8 p-4 bg-gray-50 rounded-lg">
+                      <p className="text-sm text-gray-600 text-center">
+                        {customerTreatments.length > 0 ? (
+                          <>💡 Hiển thị {availableServices.length} dịch vụ từ {customerTreatments.length} liệu trình hiện tại của {selectedCustomer?.name}.</>
+                        ) : (
+                          <>💡 {selectedCustomer?.name} chưa có liệu trình nào. Hiển thị tất cả {availableServices.length} dịch vụ có sẵn.</>
+                        )}
+                      </p>
                     </div>
-
-                    <button
-                      onClick={() => addService(service)}
-                      className="w-full px-4 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg hover:from-blue-700 hover:to-blue-800 transition-all duration-200 font-medium shadow-sm flex items-center justify-center space-x-2"
-                    >
-                      <Plus className="w-4 h-4" />
-                      <span>Thêm vào hóa đơn</span>
-                    </button>
-                  </div>
-                ))}
-              </div>
-
-              {/* Footer info */}
-              <div className="mt-8 p-4 bg-gray-50 rounded-lg">
-                <p className="text-sm text-gray-600 text-center">
-                  💡 Tất cả {treatmentServices.length} dịch vụ này đều có sẵn trong hệ thống liệu trình và có thể được sử dụng để tạo các gói chăm sóc cho khách hàng.
-                </p>
-              </div>
+                  </>
+                );
+              })()}
             </div>
           </div>
         </div>
