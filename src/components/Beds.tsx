@@ -26,6 +26,13 @@ interface TreatmentBed {
 const Beds: React.FC = () => {
   const [selectedRoom, setSelectedRoom] = useState<string>('all');
   const [viewMode, setViewMode] = useState<'grid' | 'timeline'>('grid');
+  const [showAddDialog, setShowAddDialog] = useState<boolean>(false);
+  const [newBedForm, setNewBedForm] = useState({
+    name: '',
+    room: 'Phòng Massage',
+    type: 'massage' as TreatmentBed['type'],
+    equipment: [] as string[]
+  });
 
   const [beds, setBeds] = useState<TreatmentBed[]>([
     {
@@ -255,7 +262,7 @@ const Beds: React.FC = () => {
 
   const showAssignmentDetails = (assignment: BedAssignment) => {
     // You can implement a modal or tooltip here
-    alert(`Khách hàng: ${assignment.customerName}\nDịch vụ: ${assignment.service}\nNhân viên: ${assignment.staff}\nThời gian: ${assignment.startTime} - ${assignment.estimatedEndTime}`);
+    alert(`Khách hàng: ${assignment.customerName}\nDịch vụ: ${assignment.service}\nNh��n viên: ${assignment.staff}\nThời gian: ${assignment.startTime} - ${assignment.estimatedEndTime}`);
   };
 
   const stats = {
