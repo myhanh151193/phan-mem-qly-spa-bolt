@@ -63,7 +63,12 @@ const Treatments: React.FC = () => {
       status: 'active',
       progress: 67,
       services: ['Điều trị mụn', 'Tái tạo da', 'Chăm sóc da'],
-      totalValue: '15,600,000'
+      totalValue: '15,600,000',
+      appointments: [
+        { id: 1, treatmentId: 1, date: '2025-01-15', time: '09:00', duration: 90, staff: 'Nguyễn Mai', status: 'scheduled', services: ['Điều trị mụn'], notes: 'Buổi 9' },
+        { id: 2, treatmentId: 1, date: '2025-01-22', time: '09:00', duration: 90, staff: 'Nguyễn Mai', status: 'scheduled', services: ['Tái tạo da'], notes: 'Buổi 10' },
+        { id: 3, treatmentId: 1, date: '2025-01-08', time: '09:00', duration: 90, staff: 'Nguyễn Mai', status: 'completed', services: ['Điều trị mụn'], notes: 'Buổi 8 - hoàn thành tốt' }
+      ]
     },
     {
       id: 2,
@@ -77,7 +82,11 @@ const Treatments: React.FC = () => {
       status: 'active',
       progress: 75,
       services: ['Chăm sóc da mặt', 'Massage', 'Tắm trắng'],
-      totalValue: '12,800,000'
+      totalValue: '12,800,000',
+      appointments: [
+        { id: 4, treatmentId: 2, date: '2025-01-20', time: '14:00', duration: 120, staff: 'Lê Hoa', status: 'scheduled', services: ['Chăm sóc da mặt', 'Massage'], notes: 'Buổi 7' },
+        { id: 5, treatmentId: 2, date: '2025-02-03', time: '14:00', duration: 120, staff: 'Lê Hoa', status: 'scheduled', services: ['Tắm trắng'], notes: 'Buổi cuối' }
+      ]
     },
     {
       id: 3,
@@ -91,7 +100,8 @@ const Treatments: React.FC = () => {
       status: 'completed',
       progress: 100,
       services: ['Giảm béo RF', 'Massage giảm béo', 'Tư vấn dinh dưỡng'],
-      totalValue: '28,800,000'
+      totalValue: '28,800,000',
+      appointments: []
     },
   ]);
 
