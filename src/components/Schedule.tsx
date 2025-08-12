@@ -397,11 +397,32 @@ const Schedule: React.FC = () => {
                 <h3 className="font-medium text-gray-900">Lịch hẹn hôm nay</h3>
               </div>
               <div className="relative">
-                {timeSlots.map((time, index) => (
-                  <div key={time} className="h-20 border-b border-gray-200 relative">
-                    {filteredAppointments
-                      .filter(apt => apt.time === time)
-                      .map((appointment) => (
+                {timeSlots.map((time, index) => {
+                  const timeAppointments = filteredAppointments.filter(apt => apt.time === time);
+                  return (
+                    <div
+                      key={time}
+                      className="h-20 border-b border-gray-200 relative group cursor-pointer hover:bg-blue-50 transition-colors"
+                      onClick={(e) => {
+                        // Only create appointment if clicking on empty space
+                        if (e.target === e.currentTarget || e.currentTarget.contains(e.target as Node)) {
+                          if (timeAppointments.length === 0) {
+                            createAppointmentAtTime(currentDate, time);
+                          }
+                        }
+                      }}
+                    >
+                      {/* Empty time slot indicator */}
+                      {timeAppointments.length === 0 && (
+                        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                          <div className="flex items-center space-x-2 text-blue-600 text-sm">
+                            <Plus className="w-4 h-4" />
+                            <span>Thêm lịch hẹn lúc {time}</span>
+                          </div>
+                        </div>
+                      )}
+
+                      {timeAppointments.map((appointment) => (
                         <div
                           key={appointment.id}
                           className={`absolute left-2 right-2 top-1 border-l-4 rounded-lg p-3 ${getStatusColor(appointment.status)} hover:shadow-md transition-shadow duration-200 cursor-pointer group`}
@@ -474,8 +495,9 @@ const Schedule: React.FC = () => {
                           </div>
                         </div>
                       ))}
-                  </div>
-                ))}
+                    </div>
+                  );
+                })}
               </div>
             </div>
           </div>
