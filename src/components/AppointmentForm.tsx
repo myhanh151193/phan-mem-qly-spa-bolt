@@ -151,6 +151,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
         customerPhone: appointment.customerPhone || '',
         services: appointment.services || [],
         staff: appointment.staff || '',
+        date: appointment.date || new Date().toISOString().split('T')[0],
         time: appointment.time || '',
         duration: appointment.duration || 60,
         totalPrice: appointment.totalPrice || '',
