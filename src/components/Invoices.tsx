@@ -544,8 +544,16 @@ const Invoices: React.FC = () => {
                       <span className="text-sm font-medium text-gray-900">{invoice.id}</span>
                     </div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <span className="text-sm text-gray-900">{invoice.customer}</span>
+                  <td className="px-6 py-4">
+                    <div>
+                      <span className="text-sm font-medium text-gray-900">{invoice.customer}</span>
+                      {invoice.treatmentName && (
+                        <div className="text-xs text-purple-600 mt-1 flex items-center space-x-1">
+                          <Calendar className="w-3 h-3" />
+                          <span>{invoice.treatmentName}</span>
+                        </div>
+                      )}
+                    </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span className="text-sm text-gray-500">{invoice.date}</span>
