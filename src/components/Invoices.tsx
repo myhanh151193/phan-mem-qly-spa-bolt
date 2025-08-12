@@ -109,6 +109,11 @@ const customers = [
 ];
 
 const Invoices: React.FC = () => {
+  // Check URL params for treatment linking
+  const urlParams = new URLSearchParams(window.location.hash.split('?')[1] || '');
+  const treatmentIdFromUrl = urlParams.get('treatmentId');
+  const customerIdFromUrl = urlParams.get('customerId');
+
   const [invoices, setInvoices] = useState<Invoice[]>([
     {
       id: 'HD001',
@@ -135,7 +140,7 @@ const Invoices: React.FC = () => {
       dueDate: '2025-01-15',
       items: [
         { id: '1', name: 'Massage toàn thân', type: 'service', quantity: 1, price: 600000, total: 600000 },
-        { id: '2', name: 'Tắm trắng toàn thân', type: 'service', quantity: 1, price: 1200000, total: 1200000 }
+        { id: '2', name: 'Tắm tr��ng toàn thân', type: 'service', quantity: 1, price: 1200000, total: 1200000 }
       ],
       subtotal: 1800000,
       discount: 0,
