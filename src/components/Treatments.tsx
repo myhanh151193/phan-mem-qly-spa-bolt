@@ -130,6 +130,7 @@ const Treatments: React.FC = () => {
   const [editingTreatment, setEditingTreatment] = useState<Treatment | null>(null);
   const [formData, setFormData] = useState<TreatmentFormData>({
     name: '',
+    customerId: null,
     customer: '',
     startDate: '',
     endDate: '',
