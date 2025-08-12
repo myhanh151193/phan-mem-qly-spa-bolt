@@ -609,18 +609,40 @@ const Schedule: React.FC = () => {
                 const isToday = date.toDateString() === new Date().toDateString();
 
                 cells.push(
-                  <div key={date.getDate()} className="h-24 border-b border-r border-gray-200 last:border-r-0 p-1">
+                  <div
+                    key={date.getDate()}
+                    className="h-24 border-b border-r border-gray-200 last:border-r-0 p-1 group cursor-pointer hover:bg-blue-50 transition-colors"
+                    onClick={(e) => {
+                      if (e.target === e.currentTarget || (!e.target.closest('.appointment-item'))) {
+                        createAppointmentAtTime(date);
+                      }
+                    }}
+                  >
                     <div className={`text-sm font-medium mb-1 ${
                       isToday ? 'text-blue-600 bg-blue-100 rounded-full w-6 h-6 flex items-center justify-center' : 'text-gray-900'
                     }`}>
                       {date.getDate()}
                     </div>
+
+                    {/* Empty day indicator */}
+                    {dayAppointments.length === 0 && (
+                      <div className="flex items-center justify-center h-12 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <div className="flex items-center space-x-1 text-blue-600 text-xs">
+                          <Plus className="w-3 h-3" />
+                          <span>Thêm lịch</span>
+                        </div>
+                      </div>
+                    )}
+
                     <div className="space-y-1 overflow-hidden">
                       {dayAppointments.slice(0, 3).map((appointment) => (
                         <div
                           key={appointment.id}
-                          className={`text-xs p-1 rounded border-l-2 cursor-pointer hover:shadow-sm ${getStatusColor(appointment.status)}`}
-                          onClick={() => openAppointmentModal(appointment)}
+                          className={`appointment-item text-xs p-1 rounded border-l-2 cursor-pointer hover:shadow-sm ${getStatusColor(appointment.status)}`}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            openAppointmentModal(appointment);
+                          }}
                           title={`${appointment.time} - ${appointment.customer}: ${appointment.services?.[0] || appointment.service}`}
                         >
                           <div className="truncate font-medium">{appointment.time} {appointment.customer}</div>
