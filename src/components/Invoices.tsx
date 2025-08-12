@@ -85,7 +85,7 @@ const serviceCatalog = {
   'Massage giảm béo': { price: 700000, duration: 100, category: 'Giảm béo', description: 'Massage chuyên sâu hỗ trợ giảm béo' },
   'Tư vấn dinh dưỡng': { price: 200000, duration: 30, category: 'Tư vấn', description: 'Tư vấn chế độ dinh dưỡng phù hợp' },
   'Triệt lông': { price: 400000, duration: 45, category: 'Làm đẹp', description: 'Triệt lông vĩnh viễn bằng laser diode' },
-  'Trị thâm': { price: 350000, duration: 60, category: 'Chăm sóc da', description: 'Điều trị thâm nám, tàn nhang hiệu quả' },
+  'Trị thâm': { price: 350000, duration: 60, category: 'Chăm sóc da', description: 'Điều trị thâm nám, tàn nhang hi���u quả' },
   'Căng da mặt': { price: 1500000, duration: 180, category: 'Làm đẹp', description: 'Căng da mặt không phẫu thuật bằng Hifu' },
 };
 
@@ -404,6 +404,13 @@ const Invoices: React.FC = () => {
   };
 
   const currentTotals = formData.items ? calculateTotals(formData.items, formData.discount || 0, formData.tax || 0) : null;
+
+  // Auto-open modal if coming from treatment
+  useEffect(() => {
+    if (treatmentIdFromUrl && customerIdFromUrl && !showModal) {
+      openCreateModal();
+    }
+  }, [treatmentIdFromUrl, customerIdFromUrl]);
 
   return (
     <div className="space-y-6">
@@ -798,7 +805,7 @@ const Invoices: React.FC = () => {
                     {!formData.customerId ? (
                       <>⚠️ <strong>Lưu ý:</strong> Vui lòng chọn khách hàng trước để xem dịch vụ từ liệu trình của họ.</>
                     ) : (
-                      <>💡 <strong>Mẹo:</strong> Nhấn "Chọn từ liệu trình" để thêm các dịch vụ từ liệu trình hiện tại của khách hàng này.</>
+                      <>💡 <strong>Mẹo:</strong> Nhấn "Chọn từ liệu tr��nh" để thêm các dịch vụ từ liệu trình hiện tại của khách hàng này.</>
                     )}
                   </p>
                 </div>
@@ -997,7 +1004,7 @@ const Invoices: React.FC = () => {
                     }
                     return selectedCustomer
                       ? `${selectedCustomer.name} chưa có liệu trình nào - hiển thị tất cả dịch vụ`
-                      : 'Các dịch vụ có sẵn trong h�� thống';
+                      : 'Các dịch vụ có s���n trong h�� thống';
                   })()}
                 </p>
               </div>
