@@ -228,6 +228,23 @@ const Beds: React.FC = () => {
     ));
   };
 
+  const calculateAssignmentHeight = (startTime: string, endTime: string) => {
+    const [startHour, startMinute] = startTime.split(':').map(Number);
+    const [endHour, endMinute] = endTime.split(':').map(Number);
+
+    const startMinutes = startHour * 60 + startMinute;
+    const endMinutes = endHour * 60 + endMinute;
+    const duration = endMinutes - startMinutes;
+
+    // Each hour slot is 80px (h-20), so calculate proportional height
+    return Math.max((duration / 60) * 80 - 8, 32); // Minimum 32px height
+  };
+
+  const showAssignmentDetails = (assignment: BedAssignment) => {
+    // You can implement a modal or tooltip here
+    alert(`Khách hàng: ${assignment.customerName}\nDịch vụ: ${assignment.service}\nNhân viên: ${assignment.staff}\nThời gian: ${assignment.startTime} - ${assignment.estimatedEndTime}`);
+  };
+
   const stats = {
     total: beds.length,
     available: beds.filter(b => b.status === 'available').length,
