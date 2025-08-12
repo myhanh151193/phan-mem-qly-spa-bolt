@@ -309,6 +309,19 @@ const Treatments: React.FC = () => {
       setTreatments(prev => prev.map(t => t.id === editingTreatment.id ? treatmentData : t));
     } else {
       setTreatments(prev => [...prev, treatmentData]);
+
+      // Add generated appointments to context for new treatments
+      if (generatedAppointments.length > 0) {
+        const contextAppointments: ContextAppointment[] = generatedAppointments.map(apt => ({
+          ...apt,
+          customer: selectedCustomer.name,
+          customerId: selectedCustomer.id,
+          service: apt.services.join(', '),
+          totalPrice: formData.totalValue,
+          price: formData.totalValue
+        }));
+        addTreatmentAppointments(contextAppointments);
+      }
     }
 
     closeModal();
@@ -1233,7 +1246,7 @@ const Treatments: React.FC = () => {
                 <div>
                   <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center space-x-2">
                     <Calendar className="w-5 h-5 text-blue-600" />
-                    <span>Lịch hẹn sắp tới</span>
+                    <span>Lịch hẹn s���p tới</span>
                   </h3>
                   <div className="space-y-3">
                     {selectedTreatment.appointments
