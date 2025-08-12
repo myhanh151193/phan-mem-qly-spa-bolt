@@ -618,6 +618,98 @@ const Beds: React.FC = () => {
           </div>
         </div>
       )}
+
+      {/* Add Bed Dialog */}
+      {showAddDialog && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 w-full max-w-md mx-4">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">Thêm giường mới</h3>
+
+            <div className="space-y-4">
+              {/* Bed Name */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Tên giường *
+                </label>
+                <input
+                  type="text"
+                  value={newBedForm.name}
+                  onChange={(e) => setNewBedForm(prev => ({ ...prev, name: e.target.value }))}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="Ví dụ: Giường Massage 1"
+                />
+              </div>
+
+              {/* Room */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Phòng
+                </label>
+                <select
+                  value={newBedForm.room}
+                  onChange={(e) => setNewBedForm(prev => ({ ...prev, room: e.target.value }))}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                >
+                  {rooms.filter(room => room !== 'all').map(room => (
+                    <option key={room} value={room}>{room}</option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Type */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Loại giường
+                </label>
+                <select
+                  value={newBedForm.type}
+                  onChange={(e) => setNewBedForm(prev => ({ ...prev, type: e.target.value as TreatmentBed['type'] }))}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                >
+                  <option value="massage">Massage</option>
+                  <option value="facial">Facial</option>
+                  <option value="body">Body</option>
+                  <option value="vip">VIP</option>
+                </select>
+              </div>
+
+              {/* Equipment */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Thiết bị (cách nhau bởi dấu phẩy)
+                </label>
+                <input
+                  type="text"
+                  value={newBedForm.equipment.join(', ')}
+                  onChange={(e) => setNewBedForm(prev => ({
+                    ...prev,
+                    equipment: e.target.value.split(',').map(item => item.trim()).filter(item => item)
+                  }))}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="Ví dụ: Máy massage, Đèn LED, Hệ thống âm thanh"
+                />
+              </div>
+            </div>
+
+            {/* Dialog Actions */}
+            <div className="flex space-x-3 mt-6">
+              <button
+                onClick={handleCancelAdd}
+                className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+              >
+                Hủy
+              </button>
+              <button
+                onClick={handleAddBed}
+                disabled={!newBedForm.name.trim()}
+                className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
+              >
+                Thêm giường
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
