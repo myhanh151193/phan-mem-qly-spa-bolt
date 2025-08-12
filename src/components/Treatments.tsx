@@ -516,14 +516,49 @@ const Treatments: React.FC = () => {
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Khách hàng *
                   </label>
-                  <input
-                    type="text"
-                    required
-                    value={formData.customer}
-                    onChange={(e) => setFormData(prev => ({ ...prev, customer: e.target.value }))}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    placeholder="VD: Nguyễn Văn A"
-                  />
+                  <div className="relative">
+                    <select
+                      required
+                      value={formData.customerId || ''}
+                      onChange={(e) => handleCustomerSelect(parseInt(e.target.value))}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none"
+                    >
+                      <option value="">Chọn khách hàng</option>
+                      {customers.map((customer) => (
+                        <option key={customer.id} value={customer.id}>
+                          {customer.name} - {customer.phone} ({customer.membershipLevel})
+                        </option>
+                      ))}
+                    </select>
+                    <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5 pointer-events-none" />
+                  </div>
+
+                  {/* Selected customer preview */}
+                  {formData.customerId && (
+                    <div className="mt-2 p-3 bg-gray-50 rounded-lg">
+                      {(() => {
+                        const selectedCustomer = customers.find(c => c.id === formData.customerId);
+                        return selectedCustomer ? (
+                          <div className="flex items-center space-x-3">
+                            <img
+                              src={selectedCustomer.avatar}
+                              alt={selectedCustomer.name}
+                              className="w-10 h-10 rounded-full object-cover"
+                            />
+                            <div className="flex-1">
+                              <p className="font-medium text-gray-900">{selectedCustomer.name}</p>
+                              <div className="flex items-center space-x-2">
+                                <p className="text-sm text-gray-600">{selectedCustomer.phone}</p>
+                                <span className={`px-2 py-1 rounded-full text-xs font-medium ${getMembershipColor(selectedCustomer.membershipLevel)}`}>
+                                  {selectedCustomer.membershipLevel}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        ) : null;
+                      })()}
+                    </div>
+                  )}
                 </div>
 
                 <div>
