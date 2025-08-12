@@ -310,7 +310,7 @@ const Schedule: React.FC = () => {
                             {appointment.customer}
                           </h4>
                           <div className="flex items-center space-x-1">
-                            <span className="text-xs text-gray-600">{appointment.price}</span>
+                            <span className="text-xs text-gray-600">{appointment.totalPrice || appointment.price}</span>
                             <div className="hidden group-hover:flex items-center space-x-1">
                               <button
                                 onClick={(e) => {
@@ -335,9 +335,23 @@ const Schedule: React.FC = () => {
                             </div>
                           </div>
                         </div>
-                        <p className="text-xs text-gray-600 truncate mb-1">
-                          {appointment.service}
-                        </p>
+                        <div className="text-xs text-gray-600 mb-1">
+                          {appointment.services && appointment.services.length > 1 ? (
+                            <div>
+                              <span className="font-medium">{appointment.services.length} dịch vụ:</span>
+                              <div className="mt-1 space-y-1">
+                                {appointment.services.slice(0, 2).map((service, idx) => (
+                                  <div key={idx} className="truncate">• {service}</div>
+                                ))}
+                                {appointment.services.length > 2 && (
+                                  <div className="text-blue-600">+{appointment.services.length - 2} dịch vụ khác</div>
+                                )}
+                              </div>
+                            </div>
+                          ) : (
+                            <div className="truncate">{appointment.services?.[0] || appointment.service}</div>
+                          )}
+                        </div>
                         <div className="flex justify-between items-center">
                           <p className="text-xs text-gray-500">
                             {appointment.staff} • {appointment.duration}ph
