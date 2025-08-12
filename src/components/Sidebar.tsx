@@ -15,6 +15,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activeMenu, setActiveMenu }) => {
     { id: 'dashboard', icon: LayoutDashboard, label: 'Dashboard' },
     { id: 'customers', icon: Users, label: 'Khách hàng' },
     { id: 'schedule', icon: Calendar, label: 'Lịch hẹn' },
+    { id: 'beds', icon: Bed, label: 'Giường / Phòng' },
     { id: 'products', icon: Package, label: 'Sản phẩm & DV' },
     { id: 'treatments', icon: Clipboard, label: 'Liệu trình' },
     { id: 'invoices', icon: FileText, label: 'Hóa đơn' },
