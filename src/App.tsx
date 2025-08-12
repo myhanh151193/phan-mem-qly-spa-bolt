@@ -11,6 +11,7 @@ import Inventory from './components/Inventory';
 import Staff from './components/Staff';
 import Reports from './components/Reports';
 import BranchSelector from './components/BranchSelector';
+import { AppointmentProvider } from './contexts/AppointmentContext';
 
 function App() {
   const [activeMenu, setActiveMenu] = useState('dashboard');
@@ -42,7 +43,7 @@ function App() {
               {activeMenu === 'dashboard' && 'Dashboard'}
               {activeMenu === 'customers' && 'Quản lý Khách hàng'}
               {activeMenu === 'schedule' && 'Lịch hẹn'}
-              {activeMenu === 'beds' && 'Quản lý Giư���ng / Phòng'}
+              {activeMenu === 'beds' && 'Quản l�� Giư���ng / Phòng'}
               {activeMenu === 'products' && 'Sản phẩm & Dịch vụ'}
               {activeMenu === 'treatments' && 'Liệu trình'}
               {activeMenu === 'invoices' && 'Hóa đơn'}
