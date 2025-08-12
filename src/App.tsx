@@ -3,6 +3,7 @@ import Sidebar from './components/Sidebar';
 import Dashboard from './components/Dashboard';
 import Customers from './components/Customers';
 import Schedule from './components/Schedule';
+import Beds from './components/Beds';
 import Products from './components/Products';
 import Treatments from './components/Treatments';
 import Invoices from './components/Invoices';
@@ -19,6 +20,7 @@ function App() {
     switch (activeMenu) {
       case 'customers': return <Customers />;
       case 'schedule': return <Schedule />;
+      case 'beds': return <Beds />;
       case 'products': return <Products />;
       case 'treatments': return <Treatments />;
       case 'invoices': return <Invoices />;
@@ -40,6 +42,7 @@ function App() {
               {activeMenu === 'dashboard' && 'Dashboard'}
               {activeMenu === 'customers' && 'Quản lý Khách hàng'}
               {activeMenu === 'schedule' && 'Lịch hẹn'}
+              {activeMenu === 'beds' && 'Quản lý Giư���ng / Phòng'}
               {activeMenu === 'products' && 'Sản phẩm & Dịch vụ'}
               {activeMenu === 'treatments' && 'Liệu trình'}
               {activeMenu === 'invoices' && 'Hóa đơn'}
