@@ -843,7 +843,7 @@ const Inventory: React.FC = () => {
           <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
             <h2 className="text-2xl font-bold text-gray-900 flex items-center space-x-2">
               <Award className="w-6 h-6" />
-              <span>Qu���n lý thương hiệu</span>
+              <span><p>Quản lý thương hiệu</p></span>
             </h2>
             <button 
               onClick={openCreateBrandModal}
