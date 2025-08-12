@@ -99,7 +99,7 @@ const Treatments: React.FC = () => {
       nextSession: null,
       status: 'completed',
       progress: 100,
-      services: ['Giảm béo RF', 'Massage giảm béo', 'Tư v��n dinh dưỡng'],
+      services: ['Giảm béo RF', 'Massage giảm béo', 'Tư vấn dinh dưỡng'],
       totalValue: '28,800,000',
       appointments: []
     },
@@ -597,27 +597,37 @@ const Treatments: React.FC = () => {
 
               {/* Actions */}
               <div className="flex flex-col space-y-2 min-w-[120px]">
-                <button className="px-4 py-2 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700 transition-colors duration-200 flex items-center justify-center space-x-1">
-                  <ClipboardCheck className="w-4 h-4" />
-                  <span>Chi tiết</span>
+                <button
+                  onClick={() => openAppointmentModal(treatment)}
+                  className="px-4 py-2 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700 transition-colors duration-200 flex items-center justify-center space-x-1"
+                >
+                  <CalendarDays className="w-4 h-4" />
+                  <span>Lịch hẹn</span>
                 </button>
                 <div className="flex space-x-2">
-                  <button 
+                  <button
                     onClick={() => openEditModal(treatment)}
                     className="flex-1 px-3 py-2 bg-yellow-600 text-white text-sm rounded-lg hover:bg-yellow-700 transition-colors duration-200 flex items-center justify-center"
                   >
                     <Edit2 className="w-4 h-4" />
                   </button>
-                  <button 
+                  <button
                     onClick={() => setDeleteConfirm(treatment.id)}
                     className="flex-1 px-3 py-2 bg-red-600 text-white text-sm rounded-lg hover:bg-red-700 transition-colors duration-200 flex items-center justify-center"
                   >
                     <Trash2 className="w-4 h-4" />
                   </button>
                 </div>
-                {treatment.status === 'active' && treatment.nextSession && (
-                  <button className="px-4 py-2 bg-green-600 text-white text-sm rounded-lg hover:bg-green-700 transition-colors duration-200">
-                    Đặt lịch
+                {treatment.status === 'active' && (
+                  <button
+                    onClick={() => {
+                      setSelectedTreatment(treatment);
+                      openAppointmentForm();
+                    }}
+                    className="px-4 py-2 bg-green-600 text-white text-sm rounded-lg hover:bg-green-700 transition-colors duration-200 flex items-center justify-center space-x-1"
+                  >
+                    <Plus className="w-3 h-3" />
+                    <span>Đặt lịch</span>
                   </button>
                 )}
               </div>
