@@ -163,6 +163,18 @@ const Treatments: React.FC = () => {
   });
   const [serviceInput, setServiceInput] = useState('');
   const [deleteConfirm, setDeleteConfirm] = useState<number | null>(null);
+  const [showAppointmentModal, setShowAppointmentModal] = useState(false);
+  const [selectedTreatment, setSelectedTreatment] = useState<Treatment | null>(null);
+  const [showAppointmentForm, setShowAppointmentForm] = useState(false);
+  const [editingAppointment, setEditingAppointment] = useState<Appointment | null>(null);
+  const [appointmentForm, setAppointmentForm] = useState({
+    date: '',
+    time: '',
+    duration: 90,
+    staff: '',
+    notes: '',
+    services: [] as string[]
+  });
 
   const availableServices = [
     'Điều trị mụn', 'Tái tạo da', 'Chăm sóc da', 'Chăm sóc da mặt', 
@@ -531,7 +543,7 @@ const Treatments: React.FC = () => {
                     value={formData.name}
                     onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    placeholder="VD: Liệu trình trị mụn 3 tháng"
+                    placeholder="VD: Liệu trình trị m��n 3 tháng"
                   />
                 </div>
 
