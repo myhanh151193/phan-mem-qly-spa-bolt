@@ -16,8 +16,18 @@ interface Treatment {
   totalValue: string;
 }
 
+interface Customer {
+  id: number;
+  name: string;
+  phone: string;
+  email: string;
+  membershipLevel: 'Member' | 'VIP' | 'VVIP';
+  avatar: string;
+}
+
 interface TreatmentFormData {
   name: string;
+  customerId: number | null;
   customer: string;
   startDate: string;
   endDate: string;
