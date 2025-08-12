@@ -72,7 +72,7 @@ const Products: React.FC = () => {
     },
   ]);
 
-  const products = [
+  const [products, setProducts] = useState<Product[]>([
     {
       id: 1,
       name: 'Serum Vitamin C',
@@ -106,7 +106,7 @@ const Products: React.FC = () => {
       image: 'https://images.pexels.com/photos/4041388/pexels-photo-4041388.jpeg?w=300',
       status: 'low-stock'
     },
-  ];
+  ]);
 
   return (
     <div className="space-y-6">
