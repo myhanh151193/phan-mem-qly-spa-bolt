@@ -211,19 +211,31 @@ const Treatments: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
-    if (!formData.name || !formData.customer || !formData.startDate || !formData.endDate) {
+
+    if (!formData.name || !formData.customerId || !formData.startDate || !formData.endDate) {
       alert('Vui lòng điền đầy đủ thông tin bắt buộc');
+      return;
+    }
+
+    const selectedCustomer = customers.find(c => c.id === formData.customerId);
+    if (!selectedCustomer) {
+      alert('Vui lòng chọn khách hàng');
       return;
     }
 
     const treatmentData: Treatment = {
       id: editingTreatment ? editingTreatment.id : Date.now(),
-      ...formData,
+      name: formData.name,
+      customer: selectedCustomer.name,
+      startDate: formData.startDate,
+      endDate: formData.endDate,
+      totalSessions: formData.totalSessions,
+      services: formData.services,
+      totalValue: formData.totalValue,
       completedSessions: editingTreatment ? editingTreatment.completedSessions : 0,
       nextSession: editingTreatment ? editingTreatment.nextSession : formData.startDate,
       status: editingTreatment ? editingTreatment.status : 'active',
-      progress: editingTreatment 
+      progress: editingTreatment
         ? Math.round((editingTreatment.completedSessions / formData.totalSessions) * 100)
         : 0
     };
