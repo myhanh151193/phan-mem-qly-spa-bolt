@@ -118,7 +118,7 @@ const Beds: React.FC = () => {
       room: 'Phòng Massage',
       type: 'massage',
       status: 'maintenance',
-      equipment: ['H��� thống massage tự động', 'Đèn âm thanh'],
+      equipment: ['Hệ thống massage tự động', 'Đèn âm thanh'],
       lastCleaned: '08:00'
     },
     {
@@ -304,6 +304,13 @@ const Beds: React.FC = () => {
               Thời gian
             </button>
           </div>
+          <button
+            onClick={addNewBed}
+            className="flex items-center space-x-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors duration-200"
+          >
+            <Plus className="w-4 h-4" />
+            <span>Thêm giường</span>
+          </button>
         </div>
         <div className="text-sm text-gray-600">
           Cập nhật lúc: {getCurrentTime()}
