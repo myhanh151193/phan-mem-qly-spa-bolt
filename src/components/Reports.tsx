@@ -1,5 +1,5 @@
-import React from 'react';
-import { TrendingUp, DollarSign, Users, Calendar, BarChart3, PieChart } from 'lucide-react';
+import React, { useState } from 'react';
+import { TrendingUp, DollarSign, Users, Calendar, BarChart3, PieChart, User, Star, Crown, Award } from 'lucide-react';
 
 interface ReportsProps {
   selectedBranch: string;
