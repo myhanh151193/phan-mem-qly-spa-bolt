@@ -934,6 +934,290 @@ const Treatments: React.FC = () => {
           </div>
         </div>
       )}
+
+      {/* Appointment Management Modal */}
+      {showAppointmentModal && selectedTreatment && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-xl shadow-xl max-w-6xl w-full max-h-[90vh] overflow-hidden">
+            <div className="flex items-center justify-between p-6 border-b border-gray-200">
+              <div>
+                <h2 className="text-xl font-semibold text-gray-900">Quản lý lịch hẹn</h2>
+                <p className="text-sm text-gray-600 mt-1">{selectedTreatment.name} - {selectedTreatment.customer}</p>
+              </div>
+              <div className="flex items-center space-x-3">
+                <button
+                  onClick={() => openAppointmentForm()}
+                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2"
+                >
+                  <Plus className="w-4 h-4" />
+                  <span>Thêm lịch hẹn</span>
+                </button>
+                <button
+                  onClick={() => setShowAppointmentModal(false)}
+                  className="text-gray-400 hover:text-gray-600 transition-colors"
+                >
+                  <X className="w-6 h-6" />
+                </button>
+              </div>
+            </div>
+
+            <div className="p-6 overflow-y-auto max-h-[75vh]">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {/* Upcoming Appointments */}
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center space-x-2">
+                    <Calendar className="w-5 h-5 text-blue-600" />
+                    <span>Lịch hẹn sắp tới</span>
+                  </h3>
+                  <div className="space-y-3">
+                    {selectedTreatment.appointments
+                      .filter(apt => apt.status === 'scheduled' && new Date(apt.date) >= new Date())
+                      .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+                      .map((appointment) => (
+                      <div key={appointment.id} className="bg-blue-50 rounded-lg p-4 border border-blue-200">
+                        <div className="flex justify-between items-start mb-3">
+                          <div>
+                            <p className="font-medium text-gray-900">{appointment.date}</p>
+                            <p className="text-sm text-gray-600">{appointment.time} - {appointment.duration} phút</p>
+                            {appointment.staff && (
+                              <p className="text-sm text-gray-600">NV: {appointment.staff}</p>
+                            )}
+                          </div>
+                          <div className="flex space-x-2">
+                            <button
+                              onClick={() => openAppointmentForm(appointment)}
+                              className="p-1 text-gray-400 hover:text-blue-600 transition-colors"
+                            >
+                              <Edit2 className="w-4 h-4" />
+                            </button>
+                            <button
+                              onClick={() => deleteAppointment(appointment.id)}
+                              className="p-1 text-gray-400 hover:text-red-600 transition-colors"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          </div>
+                        </div>
+
+                        <div className="flex flex-wrap gap-2 mb-3">
+                          {appointment.services.map((service, index) => (
+                            <span key={index} className="px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded-md">
+                              {service}
+                            </span>
+                          ))}
+                        </div>
+
+                        {appointment.notes && (
+                          <p className="text-sm text-gray-600 mb-3">{appointment.notes}</p>
+                        )}
+
+                        <div className="flex space-x-2">
+                          <button
+                            onClick={() => updateAppointmentStatus(appointment.id, 'completed')}
+                            className="px-3 py-1 bg-green-600 text-white text-xs rounded-lg hover:bg-green-700 transition-colors"
+                          >
+                            Hoàn thành
+                          </button>
+                          <button
+                            onClick={() => updateAppointmentStatus(appointment.id, 'no-show')}
+                            className="px-3 py-1 bg-yellow-600 text-white text-xs rounded-lg hover:bg-yellow-700 transition-colors"
+                          >
+                            Không đến
+                          </button>
+                          <button
+                            onClick={() => updateAppointmentStatus(appointment.id, 'cancelled')}
+                            className="px-3 py-1 bg-red-600 text-white text-xs rounded-lg hover:bg-red-700 transition-colors"
+                          >
+                            Hủy
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Completed Appointments */}
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center space-x-2">
+                    <UserCheck className="w-5 h-5 text-green-600" />
+                    <span>Lịch sử thực hiện</span>
+                  </h3>
+                  <div className="space-y-3 max-h-96 overflow-y-auto">
+                    {selectedTreatment.appointments
+                      .filter(apt => apt.status !== 'scheduled' || new Date(apt.date) < new Date())
+                      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+                      .map((appointment) => (
+                      <div key={appointment.id} className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                        <div className="flex justify-between items-start mb-2">
+                          <div>
+                            <p className="font-medium text-gray-900">{appointment.date}</p>
+                            <p className="text-sm text-gray-600">{appointment.time} - {appointment.duration} phút</p>
+                            {appointment.staff && (
+                              <p className="text-sm text-gray-600">NV: {appointment.staff}</p>
+                            )}
+                          </div>
+                          <span className={`px-2 py-1 rounded-full text-xs font-medium ${getAppointmentStatusColor(appointment.status)}`}>
+                            {getAppointmentStatusText(appointment.status)}
+                          </span>
+                        </div>
+
+                        <div className="flex flex-wrap gap-2 mb-2">
+                          {appointment.services.map((service, index) => (
+                            <span key={index} className="px-2 py-1 bg-gray-200 text-gray-700 text-xs rounded-md">
+                              {service}
+                            </span>
+                          ))}
+                        </div>
+
+                        {appointment.notes && (
+                          <p className="text-sm text-gray-600">{appointment.notes}</p>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Add/Edit Appointment Modal */}
+      {showAppointmentForm && selectedTreatment && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between p-6 border-b border-gray-200">
+              <h2 className="text-xl font-semibold text-gray-900">
+                {editingAppointment ? 'Sửa lịch hẹn' : 'Thêm lịch hẹn mới'}
+              </h2>
+              <button
+                onClick={() => setShowAppointmentForm(false)}
+                className="text-gray-400 hover:text-gray-600 transition-colors"
+              >
+                <X className="w-6 h-6" />
+              </button>
+            </div>
+
+            <form onSubmit={handleAppointmentSubmit} className="p-6 space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Ngày hẹn *
+                  </label>
+                  <input
+                    type="date"
+                    required
+                    value={appointmentForm.date}
+                    onChange={(e) => setAppointmentForm(prev => ({ ...prev, date: e.target.value }))}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Giờ hẹn *
+                  </label>
+                  <input
+                    type="time"
+                    required
+                    value={appointmentForm.time}
+                    onChange={(e) => setAppointmentForm(prev => ({ ...prev, time: e.target.value }))}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Thời gian (phút)
+                  </label>
+                  <input
+                    type="number"
+                    min="30"
+                    max="240"
+                    step="15"
+                    value={appointmentForm.duration}
+                    onChange={(e) => setAppointmentForm(prev => ({ ...prev, duration: parseInt(e.target.value) || 90 }))}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Nhân viên thực hiện
+                  </label>
+                  <input
+                    type="text"
+                    value={appointmentForm.staff}
+                    onChange={(e) => setAppointmentForm(prev => ({ ...prev, staff: e.target.value }))}
+                    placeholder="VD: Nguyễn Mai"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Dịch vụ thực hiện
+                </label>
+                <div className="flex flex-wrap gap-2 mb-3">
+                  {selectedTreatment.services.map((service) => (
+                    <button
+                      key={service}
+                      type="button"
+                      onClick={() => {
+                        const isSelected = appointmentForm.services.includes(service);
+                        setAppointmentForm(prev => ({
+                          ...prev,
+                          services: isSelected
+                            ? prev.services.filter(s => s !== service)
+                            : [...prev.services, service]
+                        }));
+                      }}
+                      className={`px-3 py-1 text-sm rounded-full transition-colors ${
+                        appointmentForm.services.includes(service)
+                          ? 'bg-blue-600 text-white'
+                          : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                      }`}
+                    >
+                      {service}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Ghi chú
+                </label>
+                <textarea
+                  value={appointmentForm.notes}
+                  onChange={(e) => setAppointmentForm(prev => ({ ...prev, notes: e.target.value }))}
+                  placeholder="Ghi chú về buổi hẹn..."
+                  rows={3}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+              </div>
+
+              <div className="flex justify-end space-x-3 pt-4 border-t border-gray-200">
+                <button
+                  type="button"
+                  onClick={() => setShowAppointmentForm(false)}
+                  className="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+                >
+                  Hủy
+                </button>
+                <button
+                  type="submit"
+                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2"
+                >
+                  <Save className="w-4 h-4" />
+                  <span>{editingAppointment ? 'Cập nhật' : 'Thêm lịch hẹn'}</span>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
