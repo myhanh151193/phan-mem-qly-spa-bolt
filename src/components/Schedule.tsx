@@ -7,11 +7,14 @@ interface Appointment {
   time: string;
   duration: number;
   customer: string;
+  customerId?: number;
   customerPhone?: string;
-  service: string;
+  service: string; // Keep for backward compatibility
+  services?: string[]; // New multiple services field
   staff: string;
   status: 'confirmed' | 'in-progress' | 'pending' | 'cancelled' | 'completed';
-  price: string;
+  price: string; // Keep for backward compatibility
+  totalPrice?: string; // New total price field
   notes?: string;
   date: string;
 }
@@ -31,11 +34,14 @@ const Schedule: React.FC = () => {
       time: '09:00',
       duration: 90,
       customer: 'Nguyễn Thu Hà',
+      customerId: 1,
       customerPhone: '0901234567',
       service: 'Chăm sóc da mặt Premium',
+      services: ['Chăm sóc da mặt Premium'],
       staff: 'Nguyễn Mai',
       status: 'confirmed',
       price: '800K',
+      totalPrice: '800K',
       date: new Date().toISOString().split('T')[0],
       notes: 'Khách hàng VIP, cần chú ý đặc biệt'
     },
@@ -44,24 +50,30 @@ const Schedule: React.FC = () => {
       time: '10:30',
       duration: 120,
       customer: 'Trần Mai Linh',
+      customerId: 2,
       customerPhone: '0912345678',
       service: 'Massage toàn thân + Tắm trắng',
+      services: ['Massage toàn thân', 'Tắm trắng'],
       staff: 'Lê Hoa',
       status: 'in-progress',
-      price: '1.2M',
+      price: '1.1M',
+      totalPrice: '1100K',
       date: new Date().toISOString().split('T')[0],
-      notes: 'Đang thực hiện'
+      notes: 'Đang thực hiện 2 dịch vụ'
     },
     {
       id: 3,
       time: '14:00',
       duration: 60,
       customer: 'Lê Minh Châu',
+      customerId: 3,
       customerPhone: '0923456789',
       service: 'Điều trị mụn',
+      services: ['Điều trị mụn'],
       staff: 'Trần An',
       status: 'pending',
-      price: '500K',
+      price: '400K',
+      totalPrice: '400K',
       date: new Date().toISOString().split('T')[0]
     },
     {
@@ -71,9 +83,11 @@ const Schedule: React.FC = () => {
       customer: 'Phạm Thị Lan',
       customerPhone: '0934567890',
       service: 'Gói chăm sóc VIP',
+      services: ['Chăm sóc da mặt Premium', 'Massage toàn thân', 'Tắm trắng'],
       staff: 'Nguyễn Mai',
       status: 'confirmed',
-      price: '2.5M',
+      price: '1900K',
+      totalPrice: '1900K',
       date: new Date().toISOString().split('T')[0],
       notes: 'Gói combo 3 dịch vụ'
     },
