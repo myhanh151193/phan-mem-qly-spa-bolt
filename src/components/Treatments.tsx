@@ -251,7 +251,13 @@ const Treatments: React.FC = () => {
       endDate: treatment.endDate,
       totalSessions: treatment.totalSessions,
       services: [...treatment.services],
-      totalValue: treatment.totalValue
+      totalValue: treatment.totalValue,
+      scheduleType: 'manual', // Default for existing treatments
+      recurringTime: '09:00',
+      weekDay: 1,
+      monthDay: 1,
+      sessionDuration: 90,
+      preferredStaff: ''
     });
     setShowModal(true);
   };
