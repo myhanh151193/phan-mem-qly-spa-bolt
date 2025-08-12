@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Search, Plus, Calendar, User, ClipboardCheck, Edit2, Trash2, X, Save } from 'lucide-react';
+import { Search, Plus, Calendar, User, ClipboardCheck, Edit2, Trash2, X, Save, ChevronDown } from 'lucide-react';
 
 interface Treatment {
   id: number;
@@ -452,7 +452,7 @@ const Treatments: React.FC = () => {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Ngày kết th��c *
+                    Ngày kết thúc *
                   </label>
                   <input
                     type="date"
