@@ -165,7 +165,13 @@ const Treatments: React.FC = () => {
     endDate: '',
     totalSessions: 1,
     services: [],
-    totalValue: ''
+    totalValue: '',
+    scheduleType: 'manual',
+    recurringTime: '09:00',
+    weekDay: 1, // Monday
+    monthDay: 1,
+    sessionDuration: 90,
+    preferredStaff: ''
   });
   const [serviceInput, setServiceInput] = useState('');
   const [deleteConfirm, setDeleteConfirm] = useState<number | null>(null);
