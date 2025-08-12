@@ -253,12 +253,7 @@ const Schedule: React.FC = () => {
               <ChevronLeft className="w-5 h-5" />
             </button>
             <h2 className="text-xl font-semibold text-gray-900 min-w-[300px] text-center">
-              {currentDate.toLocaleDateString('vi-VN', {
-                weekday: 'long',
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric'
-              })}
+              {formatDateHeader()}
             </h2>
             <button
               onClick={() => navigateDate('next')}
