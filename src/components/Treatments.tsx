@@ -114,7 +114,7 @@ const Treatments: React.FC = () => {
   const [customers] = useState<Customer[]>([
     {
       id: 1,
-      name: 'Nguyễn Thu H��',
+      name: 'Nguyễn Thu Hà',
       phone: '0901234567',
       email: 'thuha@email.com',
       membershipLevel: 'VVIP',
@@ -396,7 +396,7 @@ const Treatments: React.FC = () => {
         staff: formData.preferredStaff,
         status: 'scheduled',
         services: [...formData.services],
-        notes: `Bu���i ${appointmentCount + 1}/${formData.totalSessions}`
+        notes: `Buổi ${appointmentCount + 1}/${formData.totalSessions}`
       });
 
       appointmentCount++;
@@ -895,18 +895,157 @@ const Treatments: React.FC = () => {
                 </div>
 
                 <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Giá trị (VNĐ)
+                </label>
+                <input
+                  type="text"
+                  value={formData.totalValue}
+                  onChange={(e) => setFormData(prev => ({ ...prev, totalValue: e.target.value }))}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="VD: 15,600,000"
+                />
+              </div>
+            </div>
+
+            {/* Scheduling Options */}
+            <div className="border-t pt-4">
+              <h3 className="text-lg font-medium text-gray-900 mb-4">Lịch hẹn định kỳ</h3>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Giá trị (VNĐ)
+                    Kiểu lịch hẹn
+                  </label>
+                  <select
+                    value={formData.scheduleType}
+                    onChange={(e) => setFormData(prev => ({ ...prev, scheduleType: e.target.value as any }))}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  >
+                    <option value="manual">Thủ công</option>
+                    <option value="weekly">Hàng tuần</option>
+                    <option value="monthly">Hàng tháng</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Giờ hẹn
                   </label>
                   <input
-                    type="text"
-                    value={formData.totalValue}
-                    onChange={(e) => setFormData(prev => ({ ...prev, totalValue: e.target.value }))}
+                    type="time"
+                    value={formData.recurringTime}
+                    onChange={(e) => setFormData(prev => ({ ...prev, recurringTime: e.target.value }))}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    placeholder="VD: 15,600,000"
                   />
                 </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Thời gian buổi (phút)
+                  </label>
+                  <select
+                    value={formData.sessionDuration}
+                    onChange={(e) => setFormData(prev => ({ ...prev, sessionDuration: parseInt(e.target.value) }))}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  >
+                    <option value="30">30 phút</option>
+                    <option value="45">45 phút</option>
+                    <option value="60">60 phút</option>
+                    <option value="90">90 phút</option>
+                    <option value="120">120 phút</option>
+                    <option value="180">180 phút</option>
+                  </select>
+                </div>
               </div>
+
+              {formData.scheduleType === 'weekly' && (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Ngày trong tuần
+                    </label>
+                    <select
+                      value={formData.weekDay}
+                      onChange={(e) => setFormData(prev => ({ ...prev, weekDay: parseInt(e.target.value) }))}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    >
+                      <option value="1">Thứ Hai</option>
+                      <option value="2">Thứ Ba</option>
+                      <option value="3">Thứ Tư</option>
+                      <option value="4">Thứ Năm</option>
+                      <option value="5">Thứ Sáu</option>
+                      <option value="6">Thứ Bảy</option>
+                      <option value="0">Chủ Nhật</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Nhân viên ưu tiên
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.preferredStaff}
+                      onChange={(e) => setFormData(prev => ({ ...prev, preferredStaff: e.target.value }))}
+                      placeholder="VD: Nguyễn Mai"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    />
+                  </div>
+                </div>
+              )}
+
+              {formData.scheduleType === 'monthly' && (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Ngày trong tháng
+                    </label>
+                    <select
+                      value={formData.monthDay}
+                      onChange={(e) => setFormData(prev => ({ ...prev, monthDay: parseInt(e.target.value) }))}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    >
+                      {Array.from({ length: 31 }, (_, i) => i + 1).map(day => (
+                        <option key={day} value={day}>Ngày {day}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Nhân viên ưu tiên
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.preferredStaff}
+                      onChange={(e) => setFormData(prev => ({ ...prev, preferredStaff: e.target.value }))}
+                      placeholder="VD: Nguyễn Mai"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    />
+                  </div>
+                </div>
+              )}
+
+              {formData.scheduleType !== 'manual' && (
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                  <div className="flex items-start space-x-2">
+                    <Calendar className="w-5 h-5 text-blue-600 mt-0.5" />
+                    <div>
+                      <h4 className="text-sm font-medium text-blue-900">Tự động tạo lịch hẹn</h4>
+                      <p className="text-sm text-blue-700 mt-1">
+                        {formData.scheduleType === 'weekly' && formData.weekDay !== undefined && (
+                          <>Hệ thống sẽ tự động tạo {formData.totalSessions} lịch hẹn vào {
+                            ['Chủ Nhật', 'Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy'][formData.weekDay]
+                          } hàng tuần lúc {formData.recurringTime}</>
+                        )}
+                        {formData.scheduleType === 'monthly' && formData.monthDay !== undefined && (
+                          <>Hệ thống sẽ tự động tạo {formData.totalSessions} lịch hẹn vào ngày {formData.monthDay} hàng tháng lúc {formData.recurringTime}</>
+                        )}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
