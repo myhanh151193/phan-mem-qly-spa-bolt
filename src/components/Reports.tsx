@@ -6,6 +6,8 @@ interface ReportsProps {
 }
 
 const Reports: React.FC<ReportsProps> = ({ selectedBranch }) => {
+  const [activeTab, setActiveTab] = useState<'overview' | 'staff' | 'customers'>('overview');
+
   const reportData = {
     revenue: {
       daily: '15.2M',
