@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Search, Plus, Calendar, User, ClipboardCheck, Edit2, Trash2, X, Save, ChevronDown, Clock, CalendarDays, UserCheck } from 'lucide-react';
+import { useAppointments, Appointment as ContextAppointment } from '../contexts/AppointmentContext';
 
 interface Appointment {
   id: number;
@@ -114,7 +115,7 @@ const Treatments: React.FC = () => {
   const [customers] = useState<Customer[]>([
     {
       id: 1,
-      name: 'Nguyễn Thu Hà',
+      name: 'Nguy��n Thu Hà',
       phone: '0901234567',
       email: 'thuha@email.com',
       membershipLevel: 'VVIP',
@@ -802,7 +803,7 @@ const Treatments: React.FC = () => {
                     value={formData.name}
                     onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    placeholder="VD: Liệu trình trị mụn 3 tháng"
+                    placeholder="VD: Li��u trình trị mụn 3 tháng"
                   />
                 </div>
 
