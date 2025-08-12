@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Calendar, Clock, Plus, Filter, ChevronLeft, ChevronRight, X, Edit, Trash2, Eye, User, Phone } from 'lucide-react';
 import AppointmentForm from './AppointmentForm';
+import { useAppointments, Appointment } from '../contexts/AppointmentContext';
 
 interface Appointment {
   id: number;
