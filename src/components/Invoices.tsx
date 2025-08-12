@@ -465,7 +465,7 @@ const Invoices: React.FC = () => {
         <div className="bg-white rounded-lg p-4 border border-gray-200">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600">Đã thanh toán</p>
+              <p className="text-sm text-gray-600">Đ�� thanh toán</p>
               <p className="text-2xl font-bold text-green-600">{stats.paid}</p>
             </div>
             <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
@@ -827,6 +827,8 @@ const Invoices: React.FC = () => {
                 <div className={`border rounded-lg p-3 mb-4 ${
                   !formData.customerId
                     ? 'bg-yellow-50 border-yellow-200'
+                    : formData.treatmentId
+                    ? 'bg-purple-50 border-purple-200'
                     : 'bg-blue-50 border-blue-200'
                 }`}>
                   <p className={`text-sm ${
