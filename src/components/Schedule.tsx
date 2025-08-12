@@ -1,25 +1,11 @@
 import React, { useState } from 'react';
 import { Calendar, Clock, Plus, Filter, ChevronLeft, ChevronRight, X, Edit, Trash2, Eye, User, Phone } from 'lucide-react';
 import AppointmentForm from './AppointmentForm';
-
-interface Appointment {
-  id: number;
-  time: string;
-  duration: number;
-  customer: string;
-  customerId?: number;
-  customerPhone?: string;
-  service: string; // Keep for backward compatibility
-  services?: string[]; // New multiple services field
-  staff: string;
-  status: 'confirmed' | 'in-progress' | 'pending' | 'cancelled' | 'completed';
-  price: string; // Keep for backward compatibility
-  totalPrice?: string; // New total price field
-  notes?: string;
-  date: string;
-}
+import { useAppointments, Appointment } from '../contexts/AppointmentContext';
 
 const Schedule: React.FC = () => {
+  const { appointments, updateAppointment, deleteAppointment: deleteFromContext, addAppointment } = useAppointments();
+  
   const [currentDate, setCurrentDate] = useState(new Date());
   const [viewMode, setViewMode] = useState<'day' | 'week' | 'month'>('day');
   const [showModal, setShowModal] = useState(false);
@@ -28,71 +14,6 @@ const Schedule: React.FC = () => {
   const [filterStatus, setFilterStatus] = useState<string>('all');
   const [showFilterDropdown, setShowFilterDropdown] = useState(false);
 
-  const [appointments, setAppointments] = useState<Appointment[]>([
-    {
-      id: 1,
-      time: '09:00',
-      duration: 90,
-      customer: 'Nguyễn Thu Hà',
-      customerId: 1,
-      customerPhone: '0901234567',
-      service: 'Chăm sóc da mặt Premium',
-      services: ['Chăm sóc da mặt Premium'],
-      staff: 'Nguyễn Mai',
-      status: 'confirmed',
-      price: '800K',
-      totalPrice: '800K',
-      date: new Date().toISOString().split('T')[0],
-      notes: 'Khách hàng VIP, c���n chú ý đặc biệt'
-    },
-    {
-      id: 2,
-      time: '10:30',
-      duration: 120,
-      customer: 'Trần Mai Linh',
-      customerId: 2,
-      customerPhone: '0912345678',
-      service: 'Massage toàn thân + Tắm trắng',
-      services: ['Massage toàn thân', 'Tắm trắng'],
-      staff: 'Lê Hoa',
-      status: 'in-progress',
-      price: '1.1M',
-      totalPrice: '1100K',
-      date: new Date().toISOString().split('T')[0],
-      notes: 'Đang thực hiện 2 dịch vụ'
-    },
-    {
-      id: 3,
-      time: '14:00',
-      duration: 60,
-      customer: 'Lê Minh Châu',
-      customerId: 3,
-      customerPhone: '0923456789',
-      service: 'Điều trị mụn',
-      services: ['Điều trị mụn'],
-      staff: 'Trần An',
-      status: 'pending',
-      price: '400K',
-      totalPrice: '400K',
-      date: new Date().toISOString().split('T')[0]
-    },
-    {
-      id: 4,
-      time: '15:30',
-      duration: 180,
-      customer: 'Phạm Thị Lan',
-      customerPhone: '0934567890',
-      service: 'Gói chăm sóc VIP',
-      services: ['Chăm sóc da mặt Premium', 'Massage toàn thân', 'Tắm trắng'],
-      staff: 'Nguyễn Mai',
-      status: 'confirmed',
-      price: '1900K',
-      totalPrice: '1900K',
-      date: new Date().toISOString().split('T')[0],
-      notes: 'Gói combo 3 dịch vụ'
-    },
-  ]);
-
   const timeSlots = Array.from({ length: 12 }, (_, i) => {
     const hour = i + 8;
     return `${hour.toString().padStart(2, '0')}:00`;
@@ -100,7 +21,9 @@ const Schedule: React.FC = () => {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'confirmed': return 'border-l-green-500 bg-green-50';
+      case 'confirmed': 
+      case 'scheduled': 
+        return 'border-l-green-500 bg-green-50';
       case 'in-progress': return 'border-l-blue-500 bg-blue-50';
       case 'pending': return 'border-l-yellow-500 bg-yellow-50';
       case 'cancelled': return 'border-l-red-500 bg-red-50';
@@ -112,6 +35,7 @@ const Schedule: React.FC = () => {
   const getStatusText = (status: string) => {
     switch (status) {
       case 'confirmed': return 'Đã xác nhận';
+      case 'scheduled': return 'Đã lên lịch';
       case 'in-progress': return 'Đang thực hiện';
       case 'pending': return 'Chờ xác nhận';
       case 'cancelled': return 'Đã hủy';
@@ -275,31 +199,26 @@ const Schedule: React.FC = () => {
 
   const handleSaveAppointment = (appointmentData: Partial<Appointment>) => {
     if (isEditing && selectedAppointment) {
-      setAppointments(prev => prev.map(apt =>
-        apt.id === selectedAppointment.id
-          ? { ...apt, ...appointmentData }
-          : apt
-      ));
+      updateAppointment(selectedAppointment.id, appointmentData);
     } else {
       const newAppointment: Appointment = {
         id: Date.now(),
         date: currentDate.toISOString().split('T')[0],
         status: 'pending',
+        services: [],
         ...appointmentData
       } as Appointment;
-      setAppointments(prev => [...prev, newAppointment]);
+      addAppointment(newAppointment);
     }
     closeModal();
   };
 
   const deleteAppointment = (id: number) => {
-    setAppointments(prev => prev.filter(apt => apt.id !== id));
+    deleteFromContext(id);
   };
 
   const updateAppointmentStatus = (id: number, status: Appointment['status']) => {
-    setAppointments(prev => prev.map(apt =>
-      apt.id === id ? { ...apt, status } : apt
-    ));
+    updateAppointment(id, { status });
   };
 
   return (
@@ -359,7 +278,7 @@ const Schedule: React.FC = () => {
             {showFilterDropdown && (
               <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
                 <div className="p-2">
-                  {['all', 'confirmed', 'in-progress', 'pending', 'cancelled', 'completed'].map(status => (
+                  {['all', 'confirmed', 'scheduled', 'in-progress', 'pending', 'cancelled', 'completed'].map(status => (
                     <button
                       key={status}
                       onClick={() => {
@@ -494,9 +413,12 @@ const Schedule: React.FC = () => {
                           <div className="flex justify-between items-center">
                             <p className="text-xs text-gray-500">
                               {appointment.staff} • {appointment.duration}ph
+                              {appointment.treatmentId && (
+                                <span className="ml-1 px-1 bg-blue-200 text-blue-800 rounded text-xs">Liệu trình</span>
+                              )}
                             </p>
                             <span className={`text-xs px-2 py-1 rounded-full ${
-                              appointment.status === 'confirmed' ? 'bg-green-100 text-green-800' :
+                              appointment.status === 'confirmed' || appointment.status === 'scheduled' ? 'bg-green-100 text-green-800' :
                               appointment.status === 'in-progress' ? 'bg-blue-100 text-blue-800' :
                               appointment.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
                               appointment.status === 'cancelled' ? 'bg-red-100 text-red-800' :
@@ -578,7 +500,10 @@ const Schedule: React.FC = () => {
                           title={`${appointment.customer} - ${appointment.services?.[0] || appointment.service}`}
                         >
                           <div className="truncate font-medium">{appointment.customer}</div>
-                          <div className="truncate text-xs opacity-75">{appointment.time}</div>
+                          <div className="truncate text-xs opacity-75">
+                            {appointment.time}
+                            {appointment.treatmentId && <span className="ml-1 text-blue-600">📋</span>}
+                          </div>
                         </div>
                       ))}
                     </div>
@@ -657,7 +582,10 @@ const Schedule: React.FC = () => {
                           }}
                           title={`${appointment.time} - ${appointment.customer}: ${appointment.services?.[0] || appointment.service}`}
                         >
-                          <div className="truncate font-medium">{appointment.time} {appointment.customer}</div>
+                          <div className="truncate font-medium">
+                            {appointment.time} {appointment.customer}
+                            {appointment.treatmentId && <span className="ml-1 text-blue-600">📋</span>}
+                          </div>
                         </div>
                       ))}
                       {dayAppointments.length > 3 && (
@@ -716,13 +644,13 @@ const Schedule: React.FC = () => {
         <div className="bg-white rounded-lg p-4 border border-gray-200">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600">Chờ xác nhận</p>
-              <p className="text-2xl font-bold text-yellow-600">
-                {appointments.filter(apt => apt.status === 'pending').length}
+              <p className="text-sm text-gray-600">Từ liệu trình</p>
+              <p className="text-2xl font-bold text-purple-600">
+                {appointments.filter(apt => apt.treatmentId).length}
               </p>
             </div>
-            <div className="w-8 h-8 bg-yellow-100 rounded-full flex items-center justify-center">
-              <div className="w-4 h-4 bg-yellow-600 rounded-full"></div>
+            <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
+              <div className="w-4 h-4 bg-purple-600 rounded-full"></div>
             </div>
           </div>
         </div>
