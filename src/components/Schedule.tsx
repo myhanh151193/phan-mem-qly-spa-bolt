@@ -132,6 +132,66 @@ const Schedule: React.FC = () => {
     setCurrentDate(newDate);
   };
 
+  const getWeekDates = (date: Date) => {
+    const week = [];
+    const startOfWeek = new Date(date);
+    const day = startOfWeek.getDay();
+    const diff = startOfWeek.getDate() - day + (day === 0 ? -6 : 1); // Start from Monday
+    startOfWeek.setDate(diff);
+
+    for (let i = 0; i < 7; i++) {
+      const day = new Date(startOfWeek);
+      day.setDate(startOfWeek.getDate() + i);
+      week.push(day);
+    }
+    return week;
+  };
+
+  const getMonthDates = (date: Date) => {
+    const year = date.getFullYear();
+    const month = date.getMonth();
+    const firstDay = new Date(year, month, 1);
+    const lastDay = new Date(year, month + 1, 0);
+    const daysInMonth = lastDay.getDate();
+
+    const dates = [];
+    for (let i = 1; i <= daysInMonth; i++) {
+      dates.push(new Date(year, month, i));
+    }
+    return dates;
+  };
+
+  const getAppointmentsForDate = (date: Date) => {
+    const dateStr = date.toISOString().split('T')[0];
+    return appointments.filter(appointment => {
+      const appointmentDate = new Date(appointment.date);
+      const isDateMatch = appointmentDate.toDateString() === date.toDateString();
+      const statusMatch = filterStatus === 'all' || appointment.status === filterStatus;
+      return isDateMatch && statusMatch;
+    });
+  };
+
+  const formatDateHeader = () => {
+    if (viewMode === 'day') {
+      return currentDate.toLocaleDateString('vi-VN', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      });
+    } else if (viewMode === 'week') {
+      const weekDates = getWeekDates(currentDate);
+      const start = weekDates[0];
+      const end = weekDates[6];
+      return `Tuần ${start.getDate()}/${start.getMonth() + 1} - ${end.getDate()}/${end.getMonth() + 1}/${end.getFullYear()}`;
+    } else {
+      return currentDate.toLocaleDateString('vi-VN', {
+        year: 'numeric',
+        month: 'long'
+      });
+    }
+  };
+
   const filteredAppointments = appointments.filter(appointment => {
     const appointmentDate = new Date(appointment.date);
     const isToday = appointmentDate.toDateString() === currentDate.toDateString();
