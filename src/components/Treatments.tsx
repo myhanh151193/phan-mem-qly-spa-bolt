@@ -176,6 +176,7 @@ const Treatments: React.FC = () => {
     setEditingTreatment(null);
     setFormData({
       name: '',
+      customerId: null,
       customer: '',
       startDate: '',
       endDate: '',
