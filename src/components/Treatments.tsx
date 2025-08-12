@@ -189,8 +189,10 @@ const Treatments: React.FC = () => {
 
   const openEditModal = (treatment: Treatment) => {
     setEditingTreatment(treatment);
+    const selectedCustomer = customers.find(c => c.name === treatment.customer);
     setFormData({
       name: treatment.name,
+      customerId: selectedCustomer?.id || null,
       customer: treatment.customer,
       startDate: treatment.startDate,
       endDate: treatment.endDate,
