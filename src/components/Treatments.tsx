@@ -183,7 +183,7 @@ const Treatments: React.FC = () => {
   });
 
   const availableServices = [
-    'Điều trị mụn', 'Tái t���o da', 'Chăm sóc da', 'Chăm sóc da mặt', 
+    'Điều trị mụn', 'Tái tạo da', 'Chăm sóc da', 'Chăm sóc da mặt', 
     'Massage', 'Tắm trắng', 'Giảm béo RF', 'Massage giảm béo', 
     'Tư vấn dinh dưỡng', 'Triệt lông', 'Trị thâm', 'Căng da mặt'
   ];
@@ -487,7 +487,7 @@ const Treatments: React.FC = () => {
       return;
     }
 
-    const appointmentData: Appointment = {
+    const contextAppointmentData: ContextAppointment = {
       id: editingAppointment ? editingAppointment.id : Date.now(),
       treatmentId: selectedTreatment.id,
       date: appointmentForm.date,
@@ -496,21 +496,23 @@ const Treatments: React.FC = () => {
       staff: appointmentForm.staff,
       notes: appointmentForm.notes,
       services: appointmentForm.services,
-      status: editingAppointment ? editingAppointment.status : 'scheduled'
+      status: editingAppointment ? editingAppointment.status : 'scheduled',
+      customer: selectedTreatment.customer,
+      service: appointmentForm.services.join(', '),
+      totalPrice: selectedTreatment.totalValue,
+      price: selectedTreatment.totalValue
     };
 
+    if (editingAppointment) {
+      updateAppointment(editingAppointment.id, contextAppointmentData);
+    } else {
+      addTreatmentAppointments([contextAppointmentData]);
+    }
+
+    // Update local treatment state
     setTreatments(prev => prev.map(t => {
       if (t.id === selectedTreatment.id) {
-        let updatedAppointments;
-        if (editingAppointment) {
-          updatedAppointments = t.appointments.map(a =>
-            a.id === editingAppointment.id ? appointmentData : a
-          );
-        } else {
-          updatedAppointments = [...t.appointments, appointmentData];
-        }
-
-        // Update next session and completed sessions
+        const updatedAppointments = getAppointmentsForTreatment(selectedTreatment.id);
         const nextScheduled = updatedAppointments
           .filter(a => a.status === 'scheduled' && new Date(a.date) > new Date())
           .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())[0];
@@ -519,7 +521,6 @@ const Treatments: React.FC = () => {
 
         return {
           ...t,
-          appointments: updatedAppointments,
           nextSession: nextScheduled ? nextScheduled.date : null,
           completedSessions: completedCount,
           progress: Math.round((completedCount / t.totalSessions) * 100)
