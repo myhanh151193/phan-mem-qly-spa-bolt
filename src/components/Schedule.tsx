@@ -539,12 +539,30 @@ const Schedule: React.FC = () => {
                 {timeSlots.slice(0, 8).map((time) => {
                   const dayAppointments = getAppointmentsForDate(date).filter(apt => apt.time === time);
                   return (
-                    <div key={time} className="h-16 border-b border-gray-200 relative p-1">
+                    <div
+                      key={time}
+                      className="h-16 border-b border-gray-200 relative p-1 group cursor-pointer hover:bg-blue-50 transition-colors"
+                      onClick={(e) => {
+                        if (dayAppointments.length === 0 && e.target === e.currentTarget) {
+                          createAppointmentAtTime(date, time);
+                        }
+                      }}
+                    >
+                      {/* Empty slot indicator */}
+                      {dayAppointments.length === 0 && (
+                        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                          <Plus className="w-3 h-3 text-blue-600" />
+                        </div>
+                      )}
+
                       {dayAppointments.map((appointment) => (
                         <div
                           key={appointment.id}
                           className={`absolute inset-1 border-l-2 rounded text-xs p-1 cursor-pointer hover:shadow-sm ${getStatusColor(appointment.status)}`}
-                          onClick={() => openAppointmentModal(appointment)}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            openAppointmentModal(appointment);
+                          }}
                           title={`${appointment.customer} - ${appointment.services?.[0] || appointment.service}`}
                         >
                           <div className="truncate font-medium">{appointment.customer}</div>
