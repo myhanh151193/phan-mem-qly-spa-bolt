@@ -73,7 +73,7 @@ const sampleTreatments = [
 // Service catalog with pricing
 const serviceCatalog = {
   'Điều trị mụn': { price: 500000, duration: 60, category: 'Chăm sóc da', description: 'Điều trị mụn chuyên sâu với công nghệ hiện đại' },
-  'Tái tạo da': { price: 800000, duration: 90, category: 'Chăm sóc da', description: 'Tái tạo da bằng công nghệ laser và serum đặc biệt' },
+  'Tái tạo da': { price: 800000, duration: 90, category: 'Chăm sóc da', description: 'Tái tạo da bằng công nghệ laser và serum ��ặc biệt' },
   'Chăm sóc da': { price: 400000, duration: 60, category: 'Chăm sóc da', description: 'Chăm sóc da cơ bản với quy trình chuẩn' },
   'Chăm sóc da mặt': { price: 600000, duration: 75, category: 'Chăm sóc da', description: 'Chăm sóc da mặt toàn diện với các bước chuyên nghiệp' },
   'Chăm sóc da mặt Premium': { price: 800000, duration: 90, category: 'Chăm sóc da', description: 'Dịch vụ chăm sóc da mặt cao cấp với sản phẩm nhập khẩu' },
@@ -614,10 +614,12 @@ const Invoices: React.FC = () => {
                     onChange={(e) => {
                       const customerId = parseInt(e.target.value);
                       const customer = customers.find(c => c.id === customerId);
-                      setFormData(prev => ({ 
-                        ...prev, 
-                        customerId, 
-                        customer: customer?.name || '' 
+                      setFormData(prev => ({
+                        ...prev,
+                        customerId,
+                        customer: customer?.name || '',
+                        treatmentId: undefined,
+                        treatmentName: '' // Reset treatment when customer changes
                       }));
                     }}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -630,6 +632,70 @@ const Invoices: React.FC = () => {
                     ))}
                   </select>
                 </div>
+
+                {/* Treatment Selection */}
+                {formData.customerId && (
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Liệu trình (tùy chọn)
+                    </label>
+                    <select
+                      value={formData.treatmentId || ''}
+                      onChange={(e) => {
+                        const treatmentId = e.target.value ? parseInt(e.target.value) : undefined;
+                        const treatment = sampleTreatments.find(t => t.id === treatmentId);
+                        setFormData(prev => ({
+                          ...prev,
+                          treatmentId,
+                          treatmentName: treatment?.name || '',
+                          items: [] // Reset items when treatment changes
+                        }));
+                      }}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    >
+                      <option value="">Không liên kết liệu trình</option>
+                      {getCustomerTreatments(formData.customerId).map((treatment) => (
+                        <option key={treatment.id} value={treatment.id}>
+                          {treatment.name} - {treatment.services.join(', ')}
+                        </option>
+                      ))}
+                    </select>
+                    {formData.treatmentId && (
+                      <div className="mt-2 p-3 bg-green-50 border border-green-200 rounded-lg">
+                        <p className="text-sm text-green-700">
+                          ✓ Đã chọn liệu trình: <strong>{formData.treatmentName}</strong>
+                        </p>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const treatment = sampleTreatments.find(t => t.id === formData.treatmentId);
+                            if (treatment) {
+                              const treatmentItems = treatment.services.map((serviceName, index) => {
+                                const serviceInfo = serviceCatalog[serviceName as keyof typeof serviceCatalog];
+                                if (serviceInfo) {
+                                  return {
+                                    id: `item-${Date.now()}-${index}`,
+                                    name: serviceName,
+                                    type: 'service' as const,
+                                    quantity: 1,
+                                    price: serviceInfo.price,
+                                    total: serviceInfo.price
+                                  };
+                                }
+                                return null;
+                              }).filter(Boolean) as InvoiceItem[];
+
+                              setFormData(prev => ({ ...prev, items: treatmentItems }));
+                            }
+                          }}
+                          className="mt-2 px-3 py-1 bg-green-600 text-white text-sm rounded hover:bg-green-700 transition-colors"
+                        >
+                          Tự động thêm dịch vụ liệu trình
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                )}
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -927,11 +993,11 @@ const Invoices: React.FC = () => {
                     const selectedCustomer = customers.find(c => c.id === formData.customerId);
                     const customerTreatments = getCustomerTreatments(formData.customerId);
                     if (selectedCustomer && customerTreatments.length > 0) {
-                      return `Dịch v�� từ ${customerTreatments.length} liệu trình hiện tại của ${selectedCustomer.name}`;
+                      return `Dịch vụ từ ${customerTreatments.length} liệu trình hiện tại của ${selectedCustomer.name}`;
                     }
                     return selectedCustomer
                       ? `${selectedCustomer.name} chưa có liệu trình nào - hiển thị tất cả dịch vụ`
-                      : 'Các dịch vụ có sẵn trong hệ thống';
+                      : 'Các dịch vụ có sẵn trong h�� thống';
                   })()}
                 </p>
               </div>
