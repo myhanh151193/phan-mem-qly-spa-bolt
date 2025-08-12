@@ -237,9 +237,15 @@ const Schedule: React.FC = () => {
   };
 
   const createAppointmentAtTime = (date: Date, time?: string) => {
+    // Use local date formatting to avoid timezone issues
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const dateString = `${year}-${month}-${day}`;
+
     setSelectedAppointment({
       id: 0,
-      date: date.toISOString().split('T')[0],
+      date: dateString,
       time: time || '',
       duration: 60,
       customer: '',
