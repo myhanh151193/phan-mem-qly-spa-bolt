@@ -38,7 +38,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activeMenu, setActiveMenu }) => {
         </div>
       </div>
 
-      <nav className="flex-1 px-4 overflow-y-auto">
+      <nav className="flex-1 px-4 overflow-y-auto scrollbar-hide">
         <ul className="space-y-2 pb-4">
           {menuItems.map((item) => {
             const Icon = item.icon;
