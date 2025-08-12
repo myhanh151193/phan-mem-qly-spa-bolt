@@ -229,7 +229,13 @@ const Treatments: React.FC = () => {
       endDate: '',
       totalSessions: 1,
       services: [],
-      totalValue: ''
+      totalValue: '',
+      scheduleType: 'manual',
+      recurringTime: '09:00',
+      weekDay: 1,
+      monthDay: 1,
+      sessionDuration: 90,
+      preferredStaff: ''
     });
     setShowModal(true);
   };
