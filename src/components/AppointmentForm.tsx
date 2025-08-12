@@ -494,8 +494,22 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
           )}
         </div>
 
-        {/* Time Selection */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {/* Date and Time Selection */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              <Calendar className="w-4 h-4 inline mr-2" />
+              Ngày hẹn *
+            </label>
+            <input
+              type="date"
+              value={formData.date}
+              onChange={(e) => handleInputChange('date', e.target.value)}
+              min={new Date().toISOString().split('T')[0]} // Prevent booking in the past
+              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              required
+            />
+          </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
               <Clock className="w-4 h-4 inline mr-2" />
@@ -550,7 +564,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
             <FileText className="w-4 h-4 inline mr-2" />
-            Ghi chú
+            Ghi ch��
           </label>
           <textarea
             value={formData.notes}
