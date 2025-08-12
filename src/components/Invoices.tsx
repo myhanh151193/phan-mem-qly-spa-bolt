@@ -769,6 +769,36 @@ const Invoices: React.FC = () => {
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="text-lg font-medium text-gray-900">Dịch vụ & Sản phẩm</h3>
                   <div className="flex space-x-2">
+                    {formData.treatmentId && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const treatment = sampleTreatments.find(t => t.id === formData.treatmentId);
+                          if (treatment) {
+                            const treatmentItems = treatment.services.map((serviceName, index) => {
+                              const serviceInfo = serviceCatalog[serviceName as keyof typeof serviceCatalog];
+                              if (serviceInfo) {
+                                return {
+                                  id: `item-${Date.now()}-${index}`,
+                                  name: serviceName,
+                                  type: 'service' as const,
+                                  quantity: 1,
+                                  price: serviceInfo.price,
+                                  total: serviceInfo.price
+                                };
+                              }
+                              return null;
+                            }).filter(Boolean) as InvoiceItem[];
+
+                            setFormData(prev => ({ ...prev, items: [...(prev.items || []), ...treatmentItems] }));
+                          }
+                        }}
+                        className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors flex items-center space-x-2 font-medium"
+                      >
+                        <Plus className="w-4 h-4" />
+                        <span>Thêm toàn bộ liệu trình</span>
+                      </button>
+                    )}
                     <button
                       type="button"
                       onClick={() => setShowServiceModal(true)}
@@ -780,7 +810,7 @@ const Invoices: React.FC = () => {
                       }`}
                     >
                       <Calendar className="w-4 h-4" />
-                      <span>Chọn từ liệu trình</span>
+                      <span>Chọn lẻ</span>
                     </button>
                     <button
                       type="button"
@@ -788,7 +818,7 @@ const Invoices: React.FC = () => {
                       className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors flex items-center space-x-2"
                     >
                       <Package className="w-4 h-4" />
-                      <span>Thêm sản phẩm</span>
+                      <span>Sản phẩm</span>
                     </button>
                   </div>
                 </div>
