@@ -60,6 +60,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
     customerPhone: '',
     services: [] as string[],
     staff: '',
+    date: new Date().toISOString().split('T')[0], // Default to today
     time: '',
     duration: 60,
     totalPrice: '',
