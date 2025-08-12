@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Search, Plus, Package, AlertTriangle, TrendingUp, TrendingDown, Edit2, Trash2, X, Save, Eye, Filter, Download, Upload, Calendar, User } from 'lucide-react';
+import { Search, Plus, Package, AlertTriangle, TrendingUp, TrendingDown, Edit2, Trash2, X, Save, Eye, Filter, Download, Upload, Calendar, User, Tag, Award, Grid, List } from 'lucide-react';
 
 interface InventoryItem {
   id: number;
@@ -21,6 +21,26 @@ interface InventoryItem {
   location?: string;
 }
 
+interface Category {
+  id: number;
+  name: string;
+  description: string;
+  productCount: number;
+  createdDate: string;
+  status: 'active' | 'inactive';
+}
+
+interface Brand {
+  id: number;
+  name: string;
+  description: string;
+  supplier: string;
+  productCount: number;
+  createdDate: string;
+  status: 'active' | 'inactive';
+  logo?: string;
+}
+
 interface InventoryFormData {
   name: string;
   category: string;
@@ -37,7 +57,23 @@ interface InventoryFormData {
   location: string;
 }
 
+interface CategoryFormData {
+  name: string;
+  description: string;
+  status: 'active' | 'inactive';
+}
+
+interface BrandFormData {
+  name: string;
+  description: string;
+  supplier: string;
+  status: 'active' | 'inactive';
+  logo: string;
+}
+
 const Inventory: React.FC = () => {
+  const [activeTab, setActiveTab] = useState<'inventory' | 'categories' | 'brands'>('inventory');
+  
   const [inventory, setInventory] = useState<InventoryItem[]>([
     {
       id: 1,
@@ -117,10 +153,92 @@ const Inventory: React.FC = () => {
     },
   ]);
 
+  const [categories, setCategories] = useState<Category[]>([
+    {
+      id: 1,
+      name: 'Sản phẩm chăm sóc da',
+      description: 'Các sản phẩm chăm sóc và dưỡng da',
+      productCount: 2,
+      createdDate: '2024-01-01',
+      status: 'active'
+    },
+    {
+      id: 2,
+      name: 'Mặt nạ',
+      description: 'Mặt nạ dưỡng da các loại',
+      productCount: 1,
+      createdDate: '2024-01-01',
+      status: 'active'
+    },
+    {
+      id: 3,
+      name: 'Dầu massage',
+      description: 'Tinh dầu và dầu massage thư giãn',
+      productCount: 1,
+      createdDate: '2024-01-01',
+      status: 'active'
+    },
+    {
+      id: 4,
+      name: 'Serum',
+      description: 'Serum dưỡng da cao cấp',
+      productCount: 0,
+      createdDate: '2024-01-01',
+      status: 'active'
+    }
+  ]);
+
+  const [brands, setBrands] = useState<Brand[]>([
+    {
+      id: 1,
+      name: 'SkinCare Pro',
+      description: 'Thương hiệu chăm sóc da chuyên nghiệp',
+      supplier: 'Beauty Supply Co.',
+      productCount: 1,
+      createdDate: '2024-01-01',
+      status: 'active',
+      logo: 'https://images.pexels.com/photos/4041392/pexels-photo-4041392.jpeg?w=100'
+    },
+    {
+      id: 2,
+      name: 'Beauty Plus',
+      description: 'Thương hiệu mỹ phẩm cao cấp',
+      supplier: 'Cosmetics Wholesale',
+      productCount: 1,
+      createdDate: '2024-01-01',
+      status: 'active',
+      logo: 'https://images.pexels.com/photos/4041390/pexels-photo-4041390.jpeg?w=100'
+    },
+    {
+      id: 3,
+      name: 'GlowSkin',
+      description: 'Thương hiệu làm đẹp tự nhiên',
+      supplier: 'Natural Beauty Ltd.',
+      productCount: 1,
+      createdDate: '2024-01-01',
+      status: 'active',
+      logo: 'https://images.pexels.com/photos/4041388/pexels-photo-4041388.jpeg?w=100'
+    },
+    {
+      id: 4,
+      name: 'Aromatherapy Pro',
+      description: 'Chuyên gia tinh dầu thơm',
+      supplier: 'Essential Oils Inc.',
+      productCount: 1,
+      createdDate: '2024-01-01',
+      status: 'active',
+      logo: 'https://images.pexels.com/photos/4041387/pexels-photo-4041387.jpeg?w=100'
+    }
+  ]);
+
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState<string>('all');
   const [showModal, setShowModal] = useState(false);
+  const [showCategoryModal, setShowCategoryModal] = useState(false);
+  const [showBrandModal, setShowBrandModal] = useState(false);
   const [editingItem, setEditingItem] = useState<InventoryItem | null>(null);
+  const [editingCategory, setEditingCategory] = useState<Category | null>(null);
+  const [editingBrand, setEditingBrand] = useState<Brand | null>(null);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState<number | null>(null);
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [selectedItem, setSelectedItem] = useState<InventoryItem | null>(null);
@@ -143,24 +261,27 @@ const Inventory: React.FC = () => {
     location: ''
   });
 
-  const categories = [
-    'Sản phẩm chăm sóc da',
-    'Mặt nạ',
-    'Dầu massage',
-    'Serum',
-    'Kem dưỡng',
-    'Toner',
-    'Kem chống nắng',
-    'Sữa rửa mặt',
-    'Thiết bị',
-    'Khác'
-  ];
+  const [categoryFormData, setCategoryFormData] = useState<CategoryFormData>({
+    name: '',
+    description: '',
+    status: 'active'
+  });
+
+  const [brandFormData, setBrandFormData] = useState<BrandFormData>({
+    name: '',
+    description: '',
+    supplier: '',
+    status: 'active',
+    logo: ''
+  });
 
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'in-stock': return 'bg-green-100 text-green-800';
       case 'low-stock': return 'bg-yellow-100 text-yellow-800';
       case 'out-of-stock': return 'bg-red-100 text-red-800';
+      case 'active': return 'bg-green-100 text-green-800';
+      case 'inactive': return 'bg-gray-100 text-gray-800';
       default: return 'bg-gray-100 text-gray-800';
     }
   };
@@ -170,6 +291,8 @@ const Inventory: React.FC = () => {
       case 'in-stock': return 'Còn hàng';
       case 'low-stock': return 'Sắp hết';
       case 'out-of-stock': return 'Hết hàng';
+      case 'active': return 'Hoạt động';
+      case 'inactive': return 'Ngừng hoạt động';
       default: return 'Không xác định';
     }
   };
@@ -199,6 +322,7 @@ const Inventory: React.FC = () => {
     return 'in-stock';
   };
 
+  // Product CRUD Operations
   const openCreateModal = () => {
     setEditingItem(null);
     setFormData({
@@ -239,26 +363,6 @@ const Inventory: React.FC = () => {
     setShowModal(true);
   };
 
-  const closeModal = () => {
-    setShowModal(false);
-    setEditingItem(null);
-    setFormData({
-      name: '',
-      category: '',
-      brand: '',
-      sku: '',
-      stock: 0,
-      minStock: 0,
-      maxStock: 0,
-      unitPrice: 0,
-      supplier: '',
-      image: '',
-      description: '',
-      expiryDate: '',
-      location: ''
-    });
-  };
-
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -284,7 +388,8 @@ const Inventory: React.FC = () => {
       setInventory(prev => [...prev, itemData]);
     }
 
-    closeModal();
+    setShowModal(false);
+    setEditingItem(null);
   };
 
   const handleDelete = (id: number) => {
@@ -292,52 +397,111 @@ const Inventory: React.FC = () => {
     setShowDeleteConfirm(null);
   };
 
-  const openDetailModal = (item: InventoryItem) => {
-    setSelectedItem(item);
-    setShowDetailModal(true);
+  // Category CRUD Operations
+  const openCreateCategoryModal = () => {
+    setEditingCategory(null);
+    setCategoryFormData({ name: '', description: '', status: 'active' });
+    setShowCategoryModal(true);
   };
 
-  const openStockModal = (item: InventoryItem) => {
-    setSelectedItem(item);
-    setStockAdjustment({ quantity: 0, type: 'in', note: '' });
-    setShowStockModal(true);
+  const openEditCategoryModal = (category: Category) => {
+    setEditingCategory(category);
+    setCategoryFormData({
+      name: category.name,
+      description: category.description,
+      status: category.status
+    });
+    setShowCategoryModal(true);
   };
 
-  const handleStockAdjustment = () => {
-    if (!selectedItem || stockAdjustment.quantity <= 0) {
-      alert('Vui lòng nhập số lượng hợp lệ');
+  const handleCategorySubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!categoryFormData.name) {
+      alert('Vui lòng nhập tên danh mục');
       return;
     }
 
-    const newStock = stockAdjustment.type === 'in' 
-      ? selectedItem.stock + stockAdjustment.quantity
-      : selectedItem.stock - stockAdjustment.quantity;
+    const categoryData: Category = {
+      id: editingCategory ? editingCategory.id : Date.now(),
+      ...categoryFormData,
+      productCount: editingCategory ? editingCategory.productCount : 0,
+      createdDate: editingCategory ? editingCategory.createdDate : new Date().toISOString().split('T')[0]
+    };
 
-    if (newStock < 0) {
-      alert('Số lượng tồn kho không thể âm');
+    if (editingCategory) {
+      setCategories(prev => prev.map(cat => cat.id === editingCategory.id ? categoryData : cat));
+    } else {
+      setCategories(prev => [...prev, categoryData]);
+    }
+
+    setShowCategoryModal(false);
+    setEditingCategory(null);
+  };
+
+  const deleteCategoryHandler = (id: number) => {
+    const category = categories.find(c => c.id === id);
+    if (category && category.productCount > 0) {
+      alert('Không thể xóa danh mục đang có sản phẩm');
+      return;
+    }
+    setCategories(prev => prev.filter(cat => cat.id !== id));
+  };
+
+  // Brand CRUD Operations
+  const openCreateBrandModal = () => {
+    setEditingBrand(null);
+    setBrandFormData({ name: '', description: '', supplier: '', status: 'active', logo: '' });
+    setShowBrandModal(true);
+  };
+
+  const openEditBrandModal = (brand: Brand) => {
+    setEditingBrand(brand);
+    setBrandFormData({
+      name: brand.name,
+      description: brand.description,
+      supplier: brand.supplier,
+      status: brand.status,
+      logo: brand.logo || ''
+    });
+    setShowBrandModal(true);
+  };
+
+  const handleBrandSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!brandFormData.name) {
+      alert('Vui lòng nhập tên thương hiệu');
       return;
     }
 
-    const status = calculateStatus(newStock, selectedItem.minStock);
-    const totalValue = newStock * selectedItem.unitPrice;
+    const brandData: Brand = {
+      id: editingBrand ? editingBrand.id : Date.now(),
+      ...brandFormData,
+      productCount: editingBrand ? editingBrand.productCount : 0,
+      createdDate: editingBrand ? editingBrand.createdDate : new Date().toISOString().split('T')[0]
+    };
 
-    setInventory(prev => prev.map(item => 
-      item.id === selectedItem.id 
-        ? { 
-            ...item, 
-            stock: newStock, 
-            totalValue,
-            status,
-            lastRestocked: stockAdjustment.type === 'in' ? new Date().toISOString().split('T')[0] : item.lastRestocked
-          }
-        : item
-    ));
+    if (editingBrand) {
+      setBrands(prev => prev.map(brand => brand.id === editingBrand.id ? brandData : brand));
+    } else {
+      setBrands(prev => [...prev, brandData]);
+    }
 
-    setShowStockModal(false);
-    setSelectedItem(null);
+    setShowBrandModal(false);
+    setEditingBrand(null);
   };
 
-  // Filter items
+  const deleteBrandHandler = (id: number) => {
+    const brand = brands.find(b => b.id === id);
+    if (brand && brand.productCount > 0) {
+      alert('Không thể xóa thương hiệu đang có sản phẩm');
+      return;
+    }
+    setBrands(prev => prev.filter(brand => brand.id !== id));
+  };
+
+  // Filter and stats
   const filteredInventory = inventory.filter(item => {
     const matchesSearch = 
       item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -350,7 +514,6 @@ const Inventory: React.FC = () => {
     return matchesSearch && matchesStatus;
   });
 
-  // Calculate stats
   const stats = {
     total: inventory.length,
     inStock: inventory.filter(item => item.status === 'in-stock').length,
@@ -361,225 +524,388 @@ const Inventory: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
-        <div className="flex items-center space-x-4 flex-1">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-            <input
-              type="text"
-              placeholder="Tìm kiếm sản phẩm..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            />
-          </div>
-          
-          <select
-            value={filterStatus}
-            onChange={(e) => setFilterStatus(e.target.value)}
-            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+      {/* Tab Navigation */}
+      <div className="flex items-center justify-between">
+        <div className="flex bg-gray-100 rounded-lg p-1">
+          <button
+            onClick={() => setActiveTab('inventory')}
+            className={`px-4 py-2 text-sm font-medium rounded-md transition-colors duration-200 flex items-center space-x-2 ${
+              activeTab === 'inventory'
+                ? 'bg-white text-blue-600 shadow-sm'
+                : 'text-gray-600 hover:text-gray-900'
+            }`}
           >
-            <option value="all">Tất cả trạng thái</option>
-            <option value="in-stock">Còn hàng</option>
-            <option value="low-stock">Sắp hết</option>
-            <option value="out-of-stock">Hết hàng</option>
-          </select>
-        </div>
-
-        <div className="flex space-x-2">
-          <button className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition-colors duration-200">
-            <Download className="w-4 h-4" />
-            <span>Xuất Excel</span>
+            <Package className="w-4 h-4" />
+            <span>Kho vật tư</span>
           </button>
-          <button 
-            onClick={openCreateModal}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition-colors duration-200"
+          <button
+            onClick={() => setActiveTab('categories')}
+            className={`px-4 py-2 text-sm font-medium rounded-md transition-colors duration-200 flex items-center space-x-2 ${
+              activeTab === 'categories'
+                ? 'bg-white text-blue-600 shadow-sm'
+                : 'text-gray-600 hover:text-gray-900'
+            }`}
           >
-            <Plus className="w-4 h-4" />
-            <span>Thêm sản phẩm</span>
+            <Tag className="w-4 h-4" />
+            <span>Danh mục</span>
+          </button>
+          <button
+            onClick={() => setActiveTab('brands')}
+            className={`px-4 py-2 text-sm font-medium rounded-md transition-colors duration-200 flex items-center space-x-2 ${
+              activeTab === 'brands'
+                ? 'bg-white text-blue-600 shadow-sm'
+                : 'text-gray-600 hover:text-gray-900'
+            }`}
+          >
+            <Award className="w-4 h-4" />
+            <span>Thương hiệu</span>
           </button>
         </div>
       </div>
 
-      {/* Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-        <div className="bg-white rounded-lg p-4 border border-gray-200">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-gray-600">Tổng sản phẩm</p>
-              <p className="text-2xl font-bold text-gray-900">{stats.total}</p>
+      {/* Inventory Tab */}
+      {activeTab === 'inventory' && (
+        <>
+          {/* Header */}
+          <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
+            <div className="flex items-center space-x-4 flex-1">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                <input
+                  type="text"
+                  placeholder="Tìm kiếm sản phẩm..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+              </div>
+              
+              <select
+                value={filterStatus}
+                onChange={(e) => setFilterStatus(e.target.value)}
+                className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              >
+                <option value="all">Tất c�� trạng thái</option>
+                <option value="in-stock">Còn hàng</option>
+                <option value="low-stock">Sắp hết</option>
+                <option value="out-of-stock">Hết hàng</option>
+              </select>
             </div>
-            <Package className="w-8 h-8 text-blue-600" />
-          </div>
-        </div>
-        <div className="bg-white rounded-lg p-4 border border-gray-200">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-gray-600">Còn hàng</p>
-              <p className="text-2xl font-bold text-green-600">{stats.inStock}</p>
-            </div>
-            <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
-              <TrendingUp className="w-4 h-4 text-green-600" />
-            </div>
-          </div>
-        </div>
-        <div className="bg-white rounded-lg p-4 border border-gray-200">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-gray-600">Sắp hết</p>
-              <p className="text-2xl font-bold text-yellow-600">{stats.lowStock}</p>
-            </div>
-            <AlertTriangle className="w-8 h-8 text-yellow-600" />
-          </div>
-        </div>
-        <div className="bg-white rounded-lg p-4 border border-gray-200">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-gray-600">Hết hàng</p>
-              <p className="text-2xl font-bold text-red-600">{stats.outOfStock}</p>
-            </div>
-            <div className="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center">
-              <TrendingDown className="w-4 h-4 text-red-600" />
-            </div>
-          </div>
-        </div>
-        <div className="bg-white rounded-lg p-4 border border-gray-200">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-gray-600">Tổng giá trị</p>
-              <p className="text-xl font-bold text-purple-600">{formatCurrency(stats.totalValue)}</p>
-            </div>
-            <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
-              <div className="w-4 h-4 bg-purple-600 rounded-full"></div>
-            </div>
-          </div>
-        </div>
-      </div>
 
-      {/* Inventory Table */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead className="bg-gray-50">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Sản phẩm
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  SKU / Vị trí
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Tồn kho
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Giá / Tổng giá trị
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Nhà cung cấp
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Trạng thái
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Thao tác
-                </th>
-              </tr>
-            </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
-              {filteredInventory.map((item) => (
-                <tr key={item.id} className="hover:bg-gray-50 transition-colors duration-200">
-                  <td className="px-6 py-4">
-                    <div className="flex items-center">
-                      <img
-                        src={item.image}
-                        alt={item.name}
-                        className="w-12 h-12 rounded-lg object-cover mr-4"
-                      />
-                      <div>
-                        <div className="text-sm font-medium text-gray-900">{item.name}</div>
-                        <div className="text-sm text-gray-500">{item.brand} • {item.category}</div>
-                      </div>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div>
-                      <span className="text-sm font-mono font-medium text-gray-900">{item.sku}</span>
-                      {item.location && (
-                        <div className="text-xs text-gray-500">{item.location}</div>
-                      )}
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="flex items-center space-x-3">
-                      <div className="flex flex-col">
-                        <span className="text-sm font-medium text-gray-900">{item.stock}</span>
-                        <div className="text-xs text-gray-500">Min: {item.minStock}</div>
-                        <div className="w-20 bg-gray-200 rounded-full h-2 mt-1">
-                          <div
-                            className={`h-2 rounded-full transition-all duration-300 ${getStockLevelColor(item.stock, item.minStock)} ${getStockLevel(item.stock, item.minStock, item.maxStock)}`}
-                          ></div>
+            <div className="flex space-x-2">
+              <button className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition-colors duration-200">
+                <Download className="w-4 h-4" />
+                <span>Xuất Excel</span>
+              </button>
+              <button 
+                onClick={openCreateModal}
+                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition-colors duration-200"
+              >
+                <Plus className="w-4 h-4" />
+                <span>Thêm sản phẩm</span>
+              </button>
+            </div>
+          </div>
+
+          {/* Stats */}
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+            <div className="bg-white rounded-lg p-4 border border-gray-200">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-gray-600">Tổng sản phẩm</p>
+                  <p className="text-2xl font-bold text-gray-900">{stats.total}</p>
+                </div>
+                <Package className="w-8 h-8 text-blue-600" />
+              </div>
+            </div>
+            <div className="bg-white rounded-lg p-4 border border-gray-200">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-gray-600">Còn hàng</p>
+                  <p className="text-2xl font-bold text-green-600">{stats.inStock}</p>
+                </div>
+                <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+                  <TrendingUp className="w-4 h-4 text-green-600" />
+                </div>
+              </div>
+            </div>
+            <div className="bg-white rounded-lg p-4 border border-gray-200">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-gray-600">Sắp hết</p>
+                  <p className="text-2xl font-bold text-yellow-600">{stats.lowStock}</p>
+                </div>
+                <AlertTriangle className="w-8 h-8 text-yellow-600" />
+              </div>
+            </div>
+            <div className="bg-white rounded-lg p-4 border border-gray-200">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-gray-600">Hết hàng</p>
+                  <p className="text-2xl font-bold text-red-600">{stats.outOfStock}</p>
+                </div>
+                <div className="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center">
+                  <TrendingDown className="w-4 h-4 text-red-600" />
+                </div>
+              </div>
+            </div>
+            <div className="bg-white rounded-lg p-4 border border-gray-200">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-gray-600">Tổng giá trị</p>
+                  <p className="text-xl font-bold text-purple-600">{formatCurrency(stats.totalValue)}</p>
+                </div>
+                <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
+                  <div className="w-4 h-4 bg-purple-600 rounded-full"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Inventory Table */}
+          <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Sản phẩm
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      SKU / Vị trí
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Tồn kho
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Giá / Tổng giá trị
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Nhà cung cấp
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Trạng thái
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Thao tác
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {filteredInventory.map((item) => (
+                    <tr key={item.id} className="hover:bg-gray-50 transition-colors duration-200">
+                      <td className="px-6 py-4">
+                        <div className="flex items-center">
+                          <img
+                            src={item.image}
+                            alt={item.name}
+                            className="w-12 h-12 rounded-lg object-cover mr-4"
+                          />
+                          <div>
+                            <div className="text-sm font-medium text-gray-900">{item.name}</div>
+                            <div className="text-sm text-gray-500">{item.brand} • {item.category}</div>
+                          </div>
                         </div>
-                      </div>
-                      {item.stock <= item.minStock && item.stock > 0 && (
-                        <AlertTriangle className="w-4 h-4 text-yellow-500" />
-                      )}
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div>
-                      <span className="text-sm text-gray-900">{formatCurrency(item.unitPrice)}</span>
-                      <div className="text-sm font-semibold text-gray-900">{formatCurrency(item.totalValue)}</div>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <span className="text-sm text-gray-500">{item.supplier}</span>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${getStatusColor(item.status)}`}>
-                      {getStatusText(item.status)}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="flex items-center space-x-2">
-                      <button 
-                        onClick={() => openDetailModal(item)}
-                        className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors duration-200"
-                        title="Xem chi tiết"
-                      >
-                        <Eye className="w-4 h-4" />
-                      </button>
-                      <button 
-                        onClick={() => openStockModal(item)}
-                        className="p-2 text-gray-400 hover:text-purple-600 hover:bg-purple-50 rounded-lg transition-colors duration-200"
-                        title="Điều chỉnh tồn kho"
-                      >
-                        <Package className="w-4 h-4" />
-                      </button>
-                      <button 
-                        onClick={() => openEditModal(item)}
-                        className="p-2 text-gray-400 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors duration-200"
-                        title="Chỉnh sửa"
-                      >
-                        <Edit2 className="w-4 h-4" />
-                      </button>
-                      <button 
-                        onClick={() => setShowDeleteConfirm(item.id)}
-                        className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors duration-200"
-                        title="Xóa"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div>
+                          <span className="text-sm font-mono font-medium text-gray-900">{item.sku}</span>
+                          {item.location && (
+                            <div className="text-xs text-gray-500">{item.location}</div>
+                          )}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="flex items-center space-x-3">
+                          <div className="flex flex-col">
+                            <span className="text-sm font-medium text-gray-900">{item.stock}</span>
+                            <div className="text-xs text-gray-500">Min: {item.minStock}</div>
+                            <div className="w-20 bg-gray-200 rounded-full h-2 mt-1">
+                              <div
+                                className={`h-2 rounded-full transition-all duration-300 ${getStockLevelColor(item.stock, item.minStock)} ${getStockLevel(item.stock, item.minStock, item.maxStock)}`}
+                              ></div>
+                            </div>
+                          </div>
+                          {item.stock <= item.minStock && item.stock > 0 && (
+                            <AlertTriangle className="w-4 h-4 text-yellow-500" />
+                          )}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div>
+                          <span className="text-sm text-gray-900">{formatCurrency(item.unitPrice)}</span>
+                          <div className="text-sm font-semibold text-gray-900">{formatCurrency(item.totalValue)}</div>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span className="text-sm text-gray-500">{item.supplier}</span>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${getStatusColor(item.status)}`}>
+                          {getStatusText(item.status)}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="flex items-center space-x-2">
+                          <button 
+                            onClick={() => openEditModal(item)}
+                            className="p-2 text-gray-400 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors duration-200"
+                            title="Chỉnh sửa"
+                          >
+                            <Edit2 className="w-4 h-4" />
+                          </button>
+                          <button 
+                            onClick={() => setShowDeleteConfirm(item.id)}
+                            className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors duration-200"
+                            title="Xóa"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </>
+      )}
 
-      {/* Create/Edit Modal */}
+      {/* Categories Tab */}
+      {activeTab === 'categories' && (
+        <>
+          <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
+            <h2 className="text-2xl font-bold text-gray-900 flex items-center space-x-2">
+              <Tag className="w-6 h-6" />
+              <span>Quản lý danh mục</span>
+            </h2>
+            <button 
+              onClick={openCreateCategoryModal}
+              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition-colors duration-200"
+            >
+              <Plus className="w-4 h-4" />
+              <span>Thêm danh mục</span>
+            </button>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {categories.map((category) => (
+              <div key={category.id} className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-lg transition-shadow duration-200">
+                <div className="flex items-start justify-between mb-4">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                      <Tag className="w-6 h-6 text-blue-600" />
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-semibold text-gray-900">{category.name}</h3>
+                      <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${getStatusColor(category.status)}`}>
+                        {getStatusText(category.status)}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="flex space-x-2">
+                    <button 
+                      onClick={() => openEditCategoryModal(category)}
+                      className="p-2 text-gray-400 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors duration-200"
+                    >
+                      <Edit2 className="w-4 h-4" />
+                    </button>
+                    <button 
+                      onClick={() => deleteCategoryHandler(category.id)}
+                      className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors duration-200"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+                
+                <p className="text-sm text-gray-600 mb-4">{category.description}</p>
+                
+                <div className="flex justify-between items-center text-sm">
+                  <div className="text-gray-500">
+                    Ngày tạo: {category.createdDate}
+                  </div>
+                  <div className="flex items-center space-x-1 text-blue-600 font-medium">
+                    <Package className="w-4 h-4" />
+                    <span>{category.productCount} sản phẩm</span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </>
+      )}
+
+      {/* Brands Tab */}
+      {activeTab === 'brands' && (
+        <>
+          <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
+            <h2 className="text-2xl font-bold text-gray-900 flex items-center space-x-2">
+              <Award className="w-6 h-6" />
+              <span>Qu���n lý thương hiệu</span>
+            </h2>
+            <button 
+              onClick={openCreateBrandModal}
+              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition-colors duration-200"
+            >
+              <Plus className="w-4 h-4" />
+              <span>Thêm thương hiệu</span>
+            </button>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {brands.map((brand) => (
+              <div key={brand.id} className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-lg transition-shadow duration-200">
+                <div className="flex items-start justify-between mb-4">
+                  <div className="flex items-center space-x-3">
+                    <img
+                      src={brand.logo || 'https://images.pexels.com/photos/4041392/pexels-photo-4041392.jpeg?w=48'}
+                      alt={brand.name}
+                      className="w-12 h-12 rounded-lg object-cover"
+                    />
+                    <div>
+                      <h3 className="text-lg font-semibold text-gray-900">{brand.name}</h3>
+                      <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${getStatusColor(brand.status)}`}>
+                        {getStatusText(brand.status)}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="flex space-x-2">
+                    <button 
+                      onClick={() => openEditBrandModal(brand)}
+                      className="p-2 text-gray-400 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors duration-200"
+                    >
+                      <Edit2 className="w-4 h-4" />
+                    </button>
+                    <button 
+                      onClick={() => deleteBrandHandler(brand.id)}
+                      className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors duration-200"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+                
+                <p className="text-sm text-gray-600 mb-2">{brand.description}</p>
+                <p className="text-sm text-gray-500 mb-4">Nhà cung cấp: {brand.supplier}</p>
+                
+                <div className="flex justify-between items-center text-sm">
+                  <div className="text-gray-500">
+                    Ngày tạo: {brand.createdDate}
+                  </div>
+                  <div className="flex items-center space-x-1 text-blue-600 font-medium">
+                    <Package className="w-4 h-4" />
+                    <span>{brand.productCount} sản phẩm</span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </>
+      )}
+
+      {/* Product Modal */}
       {showModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
@@ -587,10 +913,7 @@ const Inventory: React.FC = () => {
               <h2 className="text-xl font-semibold text-gray-900">
                 {editingItem ? 'Chỉnh sửa sản phẩm' : 'Thêm sản phẩm mới'}
               </h2>
-              <button 
-                onClick={closeModal}
-                className="text-gray-400 hover:text-gray-600 transition-colors"
-              >
+              <button onClick={() => setShowModal(false)} className="text-gray-400 hover:text-gray-600 transition-colors">
                 <X className="w-6 h-6" />
               </button>
             </div>
@@ -598,37 +921,29 @@ const Inventory: React.FC = () => {
             <form onSubmit={handleSubmit} className="p-6 space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Tên sản phẩm *
-                  </label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Tên sản phẩm *</label>
                   <input
                     type="text"
                     required
                     value={formData.name}
                     onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    placeholder="VD: Serum Vitamin C"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    SKU *
-                  </label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">SKU *</label>
                   <input
                     type="text"
                     required
                     value={formData.sku}
                     onChange={(e) => setFormData(prev => ({ ...prev, sku: e.target.value }))}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    placeholder="VD: SKU001"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Danh mục *
-                  </label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Danh mục *</label>
                   <select
                     required
                     value={formData.category}
@@ -636,31 +951,32 @@ const Inventory: React.FC = () => {
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   >
                     <option value="">Chọn danh mục</option>
-                    {categories.map((category) => (
-                      <option key={category} value={category}>
-                        {category}
+                    {categories.filter(cat => cat.status === 'active').map((category) => (
+                      <option key={category.id} value={category.name}>
+                        {category.name}
                       </option>
                     ))}
                   </select>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Thương hiệu
-                  </label>
-                  <input
-                    type="text"
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Thương hiệu</label>
+                  <select
                     value={formData.brand}
                     onChange={(e) => setFormData(prev => ({ ...prev, brand: e.target.value }))}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    placeholder="VD: SkinCare Pro"
-                  />
+                  >
+                    <option value="">Chọn thương hiệu</option>
+                    {brands.filter(brand => brand.status === 'active').map((brand) => (
+                      <option key={brand.id} value={brand.name}>
+                        {brand.name}
+                      </option>
+                    ))}
+                  </select>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Số lượng hiện tại
-                  </label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Số lượng hiện tại</label>
                   <input
                     type="number"
                     min="0"
@@ -671,9 +987,7 @@ const Inventory: React.FC = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Tồn kho tối thiểu
-                  </label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Tồn kho tối thiểu</label>
                   <input
                     type="number"
                     min="0"
@@ -684,101 +998,31 @@ const Inventory: React.FC = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Tồn kho tối đa
-                  </label>
-                  <input
-                    type="number"
-                    min="0"
-                    value={formData.maxStock}
-                    onChange={(e) => setFormData(prev => ({ ...prev, maxStock: parseInt(e.target.value) || 0 }))}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Giá đơn vị (VNĐ)
-                  </label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Giá đơn vị (VNĐ)</label>
                   <input
                     type="number"
                     min="0"
                     value={formData.unitPrice}
                     onChange={(e) => setFormData(prev => ({ ...prev, unitPrice: parseInt(e.target.value) || 0 }))}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    placeholder="VD: 450000"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Nhà cung cấp
-                  </label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Nhà cung cấp</label>
                   <input
                     type="text"
                     value={formData.supplier}
                     onChange={(e) => setFormData(prev => ({ ...prev, supplier: e.target.value }))}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    placeholder="VD: Beauty Supply Co."
                   />
                 </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Vị trí lưu trữ
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.location}
-                    onChange={(e) => setFormData(prev => ({ ...prev, location: e.target.value }))}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    placeholder="VD: Kệ A1"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Ngày hết hạn
-                  </label>
-                  <input
-                    type="date"
-                    value={formData.expiryDate}
-                    onChange={(e) => setFormData(prev => ({ ...prev, expiryDate: e.target.value }))}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    URL hình ảnh
-                  </label>
-                  <input
-                    type="url"
-                    value={formData.image}
-                    onChange={(e) => setFormData(prev => ({ ...prev, image: e.target.value }))}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    placeholder="https://example.com/image.jpg"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Mô tả
-                </label>
-                <textarea
-                  value={formData.description}
-                  onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
-                  rows={3}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  placeholder="Mô tả chi tiết về sản phẩm..."
-                />
               </div>
 
               <div className="flex justify-end space-x-3 pt-4 border-t border-gray-200">
                 <button
                   type="button"
-                  onClick={closeModal}
+                  onClick={() => setShowModal(false)}
                   className="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
                 >
                   Hủy
@@ -796,188 +1040,164 @@ const Inventory: React.FC = () => {
         </div>
       )}
 
-      {/* Detail Modal */}
-      {showDetailModal && selectedItem && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-            <div className="flex items-center justify-between p-6 border-b border-gray-200">
-              <h2 className="text-xl font-semibold text-gray-900">Chi tiết sản phẩm</h2>
-              <button 
-                onClick={() => setShowDetailModal(false)}
-                className="text-gray-400 hover:text-gray-600 transition-colors"
-              >
-                <X className="w-6 h-6" />
-              </button>
-            </div>
-
-            <div className="p-6">
-              <div className="flex items-start space-x-6 mb-6">
-                <img
-                  src={selectedItem.image}
-                  alt={selectedItem.name}
-                  className="w-24 h-24 rounded-lg object-cover"
-                />
-                <div className="flex-1">
-                  <h3 className="text-xl font-semibold text-gray-900 mb-2">{selectedItem.name}</h3>
-                  <p className="text-gray-600 mb-2">{selectedItem.brand} • {selectedItem.category}</p>
-                  <span className={`inline-flex px-3 py-1 text-sm font-medium rounded-full ${getStatusColor(selectedItem.status)}`}>
-                    {getStatusText(selectedItem.status)}
-                  </span>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-4">
-                  <div>
-                    <label className="text-sm font-medium text-gray-500">SKU</label>
-                    <p className="text-gray-900 font-mono">{selectedItem.sku}</p>
-                  </div>
-                  <div>
-                    <label className="text-sm font-medium text-gray-500">Vị trí lưu trữ</label>
-                    <p className="text-gray-900">{selectedItem.location || 'Chưa cập nhật'}</p>
-                  </div>
-                  <div>
-                    <label className="text-sm font-medium text-gray-500">Nhà cung cấp</label>
-                    <p className="text-gray-900">{selectedItem.supplier}</p>
-                  </div>
-                  <div>
-                    <label className="text-sm font-medium text-gray-500">Ngày nhập kho gần nhất</label>
-                    <p className="text-gray-900">{selectedItem.lastRestocked}</p>
-                  </div>
-                </div>
-
-                <div className="space-y-4">
-                  <div>
-                    <label className="text-sm font-medium text-gray-500">Tồn kho hiện tại</label>
-                    <p className="text-2xl font-bold text-gray-900">{selectedItem.stock}</p>
-                  </div>
-                  <div>
-                    <label className="text-sm font-medium text-gray-500">Ngưỡng tối thiểu / tối đa</label>
-                    <p className="text-gray-900">{selectedItem.minStock} / {selectedItem.maxStock}</p>
-                  </div>
-                  <div>
-                    <label className="text-sm font-medium text-gray-500">Giá đơn vị</label>
-                    <p className="text-gray-900">{formatCurrency(selectedItem.unitPrice)}</p>
-                  </div>
-                  <div>
-                    <label className="text-sm font-medium text-gray-500">Tổng giá trị</label>
-                    <p className="text-xl font-bold text-gray-900">{formatCurrency(selectedItem.totalValue)}</p>
-                  </div>
-                </div>
-              </div>
-
-              {selectedItem.expiryDate && (
-                <div className="mt-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-                  <div className="flex items-center space-x-2">
-                    <Calendar className="w-5 h-5 text-yellow-600" />
-                    <span className="text-sm font-medium text-yellow-800">
-                      Hạn sử dụng: {selectedItem.expiryDate}
-                    </span>
-                  </div>
-                </div>
-              )}
-
-              {selectedItem.description && (
-                <div className="mt-6">
-                  <label className="text-sm font-medium text-gray-500">Mô tả</label>
-                  <p className="text-gray-900 mt-1">{selectedItem.description}</p>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Stock Adjustment Modal */}
-      {showStockModal && selectedItem && (
+      {/* Category Modal */}
+      {showCategoryModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-xl shadow-xl max-w-md w-full">
             <div className="flex items-center justify-between p-6 border-b border-gray-200">
-              <h2 className="text-xl font-semibold text-gray-900">Điều chỉnh tồn kho</h2>
-              <button 
-                onClick={() => setShowStockModal(false)}
-                className="text-gray-400 hover:text-gray-600 transition-colors"
-              >
+              <h2 className="text-xl font-semibold text-gray-900">
+                {editingCategory ? 'Chỉnh sửa danh mục' : 'Thêm danh mục mới'}
+              </h2>
+              <button onClick={() => setShowCategoryModal(false)} className="text-gray-400 hover:text-gray-600 transition-colors">
                 <X className="w-6 h-6" />
               </button>
             </div>
 
-            <div className="p-6">
-              <div className="mb-4">
-                <h3 className="font-medium text-gray-900">{selectedItem.name}</h3>
-                <p className="text-sm text-gray-500">Tồn kho hiện tại: {selectedItem.stock}</p>
+            <form onSubmit={handleCategorySubmit} className="p-6 space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Tên danh mục *</label>
+                <input
+                  type="text"
+                  required
+                  value={categoryFormData.name}
+                  onChange={(e) => setCategoryFormData(prev => ({ ...prev, name: e.target.value }))}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="VD: Sản phẩm chăm sóc da"
+                />
               </div>
 
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Loại điều chỉnh
-                  </label>
-                  <select
-                    value={stockAdjustment.type}
-                    onChange={(e) => setStockAdjustment(prev => ({ ...prev, type: e.target.value as 'in' | 'out' }))}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  >
-                    <option value="in">Nhập kho (+)</option>
-                    <option value="out">Xuất kho (-)</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Số lượng
-                  </label>
-                  <input
-                    type="number"
-                    min="1"
-                    value={stockAdjustment.quantity}
-                    onChange={(e) => setStockAdjustment(prev => ({ ...prev, quantity: parseInt(e.target.value) || 0 }))}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    placeholder="Nhập số lượng"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Ghi chú
-                  </label>
-                  <textarea
-                    value={stockAdjustment.note}
-                    onChange={(e) => setStockAdjustment(prev => ({ ...prev, note: e.target.value }))}
-                    rows={3}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    placeholder="Lý do điều chỉnh..."
-                  />
-                </div>
-
-                {stockAdjustment.quantity > 0 && (
-                  <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
-                    <p className="text-sm text-blue-700">
-                      Tồn kho sau điều chỉnh: {
-                        stockAdjustment.type === 'in' 
-                          ? selectedItem.stock + stockAdjustment.quantity
-                          : selectedItem.stock - stockAdjustment.quantity
-                      }
-                    </p>
-                  </div>
-                )}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Mô tả</label>
+                <textarea
+                  value={categoryFormData.description}
+                  onChange={(e) => setCategoryFormData(prev => ({ ...prev, description: e.target.value }))}
+                  rows={3}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="Mô tả chi tiết về danh mục..."
+                />
               </div>
 
-              <div className="flex justify-end space-x-3 pt-6 border-t border-gray-200 mt-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Trạng thái</label>
+                <select
+                  value={categoryFormData.status}
+                  onChange={(e) => setCategoryFormData(prev => ({ ...prev, status: e.target.value as 'active' | 'inactive' }))}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                >
+                  <option value="active">Hoạt động</option>
+                  <option value="inactive">Ngừng hoạt động</option>
+                </select>
+              </div>
+
+              <div className="flex justify-end space-x-3 pt-4 border-t border-gray-200">
                 <button
-                  onClick={() => setShowStockModal(false)}
+                  type="button"
+                  onClick={() => setShowCategoryModal(false)}
                   className="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
                 >
                   Hủy
                 </button>
                 <button
-                  onClick={handleStockAdjustment}
-                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                  type="submit"
+                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2"
                 >
-                  Xác nhận
+                  <Save className="w-4 h-4" />
+                  <span>{editingCategory ? 'Cập nhật' : 'Thêm mới'}</span>
                 </button>
               </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Brand Modal */}
+      {showBrandModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-xl shadow-xl max-w-md w-full">
+            <div className="flex items-center justify-between p-6 border-b border-gray-200">
+              <h2 className="text-xl font-semibold text-gray-900">
+                {editingBrand ? 'Chỉnh sửa thương hiệu' : 'Thêm thương hiệu mới'}
+              </h2>
+              <button onClick={() => setShowBrandModal(false)} className="text-gray-400 hover:text-gray-600 transition-colors">
+                <X className="w-6 h-6" />
+              </button>
             </div>
+
+            <form onSubmit={handleBrandSubmit} className="p-6 space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Tên thương hiệu *</label>
+                <input
+                  type="text"
+                  required
+                  value={brandFormData.name}
+                  onChange={(e) => setBrandFormData(prev => ({ ...prev, name: e.target.value }))}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="VD: SkinCare Pro"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Mô tả</label>
+                <textarea
+                  value={brandFormData.description}
+                  onChange={(e) => setBrandFormData(prev => ({ ...prev, description: e.target.value }))}
+                  rows={3}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="Mô tả về thương hiệu..."
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Nhà cung cấp</label>
+                <input
+                  type="text"
+                  value={brandFormData.supplier}
+                  onChange={(e) => setBrandFormData(prev => ({ ...prev, supplier: e.target.value }))}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="VD: Beauty Supply Co."
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">URL Logo</label>
+                <input
+                  type="url"
+                  value={brandFormData.logo}
+                  onChange={(e) => setBrandFormData(prev => ({ ...prev, logo: e.target.value }))}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="https://example.com/logo.jpg"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Trạng thái</label>
+                <select
+                  value={brandFormData.status}
+                  onChange={(e) => setBrandFormData(prev => ({ ...prev, status: e.target.value as 'active' | 'inactive' }))}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                >
+                  <option value="active">Hoạt động</option>
+                  <option value="inactive">Ngừng hoạt động</option>
+                </select>
+              </div>
+
+              <div className="flex justify-end space-x-3 pt-4 border-t border-gray-200">
+                <button
+                  type="button"
+                  onClick={() => setShowBrandModal(false)}
+                  className="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+                >
+                  Hủy
+                </button>
+                <button
+                  type="submit"
+                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2"
+                >
+                  <Save className="w-4 h-4" />
+                  <span>{editingBrand ? 'Cập nhật' : 'Thêm mới'}</span>
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}
@@ -988,10 +1208,10 @@ const Inventory: React.FC = () => {
           <div className="bg-white rounded-xl shadow-xl max-w-md w-full">
             <div className="p-6">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                Xác nhận xóa sản phẩm
+                Xác nhận xóa
               </h3>
               <p className="text-gray-600 mb-6">
-                Bạn có chắc chắn muốn xóa sản phẩm này khỏi kho? Hành động này không thể hoàn tác.
+                Bạn có chắc chắn muốn xóa mục này? Hành động này không thể hoàn tác.
               </p>
               <div className="flex justify-end space-x-3">
                 <button
