@@ -108,6 +108,91 @@ const Products: React.FC = () => {
     },
   ]);
 
+  // CRUD Functions
+  const openAddDialog = () => {
+    setEditingItem(null);
+    setFormData(activeTab === 'services' ? {
+      name: '',
+      category: '',
+      price: '',
+      duration: 0,
+      description: '',
+      image: '',
+      rating: 0,
+      reviews: 0,
+      status: 'active'
+    } : {
+      name: '',
+      category: '',
+      price: '',
+      stock: 0,
+      description: '',
+      brand: '',
+      image: '',
+      status: 'in-stock'
+    });
+    setShowDialog(true);
+  };
+
+  const openEditDialog = (item: Service | Product) => {
+    setEditingItem(item);
+    setFormData({ ...item });
+    setShowDialog(true);
+  };
+
+  const closeDialog = () => {
+    setShowDialog(false);
+    setEditingItem(null);
+    setFormData({});
+  };
+
+  const handleSave = () => {
+    if (!formData.name || !formData.price) return;
+
+    if (activeTab === 'services') {
+      if (editingItem) {
+        setServices(prev => prev.map(service =>
+          service.id === editingItem.id ? { ...formData, id: editingItem.id } : service
+        ));
+      } else {
+        const newService = { ...formData, id: Date.now() };
+        setServices(prev => [...prev, newService]);
+      }
+    } else {
+      if (editingItem) {
+        setProducts(prev => prev.map(product =>
+          product.id === editingItem.id ? { ...formData, id: editingItem.id } : product
+        ));
+      } else {
+        const newProduct = { ...formData, id: Date.now() };
+        setProducts(prev => [...prev, newProduct]);
+      }
+    }
+    closeDialog();
+  };
+
+  const handleDelete = (id: number) => {
+    if (window.confirm('Bạn có chắc chắn muốn xóa?')) {
+      if (activeTab === 'services') {
+        setServices(prev => prev.filter(service => service.id !== id));
+      } else {
+        setProducts(prev => prev.filter(product => product.id !== id));
+      }
+    }
+  };
+
+  // Filter items based on search
+  const filteredServices = services.filter(service =>
+    service.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    service.category.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const filteredProducts = products.filter(product =>
+    product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    product.category.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    product.brand.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <div className="space-y-6">
       {/* Tab Navigation */}
