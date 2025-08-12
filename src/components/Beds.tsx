@@ -236,16 +236,39 @@ const Beds: React.FC = () => {
   };
 
   const addNewBed = () => {
+    setShowAddDialog(true);
+  };
+
+  const handleAddBed = () => {
+    if (!newBedForm.name.trim()) return;
+
     const newBed: TreatmentBed = {
       id: beds.length + 1,
-      name: `Giường ${beds.length + 1}`,
-      room: 'Phòng Massage',
-      type: 'massage',
+      name: newBedForm.name,
+      room: newBedForm.room,
+      type: newBedForm.type,
       status: 'available',
-      equipment: ['Hệ thống massage tự động'],
+      equipment: newBedForm.equipment.length > 0 ? newBedForm.equipment : ['Thiết bị cơ bản'],
       lastCleaned: getCurrentTime()
     };
     setBeds(prev => [...prev, newBed]);
+    setShowAddDialog(false);
+    setNewBedForm({
+      name: '',
+      room: 'Phòng Massage',
+      type: 'massage',
+      equipment: []
+    });
+  };
+
+  const handleCancelAdd = () => {
+    setShowAddDialog(false);
+    setNewBedForm({
+      name: '',
+      room: 'Phòng Massage',
+      type: 'massage',
+      equipment: []
+    });
   };
 
   const calculateAssignmentHeight = (startTime: string, endTime: string) => {
@@ -262,7 +285,7 @@ const Beds: React.FC = () => {
 
   const showAssignmentDetails = (assignment: BedAssignment) => {
     // You can implement a modal or tooltip here
-    alert(`Khách hàng: ${assignment.customerName}\nDịch vụ: ${assignment.service}\nNh��n viên: ${assignment.staff}\nThời gian: ${assignment.startTime} - ${assignment.estimatedEndTime}`);
+    alert(`Khách hàng: ${assignment.customerName}\nDịch vụ: ${assignment.service}\nNhân viên: ${assignment.staff}\nThời gian: ${assignment.startTime} - ${assignment.estimatedEndTime}`);
   };
 
   const stats = {
