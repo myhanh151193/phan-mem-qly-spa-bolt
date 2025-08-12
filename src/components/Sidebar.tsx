@@ -1,8 +1,8 @@
 import React from 'react';
-import { 
-  LayoutDashboard, Users, Calendar, Package, 
-  Clipboard, FileText, Archive, UserCheck, 
-  BarChart3, Sparkles 
+import {
+  LayoutDashboard, Users, Calendar, Package,
+  Clipboard, FileText, Archive, UserCheck,
+  BarChart3, Sparkles, Bed
 } from 'lucide-react';
 
 interface SidebarProps {
