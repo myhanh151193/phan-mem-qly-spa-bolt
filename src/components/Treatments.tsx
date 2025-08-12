@@ -82,6 +82,49 @@ const Treatments: React.FC = () => {
     },
   ]);
 
+  const [customers] = useState<Customer[]>([
+    {
+      id: 1,
+      name: 'Nguyễn Thu Hà',
+      phone: '0901234567',
+      email: 'thuha@email.com',
+      membershipLevel: 'VVIP',
+      avatar: 'https://images.pexels.com/photos/1036623/pexels-photo-1036623.jpeg?w=150'
+    },
+    {
+      id: 2,
+      name: 'Trần Mai Linh',
+      phone: '0907654321',
+      email: 'mailinh@email.com',
+      membershipLevel: 'VIP',
+      avatar: 'https://images.pexels.com/photos/762020/pexels-photo-762020.jpeg?w=150'
+    },
+    {
+      id: 3,
+      name: 'Lê Minh Châu',
+      phone: '0912345678',
+      email: 'minhchau@email.com',
+      membershipLevel: 'Member',
+      avatar: 'https://images.pexels.com/photos/1037915/pexels-photo-1037915.jpeg?w=150'
+    },
+    {
+      id: 4,
+      name: 'Phạm Thị Lan',
+      phone: '0938567890',
+      email: 'thilan@email.com',
+      membershipLevel: 'VIP',
+      avatar: 'https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?w=150'
+    },
+    {
+      id: 5,
+      name: 'Hoàng Văn Nam',
+      phone: '0976543210',
+      email: 'vannam@email.com',
+      membershipLevel: 'Member',
+      avatar: 'https://images.pexels.com/photos/1043471/pexels-photo-1043471.jpeg?w=150'
+    }
+  ]);
+
   const [searchTerm, setSearchTerm] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [editingTreatment, setEditingTreatment] = useState<Treatment | null>(null);
