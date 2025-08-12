@@ -536,12 +536,12 @@ const Treatments: React.FC = () => {
   const updateAppointmentStatus = (appointmentId: number, newStatus: Appointment['status']) => {
     if (!selectedTreatment) return;
 
+    updateAppointment(appointmentId, { status: newStatus });
+
+    // Update local treatment state
     setTreatments(prev => prev.map(t => {
       if (t.id === selectedTreatment.id) {
-        const updatedAppointments = t.appointments.map(a =>
-          a.id === appointmentId ? { ...a, status: newStatus } : a
-        );
-
+        const updatedAppointments = getAppointmentsForTreatment(selectedTreatment.id);
         const completedCount = updatedAppointments.filter(a => a.status === 'completed').length;
         const nextScheduled = updatedAppointments
           .filter(a => a.status === 'scheduled' && new Date(a.date) > new Date())
@@ -549,7 +549,6 @@ const Treatments: React.FC = () => {
 
         return {
           ...t,
-          appointments: updatedAppointments,
           completedSessions: completedCount,
           progress: Math.round((completedCount / t.totalSessions) * 100),
           nextSession: nextScheduled ? nextScheduled.date : null
@@ -559,19 +558,32 @@ const Treatments: React.FC = () => {
     }));
 
     // Update selectedTreatment for real-time UI update
-    setSelectedTreatment(prev => {
-      if (!prev) return null;
-      const updatedTreatment = treatments.find(t => t.id === prev.id);
-      return updatedTreatment || prev;
-    });
+    const updatedAppointments = getAppointmentsForTreatment(selectedTreatment.id);
+    setSelectedTreatment(prev => prev ? {
+      ...prev,
+      appointments: updatedAppointments.map(apt => ({
+        id: apt.id,
+        treatmentId: apt.treatmentId || selectedTreatment.id,
+        date: apt.date,
+        time: apt.time,
+        duration: apt.duration,
+        staff: apt.staff,
+        notes: apt.notes,
+        status: apt.status as 'scheduled' | 'completed' | 'cancelled' | 'no-show',
+        services: apt.services
+      }))
+    } : null);
   };
 
   const deleteAppointment = (appointmentId: number) => {
     if (!selectedTreatment) return;
 
+    deleteAppointmentFromContext(appointmentId);
+
+    // Update local treatment state
     setTreatments(prev => prev.map(t => {
       if (t.id === selectedTreatment.id) {
-        const updatedAppointments = t.appointments.filter(a => a.id !== appointmentId);
+        const updatedAppointments = getAppointmentsForTreatment(selectedTreatment.id);
         const completedCount = updatedAppointments.filter(a => a.status === 'completed').length;
         const nextScheduled = updatedAppointments
           .filter(a => a.status === 'scheduled' && new Date(a.date) > new Date())
@@ -579,7 +591,6 @@ const Treatments: React.FC = () => {
 
         return {
           ...t,
-          appointments: updatedAppointments,
           completedSessions: completedCount,
           progress: Math.round((completedCount / t.totalSessions) * 100),
           nextSession: nextScheduled ? nextScheduled.date : null
