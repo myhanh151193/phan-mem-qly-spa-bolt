@@ -194,9 +194,20 @@ const Schedule: React.FC = () => {
 
   const filteredAppointments = appointments.filter(appointment => {
     const appointmentDate = new Date(appointment.date);
-    const isToday = appointmentDate.toDateString() === currentDate.toDateString();
+    let dateMatch = false;
+
+    if (viewMode === 'day') {
+      dateMatch = appointmentDate.toDateString() === currentDate.toDateString();
+    } else if (viewMode === 'week') {
+      const weekDates = getWeekDates(currentDate);
+      dateMatch = weekDates.some(date => date.toDateString() === appointmentDate.toDateString());
+    } else if (viewMode === 'month') {
+      dateMatch = appointmentDate.getMonth() === currentDate.getMonth() &&
+                  appointmentDate.getFullYear() === currentDate.getFullYear();
+    }
+
     const statusMatch = filterStatus === 'all' || appointment.status === filterStatus;
-    return isToday && statusMatch;
+    return dateMatch && statusMatch;
   });
 
   const openAppointmentModal = (appointment?: Appointment) => {
