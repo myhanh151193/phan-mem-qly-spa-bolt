@@ -99,7 +99,7 @@ const Treatments: React.FC = () => {
       nextSession: null,
       status: 'completed',
       progress: 100,
-      services: ['Giảm béo RF', 'Massage giảm béo', 'Tư vấn dinh dưỡng'],
+      services: ['Giảm béo RF', 'Massage giảm béo', 'Tư v��n dinh dưỡng'],
       totalValue: '28,800,000',
       appointments: []
     },
@@ -333,6 +333,164 @@ const Treatments: React.FC = () => {
       case 'VIP': return 'bg-gradient-to-r from-yellow-400 to-orange-500 text-white';
       case 'Member': return 'bg-gradient-to-r from-blue-400 to-blue-600 text-white';
       default: return 'bg-gray-100 text-gray-800';
+    }
+  };
+
+  const openAppointmentModal = (treatment: Treatment) => {
+    setSelectedTreatment(treatment);
+    setShowAppointmentModal(true);
+  };
+
+  const openAppointmentForm = (appointment?: Appointment) => {
+    if (appointment) {
+      setEditingAppointment(appointment);
+      setAppointmentForm({
+        date: appointment.date,
+        time: appointment.time,
+        duration: appointment.duration,
+        staff: appointment.staff || '',
+        notes: appointment.notes || '',
+        services: [...appointment.services]
+      });
+    } else {
+      setEditingAppointment(null);
+      setAppointmentForm({
+        date: '',
+        time: '',
+        duration: 90,
+        staff: '',
+        notes: '',
+        services: selectedTreatment ? [...selectedTreatment.services] : []
+      });
+    }
+    setShowAppointmentForm(true);
+  };
+
+  const handleAppointmentSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!selectedTreatment || !appointmentForm.date || !appointmentForm.time) {
+      alert('Vui lòng điền đầy đủ thông tin');
+      return;
+    }
+
+    const appointmentData: Appointment = {
+      id: editingAppointment ? editingAppointment.id : Date.now(),
+      treatmentId: selectedTreatment.id,
+      date: appointmentForm.date,
+      time: appointmentForm.time,
+      duration: appointmentForm.duration,
+      staff: appointmentForm.staff,
+      notes: appointmentForm.notes,
+      services: appointmentForm.services,
+      status: editingAppointment ? editingAppointment.status : 'scheduled'
+    };
+
+    setTreatments(prev => prev.map(t => {
+      if (t.id === selectedTreatment.id) {
+        let updatedAppointments;
+        if (editingAppointment) {
+          updatedAppointments = t.appointments.map(a =>
+            a.id === editingAppointment.id ? appointmentData : a
+          );
+        } else {
+          updatedAppointments = [...t.appointments, appointmentData];
+        }
+
+        // Update next session and completed sessions
+        const nextScheduled = updatedAppointments
+          .filter(a => a.status === 'scheduled' && new Date(a.date) > new Date())
+          .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())[0];
+
+        const completedCount = updatedAppointments.filter(a => a.status === 'completed').length;
+
+        return {
+          ...t,
+          appointments: updatedAppointments,
+          nextSession: nextScheduled ? nextScheduled.date : null,
+          completedSessions: completedCount,
+          progress: Math.round((completedCount / t.totalSessions) * 100)
+        };
+      }
+      return t;
+    }));
+
+    setShowAppointmentForm(false);
+    setEditingAppointment(null);
+  };
+
+  const updateAppointmentStatus = (appointmentId: number, newStatus: Appointment['status']) => {
+    if (!selectedTreatment) return;
+
+    setTreatments(prev => prev.map(t => {
+      if (t.id === selectedTreatment.id) {
+        const updatedAppointments = t.appointments.map(a =>
+          a.id === appointmentId ? { ...a, status: newStatus } : a
+        );
+
+        const completedCount = updatedAppointments.filter(a => a.status === 'completed').length;
+        const nextScheduled = updatedAppointments
+          .filter(a => a.status === 'scheduled' && new Date(a.date) > new Date())
+          .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())[0];
+
+        return {
+          ...t,
+          appointments: updatedAppointments,
+          completedSessions: completedCount,
+          progress: Math.round((completedCount / t.totalSessions) * 100),
+          nextSession: nextScheduled ? nextScheduled.date : null
+        };
+      }
+      return t;
+    }));
+
+    // Update selectedTreatment for real-time UI update
+    setSelectedTreatment(prev => {
+      if (!prev) return null;
+      const updatedTreatment = treatments.find(t => t.id === prev.id);
+      return updatedTreatment || prev;
+    });
+  };
+
+  const deleteAppointment = (appointmentId: number) => {
+    if (!selectedTreatment) return;
+
+    setTreatments(prev => prev.map(t => {
+      if (t.id === selectedTreatment.id) {
+        const updatedAppointments = t.appointments.filter(a => a.id !== appointmentId);
+        const completedCount = updatedAppointments.filter(a => a.status === 'completed').length;
+        const nextScheduled = updatedAppointments
+          .filter(a => a.status === 'scheduled' && new Date(a.date) > new Date())
+          .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())[0];
+
+        return {
+          ...t,
+          appointments: updatedAppointments,
+          completedSessions: completedCount,
+          progress: Math.round((completedCount / t.totalSessions) * 100),
+          nextSession: nextScheduled ? nextScheduled.date : null
+        };
+      }
+      return t;
+    }));
+  };
+
+  const getAppointmentStatusColor = (status: Appointment['status']) => {
+    switch (status) {
+      case 'scheduled': return 'bg-blue-100 text-blue-800';
+      case 'completed': return 'bg-green-100 text-green-800';
+      case 'cancelled': return 'bg-red-100 text-red-800';
+      case 'no-show': return 'bg-yellow-100 text-yellow-800';
+      default: return 'bg-gray-100 text-gray-800';
+    }
+  };
+
+  const getAppointmentStatusText = (status: Appointment['status']) => {
+    switch (status) {
+      case 'scheduled': return 'Đã lên lịch';
+      case 'completed': return 'Đã hoàn thành';
+      case 'cancelled': return 'Đã hủy';
+      case 'no-show': return 'Không đến';
+      default: return 'Không xác định';
     }
   };
 
