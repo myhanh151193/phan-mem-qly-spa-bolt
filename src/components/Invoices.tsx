@@ -304,6 +304,295 @@ const Invoices: React.FC = () => {
     setShowDeleteConfirm(null);
   };
 
+  const printInvoice = (invoice: Invoice) => {
+    const customer = customers.find(c => c.id === invoice.customerId);
+    const printWindow = window.open('', '_blank');
+
+    if (!printWindow) {
+      alert('Vui lòng cho phép popup để in hóa đơn');
+      return;
+    }
+
+    const printContent = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <title>Hóa đơn ${invoice.id}</title>
+        <meta charset="UTF-8">
+        <style>
+          @media print {
+            @page {
+              margin: 20mm;
+              size: A4;
+            }
+            .no-print { display: none !important; }
+          }
+
+          * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+          }
+
+          body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+          }
+
+          .header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #e5e7eb;
+            padding-bottom: 20px;
+          }
+
+          .company-name {
+            font-size: 28px;
+            font-weight: bold;
+            color: #1f2937;
+            margin-bottom: 5px;
+          }
+
+          .company-info {
+            color: #6b7280;
+            font-size: 14px;
+          }
+
+          .invoice-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #1f2937;
+            margin: 20px 0;
+          }
+
+          .invoice-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+          }
+
+          .info-section h3 {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #374151;
+          }
+
+          .info-section p {
+            margin-bottom: 5px;
+            color: #6b7280;
+          }
+
+          .info-section .highlight {
+            color: #1f2937;
+            font-weight: 600;
+          }
+
+          .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+          }
+
+          .status-paid { background-color: #d1fae5; color: #047857; }
+          .status-pending { background-color: #fef3c7; color: #92400e; }
+          .status-overdue { background-color: #fee2e2; color: #dc2626; }
+          .status-draft { background-color: #f3f4f6; color: #374151; }
+          .status-cancelled { background-color: #fee2e2; color: #dc2626; }
+
+          .items-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+            border: 1px solid #e5e7eb;
+          }
+
+          .items-table th,
+          .items-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+          }
+
+          .items-table th {
+            background-color: #f9fafb;
+            font-weight: 600;
+            color: #374151;
+          }
+
+          .items-table tr:nth-child(even) {
+            background-color: #f9fafb;
+          }
+
+          .text-center { text-align: center; }
+          .text-right { text-align: right; }
+
+          .totals {
+            margin-left: auto;
+            width: 300px;
+            border: 1px solid #e5e7eb;
+          }
+
+          .totals tr td {
+            padding: 8px 12px;
+            border-bottom: 1px solid #e5e7eb;
+          }
+
+          .totals tr:last-child {
+            font-weight: bold;
+            background-color: #f3f4f6;
+          }
+
+          .totals tr:last-child td {
+            border-bottom: none;
+          }
+
+          .notes {
+            margin-top: 30px;
+            padding: 15px;
+            background-color: #f9fafb;
+            border-radius: 8px;
+            border-left: 4px solid #3b82f6;
+          }
+
+          .print-button {
+            background-color: #3b82f6;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-bottom: 20px;
+          }
+
+          .print-button:hover {
+            background-color: #2563eb;
+          }
+
+          .footer {
+            margin-top: 40px;
+            text-align: center;
+            color: #6b7280;
+            font-size: 12px;
+            border-top: 1px solid #e5e7eb;
+            padding-top: 20px;
+          }
+        </style>
+      </head>
+      <body>
+        <button class="print-button no-print" onclick="window.print()">🖨️ In hóa đơn</button>
+
+        <div class="header">
+          <div class="company-name">SPA & BEAUTY CENTER</div>
+          <div class="company-info">
+            Địa chỉ: 123 Đường ABC, Quận XYZ, TP.HCM<br>
+            Điện thoại: 0123 456 789 | Email: contact@spa.com
+          </div>
+        </div>
+
+        <div class="invoice-title text-center">HÓA ĐƠN THANH TOÁN</div>
+
+        <div class="invoice-info">
+          <div class="info-section">
+            <h3>Thông tin hóa đơn</h3>
+            <p><strong>Mã hóa đơn:</strong> <span class="highlight">${invoice.id}</span></p>
+            <p><strong>Ngày tạo:</strong> <span class="highlight">${new Date(invoice.date).toLocaleDateString('vi-VN')}</span></p>
+            <p><strong>Hạn thanh toán:</strong> <span class="highlight">${new Date(invoice.dueDate).toLocaleDateString('vi-VN')}</span></p>
+            <p><strong>Trạng thái:</strong>
+              <span class="status-badge status-${invoice.status}">${getStatusText(invoice.status)}</span>
+            </p>
+          </div>
+
+          <div class="info-section">
+            <h3>Thông tin khách hàng</h3>
+            <p><strong>Tên khách hàng:</strong> <span class="highlight">${invoice.customer}</span></p>
+            ${customer ? `
+              <p><strong>Số điện thoại:</strong> <span class="highlight">${customer.phone}</span></p>
+              <p><strong>Hạng thành viên:</strong> <span class="highlight">${customer.membershipLevel}</span></p>
+            ` : ''}
+            ${invoice.treatmentName ? `
+              <p><strong>Liệu trình:</strong> <span class="highlight">${invoice.treatmentName}</span></p>
+            ` : ''}
+          </div>
+        </div>
+
+        <table class="items-table">
+          <thead>
+            <tr>
+              <th>STT</th>
+              <th>Tên dịch vụ/sản phẩm</th>
+              <th>Loại</th>
+              <th class="text-center">Số lượng</th>
+              <th class="text-right">Đơn giá</th>
+              <th class="text-right">Thành tiền</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${invoice.items.map((item, index) => `
+              <tr>
+                <td class="text-center">${index + 1}</td>
+                <td>${item.name}</td>
+                <td>
+                  <span class="status-badge ${item.type === 'service' ? 'status-paid' : 'status-pending'}">
+                    ${item.type === 'service' ? 'Dịch vụ' : 'Sản phẩm'}
+                  </span>
+                </td>
+                <td class="text-center">${item.quantity}</td>
+                <td class="text-right">${formatCurrency(item.price)}</td>
+                <td class="text-right">${formatCurrency(item.total)}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+
+        <table class="totals">
+          <tr>
+            <td>Tạm tính:</td>
+            <td class="text-right">${formatCurrency(invoice.subtotal)}</td>
+          </tr>
+          <tr>
+            <td>Giảm giá:</td>
+            <td class="text-right">-${formatCurrency(invoice.discount)}</td>
+          </tr>
+          <tr>
+            <td>Thuế VAT:</td>
+            <td class="text-right">${formatCurrency(invoice.tax)}</td>
+          </tr>
+          <tr>
+            <td><strong>Tổng cộng:</strong></td>
+            <td class="text-right"><strong>${formatCurrency(invoice.total)}</strong></td>
+          </tr>
+        </table>
+
+        ${invoice.notes ? `
+          <div class="notes">
+            <h3>Ghi chú:</h3>
+            <p>${invoice.notes}</p>
+          </div>
+        ` : ''}
+
+        <div class="footer">
+          <p>Cảm ơn quý khách đã sử dụng dịch vụ của chúng tôi!</p>
+          <p>Hóa đơn được in vào ${new Date().toLocaleString('vi-VN')}</p>
+        </div>
+      </body>
+      </html>
+    `;
+
+    printWindow.document.write(printContent);
+    printWindow.document.close();
+    printWindow.focus();
+  };
+
   const addService = (serviceName: string) => {
     const serviceInfo = serviceCatalog[serviceName as keyof typeof serviceCatalog];
     if (!serviceInfo) return;
