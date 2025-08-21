@@ -146,6 +146,45 @@ const Products: React.FC = () => {
     setShowDialog(false);
     setEditingItem(null);
     setFormData({});
+    setImagePreview('');
+    setUploadingImage(false);
+  };
+
+  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      if (file.size > 5 * 1024 * 1024) { // 5MB limit
+        alert('Kích thước file quá lớn. Vui lòng chọn file nhỏ hơn 5MB.');
+        return;
+      }
+
+      if (!file.type.startsWith('image/')) {
+        alert('Vui lòng chọn file hình ảnh.');
+        return;
+      }
+
+      setUploadingImage(true);
+      const reader = new FileReader();
+
+      reader.onload = (e) => {
+        const result = e.target?.result as string;
+        setImagePreview(result);
+        setFormData(prev => ({ ...prev, image: result }));
+        setUploadingImage(false);
+      };
+
+      reader.onerror = () => {
+        alert('Lỗi khi đọc file. Vui lòng thử lại.');
+        setUploadingImage(false);
+      };
+
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const removeImage = () => {
+    setImagePreview('');
+    setFormData(prev => ({ ...prev, image: '' }));
   };
 
   const handleSave = () => {
