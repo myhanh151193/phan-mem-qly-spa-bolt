@@ -184,26 +184,42 @@ const Products: React.FC = () => {
   const openAddDialog = () => {
     setEditingItem(null);
     setImagePreview('');
-    setFormData(activeTab === 'services' ? {
-      name: '',
-      category: '',
-      price: '',
-      duration: 0,
-      description: '',
-      image: '',
-      rating: 0,
-      reviews: 0,
-      status: 'active'
-    } : {
-      name: '',
-      category: '',
-      price: '',
-      stock: 0,
-      description: '',
-      brand: '',
-      image: '',
-      status: 'in-stock'
-    });
+    if (activeTab === 'services') {
+      setFormData({
+        name: '',
+        category: '',
+        price: '',
+        duration: 0,
+        description: '',
+        image: '',
+        rating: 0,
+        reviews: 0,
+        status: 'active'
+      });
+    } else if (activeTab === 'products') {
+      setFormData({
+        name: '',
+        category: '',
+        price: '',
+        stock: 0,
+        description: '',
+        brand: '',
+        image: '',
+        status: 'in-stock'
+      });
+    } else if (activeTab === 'categories') {
+      setFormData({
+        name: '',
+        description: '',
+        type: 'service'
+      });
+    } else if (activeTab === 'brands') {
+      setFormData({
+        name: '',
+        description: '',
+        website: ''
+      });
+    }
     setShowDialog(true);
   };
 
