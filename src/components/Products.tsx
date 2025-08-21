@@ -489,7 +489,7 @@ const Products: React.FC = () => {
                 <>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Thương hiệu
+                      Thư��ng hiệu
                     </label>
                     <input
                       type="text"
@@ -628,7 +628,7 @@ const Products: React.FC = () => {
               </button>
               <button
                 onClick={handleSave}
-                disabled={!formData.name || ((activeTab === 'services' || activeTab === 'products') && !formData.price)}
+                disabled={!formData.name || !formData.price}
                 className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
               >
                 {editingItem ? 'Cập nhật' : 'Thêm'}
