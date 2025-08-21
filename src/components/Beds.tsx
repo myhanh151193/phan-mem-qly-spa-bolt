@@ -645,7 +645,7 @@ const Beds: React.FC = () => {
                                 }}
                                 onClick={(e) => {
                                   e.stopPropagation();
-                                  showAssignmentDetails(bed.currentAssignment);
+                                  showAssignmentDetails(bed.currentAssignment, bed);
                                 }}
                               >
                                 <div className="text-xs">
