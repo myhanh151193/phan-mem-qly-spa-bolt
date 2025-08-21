@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Search, Plus, Edit, Eye, Package, Star, Trash2, X } from 'lucide-react';
+import { Search, Plus, Edit, Eye, Package, Star, Trash2, X, Upload, Image } from 'lucide-react';
 
 interface Service {
   id: number;
