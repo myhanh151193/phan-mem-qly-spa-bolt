@@ -113,6 +113,7 @@ const Products: React.FC = () => {
   // CRUD Functions
   const openAddDialog = () => {
     setEditingItem(null);
+    setImagePreview('');
     setFormData(activeTab === 'services' ? {
       name: '',
       category: '',
@@ -139,6 +140,7 @@ const Products: React.FC = () => {
   const openEditDialog = (item: Service | Product) => {
     setEditingItem(item);
     setFormData({ ...item });
+    setImagePreview(item.image || '');
     setShowDialog(true);
   };
 
