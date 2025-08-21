@@ -22,25 +22,6 @@ interface InventoryItem {
   location?: string;
 }
 
-interface Category {
-  id: number;
-  name: string;
-  description: string;
-  productCount: number;
-  createdDate: string;
-  status: 'active' | 'inactive';
-}
-
-interface Brand {
-  id: number;
-  name: string;
-  description: string;
-  supplier: string;
-  productCount: number;
-  createdDate: string;
-  status: 'active' | 'inactive';
-  logo?: string;
-}
 
 interface InventoryFormData {
   name: string;
@@ -135,7 +116,7 @@ const Inventory: React.FC = () => {
     },
     {
       id: 4,
-      name: 'Tinh d���u massage',
+      name: 'Tinh dầu massage',
       category: 'Dầu massage',
       brand: 'Aromatherapy Pro',
       sku: 'SKU004',
