@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Search, Plus, Package, AlertTriangle, TrendingUp, TrendingDown, Edit2, Trash2, X, Save, Eye, Filter, Download, Upload, Calendar, User, Tag, Award, Grid, List } from 'lucide-react';
+import { categories as masterCategories, brands as masterBrands, Category, Brand } from '../data/masterData';
 
 interface InventoryItem {
   id: number;
@@ -134,7 +135,7 @@ const Inventory: React.FC = () => {
     },
     {
       id: 4,
-      name: 'Tinh dầu massage',
+      name: 'Tinh d���u massage',
       category: 'Dầu massage',
       brand: 'Aromatherapy Pro',
       sku: 'SKU004',
