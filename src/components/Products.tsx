@@ -82,7 +82,7 @@ const Products: React.FC = () => {
       category: 'Làm đẹp',
       price: '1,200,000',
       duration: 150,
-      description: 'Liệu trình tắm trắng an toàn với công nghệ Laser',
+      description: 'Liệu trình tắm tr��ng an toàn với công nghệ Laser',
       rating: 4.7,
       reviews: 67,
       image: 'https://images.pexels.com/photos/3997376/pexels-photo-3997376.jpeg?w=300',
@@ -175,7 +175,7 @@ const Products: React.FC = () => {
     {
       id: 3,
       name: 'GlowSkin',
-      description: 'Chuyên về mặt nạ và serum dưỡng da',
+      description: 'Chuyên v��� mặt nạ và serum dưỡng da',
       createdAt: '2025-01-01'
     }
   ]);
@@ -412,7 +412,12 @@ const Products: React.FC = () => {
           className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
         >
           <Plus className="w-4 h-4" />
-          <span>Thêm {activeTab === 'services' ? 'dịch vụ' : 'sản phẩm'}</span>
+          <span>Thêm {
+            activeTab === 'services' ? 'dịch vụ' :
+            activeTab === 'products' ? 'sản phẩm' :
+            activeTab === 'categories' ? 'danh mục' :
+            'thương hiệu'
+          }</span>
         </button>
       </div>
 
