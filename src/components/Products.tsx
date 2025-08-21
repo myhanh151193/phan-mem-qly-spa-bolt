@@ -218,12 +218,8 @@ const Products: React.FC = () => {
     if (window.confirm('Bạn có chắc chắn muốn xóa?')) {
       if (activeTab === 'services') {
         setServices(prev => prev.filter(service => service.id !== id));
-      } else if (activeTab === 'products') {
+      } else {
         setProducts(prev => prev.filter(product => product.id !== id));
-      } else if (activeTab === 'categories') {
-        setCategories(prev => prev.filter(category => category.id !== id));
-      } else if (activeTab === 'brands') {
-        setBrands(prev => prev.filter(brand => brand.id !== id));
       }
     }
   };
@@ -322,7 +318,7 @@ const Products: React.FC = () => {
             activeTab === 'services' ? 'dịch vụ' :
             activeTab === 'products' ? 'sản phẩm' :
             activeTab === 'categories' ? 'danh mục' :
-            'thương hiệu'
+            'thương hi��u'
           }...`}
           className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
         />
