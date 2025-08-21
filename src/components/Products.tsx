@@ -749,19 +749,21 @@ const Products: React.FC = () => {
                 </div>
               )}
 
-              {/* Price */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Giá *
-                </label>
-                <input
-                  type="text"
-                  value={formData.price || ''}
-                  onChange={(e) => setFormData(prev => ({ ...prev, price: e.target.value }))}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  placeholder="Ví dụ: 500,000"
-                />
-              </div>
+              {/* Price (only for services and products) */}
+              {(activeTab === 'services' || activeTab === 'products') && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Giá *
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.price || ''}
+                    onChange={(e) => setFormData(prev => ({ ...prev, price: e.target.value }))}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    placeholder="Ví dụ: 500,000"
+                  />
+                </div>
+              )}
 
               {/* Service specific fields */}
               {activeTab === 'services' && (
