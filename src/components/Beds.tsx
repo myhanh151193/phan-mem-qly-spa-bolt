@@ -35,6 +35,13 @@ const Beds: React.FC = () => {
     equipment: [] as string[]
   });
 
+  // Appointment Dialog State
+  const [showAppointmentDialog, setShowAppointmentDialog] = useState<boolean>(false);
+  const [selectedBed, setSelectedBed] = useState<TreatmentBed | null>(null);
+  const [selectedTimeSlot, setSelectedTimeSlot] = useState<string>('');
+  const [editingAssignment, setEditingAssignment] = useState<BedAssignment | null>(null);
+  const [isEditingAppointment, setIsEditingAppointment] = useState<boolean>(false);
+
   const [beds, setBeds] = useState<TreatmentBed[]>([
     {
       id: 1,
