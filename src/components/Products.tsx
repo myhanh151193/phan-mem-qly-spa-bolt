@@ -514,18 +514,91 @@ const Products: React.FC = () => {
                 />
               </div>
 
-              {/* Image URL */}
+              {/* Image Upload */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  URL hình ảnh
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Hình ảnh
                 </label>
-                <input
-                  type="url"
-                  value={formData.image || ''}
-                  onChange={(e) => setFormData(prev => ({ ...prev, image: e.target.value }))}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  placeholder="https://example.com/image.jpg"
-                />
+
+                {/* Image Preview */}
+                {imagePreview && (
+                  <div className="relative mb-4">
+                    <img
+                      src={imagePreview}
+                      alt="Preview"
+                      className="w-full h-48 object-cover rounded-lg border border-gray-200"
+                    />
+                    <button
+                      type="button"
+                      onClick={removeImage}
+                      className="absolute top-2 right-2 p-1 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  </div>
+                )}
+
+                {/* Upload Buttons */}
+                <div className="flex flex-col space-y-3">
+                  {/* File Upload */}
+                  <div className="relative">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageUpload}
+                      className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                      disabled={uploadingImage}
+                    />
+                    <div className={`w-full px-4 py-3 border-2 border-dashed border-gray-300 rounded-lg text-center hover:border-blue-400 hover:bg-blue-50 transition-colors ${
+                      uploadingImage ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
+                    }`}>
+                      <div className="flex flex-col items-center space-y-2">
+                        {uploadingImage ? (
+                          <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
+                        ) : (
+                          <Upload className="w-6 h-6 text-gray-400" />
+                        )}
+                        <p className="text-sm text-gray-600">
+                          {uploadingImage ? 'Đang tải lên...' : 'Chọn ảnh từ thiết bị'}
+                        </p>
+                        <p className="text-xs text-gray-500">
+                          PNG, JPG, GIF tối đa 5MB
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* URL Input */}
+                  <div className="flex items-center space-x-2">
+                    <div className="flex-1">
+                      <input
+                        type="url"
+                        value={formData.image && !imagePreview ? formData.image : ''}
+                        onChange={(e) => {
+                          const url = e.target.value;
+                          setFormData(prev => ({ ...prev, image: url }));
+                          if (url && url.match(/\.(jpeg|jpg|gif|png)$/i)) {
+                            setImagePreview(url);
+                          }
+                        }}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        placeholder="Hoặc nhập URL hình ảnh"
+                      />
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const url = formData.image;
+                        if (url && url.match(/\.(jpeg|jpg|gif|png)$/i)) {
+                          setImagePreview(url);
+                        }
+                      }}
+                      className="px-3 py-2 bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200 transition-colors"
+                    >
+                      <Image className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
 
