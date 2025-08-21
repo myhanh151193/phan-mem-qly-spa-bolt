@@ -328,8 +328,12 @@ const Products: React.FC = () => {
     if (window.confirm('Bạn có chắc chắn muốn xóa?')) {
       if (activeTab === 'services') {
         setServices(prev => prev.filter(service => service.id !== id));
-      } else {
+      } else if (activeTab === 'products') {
         setProducts(prev => prev.filter(product => product.id !== id));
+      } else if (activeTab === 'categories') {
+        setCategories(prev => prev.filter(category => category.id !== id));
+      } else if (activeTab === 'brands') {
+        setBrands(prev => prev.filter(brand => brand.id !== id));
       }
     }
   };
