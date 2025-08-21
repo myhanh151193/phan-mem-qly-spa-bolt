@@ -116,7 +116,7 @@ const Products: React.FC = () => {
     {
       id: 3,
       name: 'Mặt nạ collagen',
-      category: 'M��t nạ',
+      category: 'Mặt nạ',
       price: '150,000',
       stock: 3,
       description: 'Mặt nạ bổ sung collagen cho da căng mịn',
@@ -124,6 +124,60 @@ const Products: React.FC = () => {
       image: 'https://images.pexels.com/photos/4041388/pexels-photo-4041388.jpeg?w=300',
       status: 'low-stock'
     },
+  ]);
+
+  const [categories, setCategories] = useState<Category[]>([
+    {
+      id: 1,
+      name: 'Chăm sóc da',
+      description: 'Các dịch vụ chăm sóc da mặt và toàn thân',
+      type: 'service',
+      createdAt: '2025-01-01'
+    },
+    {
+      id: 2,
+      name: 'Massage',
+      description: 'Các dịch vụ massage thư giãn',
+      type: 'service',
+      createdAt: '2025-01-01'
+    },
+    {
+      id: 3,
+      name: 'Sản phẩm chăm sóc da',
+      description: 'Các sản phẩm dưỡng da chuyên nghiệp',
+      type: 'product',
+      createdAt: '2025-01-01'
+    },
+    {
+      id: 4,
+      name: 'Mặt nạ',
+      description: 'Các loại mặt nạ dưỡng da',
+      type: 'product',
+      createdAt: '2025-01-01'
+    }
+  ]);
+
+  const [brands, setBrands] = useState<Brand[]>([
+    {
+      id: 1,
+      name: 'SkinCare Pro',
+      description: 'Thương hiệu chăm sóc da hàng đầu',
+      website: 'https://skincarepro.com',
+      createdAt: '2025-01-01'
+    },
+    {
+      id: 2,
+      name: 'Beauty Plus',
+      description: 'Sản phẩm làm đẹp chất lượng cao',
+      website: 'https://beautyplus.com',
+      createdAt: '2025-01-01'
+    },
+    {
+      id: 3,
+      name: 'GlowSkin',
+      description: 'Chuyên về mặt nạ và serum dưỡng da',
+      createdAt: '2025-01-01'
+    }
   ]);
 
   // CRUD Functions
@@ -533,7 +587,7 @@ const Products: React.FC = () => {
               {/* Image Upload */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Hình ��nh
+                  Hình ảnh
                 </label>
 
                 {/* Image Preview */}
