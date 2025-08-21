@@ -58,7 +58,7 @@ const Products: React.FC = () => {
       category: 'Chăm sóc da',
       price: '800,000',
       duration: 90,
-      description: 'Liệu trình chăm sóc da mặt cao cấp với công nghệ hiện đại',
+      description: 'Liệu trình chăm s��c da mặt cao cấp với công nghệ hiện đại',
       rating: 4.8,
       reviews: 124,
       image: 'https://images.pexels.com/photos/3997379/pexels-photo-3997379.jpeg?w=300',
@@ -672,7 +672,7 @@ const Products: React.FC = () => {
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Tên {
-                    activeTab === 'services' ? 'dịch vụ' :
+                    activeTab === 'services' ? 'd���ch vụ' :
                     activeTab === 'products' ? 'sản phẩm' :
                     activeTab === 'categories' ? 'danh mục' :
                     'thương hiệu'
@@ -788,13 +788,18 @@ const Products: React.FC = () => {
                     <label className="block text-sm font-medium text-gray-700 mb-1">
                       Thương hiệu
                     </label>
-                    <input
-                      type="text"
+                    <select
                       value={formData.brand || ''}
                       onChange={(e) => setFormData(prev => ({ ...prev, brand: e.target.value }))}
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      placeholder="Nhập thương hiệu"
-                    />
+                    >
+                      <option value="">Chọn thương hiệu</option>
+                      {brands.map(brand => (
+                        <option key={brand.id} value={brand.name}>
+                          {brand.name}
+                        </option>
+                      ))}
+                    </select>
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
