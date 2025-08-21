@@ -291,9 +291,13 @@ const Beds: React.FC = () => {
     return Math.max((duration / 60) * 80 - 8, 32); // Minimum 32px height
   };
 
-  const showAssignmentDetails = (assignment: BedAssignment) => {
-    // You can implement a modal or tooltip here
-    alert(`Khách hàng: ${assignment.customerName}\nDịch vụ: ${assignment.service}\nNhân viên: ${assignment.staff}\nThời gian: ${assignment.startTime} - ${assignment.estimatedEndTime}`);
+  const showAssignmentDetails = (assignment: BedAssignment, bed: TreatmentBed) => {
+    // Open edit dialog for existing assignments
+    setSelectedBed(bed);
+    setSelectedTimeSlot(assignment.startTime);
+    setEditingAssignment(assignment);
+    setIsEditingAppointment(true);
+    setShowAppointmentDialog(true);
   };
 
   const handleTimeSlotClick = (bedId: number, timeSlot: string, bed: TreatmentBed) => {
