@@ -830,7 +830,8 @@ const Products: React.FC = () => {
                 />
               </div>
 
-              {/* Image Upload */}
+              {/* Image Upload (only for services and products) */}
+              {(activeTab === 'services' || activeTab === 'products') && (
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Hình ảnh
@@ -916,6 +917,7 @@ const Products: React.FC = () => {
                   </div>
                 </div>
               </div>
+              )}
             </div>
 
             {/* Dialog Actions */}
