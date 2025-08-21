@@ -420,7 +420,7 @@ const Products: React.FC = () => {
                     activeTab === 'services' ? 'd���ch vụ' :
                     activeTab === 'products' ? 'sản phẩm' :
                     activeTab === 'categories' ? 'danh mục' :
-                    'thương hi��u'
+                    'thương hiệu'
                   } *
                 </label>
                 <input
@@ -443,13 +443,19 @@ const Products: React.FC = () => {
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Danh mục *
                 </label>
-                <input
-                  type="text"
+                <select
                   value={formData.category || ''}
                   onChange={(e) => setFormData(prev => ({ ...prev, category: e.target.value }))}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  placeholder="Nhập danh mục"
-                />
+                  required
+                >
+                  <option value="">Chọn danh mục</option>
+                  {getActiveCategories(activeTab === 'services' ? 'service' : 'product').map((category) => (
+                    <option key={category.id} value={category.name}>
+                      {category.name}
+                    </option>
+                  ))}
+                </select>
               </div>
 
 
