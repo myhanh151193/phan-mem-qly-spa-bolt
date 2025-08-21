@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Bed, Clock, User, Plus, MapPin, Settings, Eye, CheckCircle, XCircle, Play, Pause, Timer } from 'lucide-react';
+import AppointmentDialog from './AppointmentDialog';
 
 interface BedAssignment {
   customerId: number;
@@ -33,6 +34,13 @@ const Beds: React.FC = () => {
     type: 'massage' as TreatmentBed['type'],
     equipment: [] as string[]
   });
+
+  // Appointment Dialog State
+  const [showAppointmentDialog, setShowAppointmentDialog] = useState<boolean>(false);
+  const [selectedBed, setSelectedBed] = useState<TreatmentBed | null>(null);
+  const [selectedTimeSlot, setSelectedTimeSlot] = useState<string>('');
+  const [editingAssignment, setEditingAssignment] = useState<BedAssignment | null>(null);
+  const [isEditingAppointment, setIsEditingAppointment] = useState<boolean>(false);
 
   const [beds, setBeds] = useState<TreatmentBed[]>([
     {
@@ -271,6 +279,53 @@ const Beds: React.FC = () => {
     });
   };
 
+  const handleAppointmentSave = (appointmentData: any) => {
+    if (selectedBed) {
+      const newAssignment: BedAssignment = {
+        customerId: appointmentData.customerId || 0,
+        customerName: appointmentData.customerName,
+        service: appointmentData.service,
+        staff: appointmentData.staff || 'Chưa chỉ định',
+        startTime: appointmentData.startTime,
+        estimatedEndTime: appointmentData.estimatedEndTime,
+        status: 'preparing',
+        appointmentId: Date.now() // Simple ID generation
+      };
+
+      if (isEditingAppointment && editingAssignment) {
+        // Update existing assignment
+        setBeds(prev => prev.map(bed =>
+          bed.id === selectedBed.id ? {
+            ...bed,
+            currentAssignment: {
+              ...newAssignment,
+              appointmentId: editingAssignment.appointmentId
+            }
+          } : bed
+        ));
+      } else {
+        // Add new assignment
+        setBeds(prev => prev.map(bed =>
+          bed.id === selectedBed.id ? {
+            ...bed,
+            status: 'occupied',
+            currentAssignment: newAssignment
+          } : bed
+        ));
+      }
+    }
+
+    handleCloseAppointmentDialog();
+  };
+
+  const handleCloseAppointmentDialog = () => {
+    setShowAppointmentDialog(false);
+    setSelectedBed(null);
+    setSelectedTimeSlot('');
+    setEditingAssignment(null);
+    setIsEditingAppointment(false);
+  };
+
   const calculateAssignmentHeight = (startTime: string, endTime: string) => {
     const [startHour, startMinute] = startTime.split(':').map(Number);
     const [endHour, endMinute] = endTime.split(':').map(Number);
@@ -283,9 +338,27 @@ const Beds: React.FC = () => {
     return Math.max((duration / 60) * 80 - 8, 32); // Minimum 32px height
   };
 
-  const showAssignmentDetails = (assignment: BedAssignment) => {
-    // You can implement a modal or tooltip here
-    alert(`Khách hàng: ${assignment.customerName}\nDịch vụ: ${assignment.service}\nNhân viên: ${assignment.staff}\nThời gian: ${assignment.startTime} - ${assignment.estimatedEndTime}`);
+  const showAssignmentDetails = (assignment: BedAssignment, bed: TreatmentBed) => {
+    // Open edit dialog for existing assignments
+    setSelectedBed(bed);
+    setSelectedTimeSlot(assignment.startTime);
+    setEditingAssignment(assignment);
+    setIsEditingAppointment(true);
+    setShowAppointmentDialog(true);
+  };
+
+  const handleTimeSlotClick = (bedId: number, timeSlot: string, bed: TreatmentBed) => {
+    if (bed.status === 'available') {
+      // Open booking dialog for available beds
+      setSelectedBed(bed);
+      setSelectedTimeSlot(timeSlot);
+      setEditingAssignment(null);
+      setIsEditingAppointment(false);
+      setShowAppointmentDialog(true);
+    } else {
+      // Show bed status info for non-available beds
+      alert(`${bed.name} hiện tại ${getStatusText(bed.status).toLowerCase()}`);
+    }
   };
 
   const stats = {
@@ -553,7 +626,11 @@ const Beds: React.FC = () => {
                         const isStartTime = bed.currentAssignment && bed.currentAssignment.startTime === timeSlot;
 
                         return (
-                          <div key={`${bed.id}-${timeSlot}`} className="h-20 border-b border-r border-gray-200 last:border-r-0 relative group hover:bg-blue-50 transition-colors">
+                          <div
+                            key={`${bed.id}-${timeSlot}`}
+                            className="h-20 border-b border-r border-gray-200 last:border-r-0 relative group hover:bg-blue-50 transition-colors cursor-pointer"
+                            onClick={() => handleTimeSlotClick(bed.id, timeSlot, bed)}
+                          >
                             {/* Assignment Block */}
                             {hasAssignment && isStartTime && (
                               <div
@@ -566,7 +643,10 @@ const Beds: React.FC = () => {
                                   height: `${calculateAssignmentHeight(bed.currentAssignment.startTime, bed.currentAssignment.estimatedEndTime)}px`,
                                   zIndex: 10
                                 }}
-                                onClick={() => showAssignmentDetails(bed.currentAssignment)}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  showAssignmentDetails(bed.currentAssignment, bed);
+                                }}
                               >
                                 <div className="text-xs">
                                   <div className="font-medium text-gray-900 truncate mb-1">
@@ -587,7 +667,7 @@ const Beds: React.FC = () => {
 
                             {/* Empty slot indicator */}
                             {!hasAssignment && bed.status === 'available' && (
-                              <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                              <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
                                 <div className="flex items-center space-x-1 text-blue-600 text-xs">
                                   <Plus className="w-3 h-3" />
                                   <span>Đặt lịch</span>
@@ -597,7 +677,7 @@ const Beds: React.FC = () => {
 
                             {/* Status indicator for non-available beds */}
                             {bed.status !== 'available' && !hasAssignment && (
-                              <div className="absolute inset-0 flex items-center justify-center">
+                              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                                 <div className={`text-xs px-2 py-1 rounded-full ${
                                   bed.status === 'cleaning' ? 'bg-yellow-100 text-yellow-800' :
                                   bed.status === 'maintenance' ? 'bg-gray-100 text-gray-800' :
@@ -709,6 +789,29 @@ const Beds: React.FC = () => {
             </div>
           </div>
         </div>
+      )}
+
+      {/* Appointment Dialog */}
+      {showAppointmentDialog && selectedBed && (
+        <AppointmentDialog
+          isOpen={showAppointmentDialog}
+          onClose={handleCloseAppointmentDialog}
+          onSave={handleAppointmentSave}
+          bedName={selectedBed.name}
+          timeSlot={selectedTimeSlot}
+          date={new Date().toLocaleDateString('vi-VN')}
+          existingAppointment={editingAssignment ? {
+            customerId: editingAssignment.customerId,
+            customerName: editingAssignment.customerName,
+            customerPhone: '', // This might need to be added to BedAssignment interface
+            service: editingAssignment.service,
+            staff: editingAssignment.staff,
+            startTime: editingAssignment.startTime,
+            estimatedEndTime: editingAssignment.estimatedEndTime,
+            notes: ''
+          } : null}
+          isEditing={isEditingAppointment}
+        />
       )}
     </div>
   );

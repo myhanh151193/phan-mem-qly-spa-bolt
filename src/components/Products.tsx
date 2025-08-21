@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Search, Plus, Edit, Eye, Package, Star, Trash2, X } from 'lucide-react';
+import { Search, Plus, Edit, Eye, Package, Star, Trash2, X, Upload, Image } from 'lucide-react';
+import { getActiveCategories, getActiveBrands } from '../data/masterData';
 
 interface Service {
   id: number;
@@ -32,6 +33,8 @@ const Products: React.FC = () => {
   const [editingItem, setEditingItem] = useState<Service | Product | null>(null);
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [formData, setFormData] = useState<any>({});
+  const [imagePreview, setImagePreview] = useState<string>('');
+  const [uploadingImage, setUploadingImage] = useState<boolean>(false);
 
   const [services, setServices] = useState<Service[]>([
     {
@@ -40,7 +43,7 @@ const Products: React.FC = () => {
       category: 'Chăm sóc da',
       price: '800,000',
       duration: 90,
-      description: 'Liệu trình chăm sóc da mặt cao cấp với công nghệ hiện đại',
+      description: 'Liệu trình chăm s���c da mặt cao cấp với công nghệ hiện đại',
       rating: 4.8,
       reviews: 124,
       image: 'https://images.pexels.com/photos/3997379/pexels-photo-3997379.jpeg?w=300',
@@ -111,6 +114,7 @@ const Products: React.FC = () => {
   // CRUD Functions
   const openAddDialog = () => {
     setEditingItem(null);
+    setImagePreview('');
     setFormData(activeTab === 'services' ? {
       name: '',
       category: '',
@@ -137,6 +141,7 @@ const Products: React.FC = () => {
   const openEditDialog = (item: Service | Product) => {
     setEditingItem(item);
     setFormData({ ...item });
+    setImagePreview(item.image || '');
     setShowDialog(true);
   };
 
@@ -144,6 +149,45 @@ const Products: React.FC = () => {
     setShowDialog(false);
     setEditingItem(null);
     setFormData({});
+    setImagePreview('');
+    setUploadingImage(false);
+  };
+
+  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      if (file.size > 5 * 1024 * 1024) { // 5MB limit
+        alert('Kích thước file quá lớn. Vui lòng chọn file nhỏ hơn 5MB.');
+        return;
+      }
+
+      if (!file.type.startsWith('image/')) {
+        alert('Vui lòng chọn file hình ảnh.');
+        return;
+      }
+
+      setUploadingImage(true);
+      const reader = new FileReader();
+
+      reader.onload = (e) => {
+        const result = e.target?.result as string;
+        setImagePreview(result);
+        setFormData(prev => ({ ...prev, image: result }));
+        setUploadingImage(false);
+      };
+
+      reader.onerror = () => {
+        alert('Lỗi khi đọc file. Vui lòng thử lại.');
+        setUploadingImage(false);
+      };
+
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const removeImage = () => {
+    setImagePreview('');
+    setFormData(prev => ({ ...prev, image: '' }));
   };
 
   const handleSave = () => {
@@ -314,10 +358,10 @@ const Products: React.FC = () => {
                      'Hết hàng'}
                   </span>
                 </div>
-                
+
                 <p className="text-sm text-gray-600 mb-2">{product.brand}</p>
                 <p className="text-sm text-gray-500 mb-4 line-clamp-2">{product.description}</p>
-                
+
                 <div className="flex justify-between items-center mb-4">
                   <div className="text-xl font-bold text-blue-600">{product.price}đ</div>
                   <div className="flex items-center space-x-1 text-sm text-gray-500">
@@ -325,7 +369,7 @@ const Products: React.FC = () => {
                     <span>{product.stock}</span>
                   </div>
                 </div>
-                
+
                 <div className="flex justify-between items-center">
                   <span className="text-xs text-gray-500">{product.category}</span>
                   <div className="flex space-x-2">
@@ -372,44 +416,64 @@ const Products: React.FC = () => {
               {/* Name */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Tên {activeTab === 'services' ? 'dịch vụ' : 'sản phẩm'} *
+                  Tên {
+                    activeTab === 'services' ? 'd���ch vụ' :
+                    activeTab === 'products' ? 'sản phẩm' :
+                    activeTab === 'categories' ? 'danh mục' :
+                    'thương hiệu'
+                  } *
                 </label>
                 <input
                   type="text"
                   value={formData.name || ''}
                   onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  placeholder={`Nhập tên ${activeTab === 'services' ? 'dịch vụ' : 'sản phẩm'}`}
+                  placeholder={`Nhập tên ${
+                    activeTab === 'services' ? 'dịch vụ' :
+                    activeTab === 'products' ? 'sản phẩm' :
+                    activeTab === 'categories' ? 'danh mục' :
+                    'thương hiệu'
+                  }`}
                 />
               </div>
+
 
               {/* Category */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Danh mục *
                 </label>
-                <input
-                  type="text"
+                <select
                   value={formData.category || ''}
                   onChange={(e) => setFormData(prev => ({ ...prev, category: e.target.value }))}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  placeholder="Nhập danh mục"
-                />
+                  required
+                >
+                  <option value="">Chọn danh mục</option>
+                  {getActiveCategories(activeTab === 'services' ? 'service' : 'product').map((category) => (
+                    <option key={category.id} value={category.name}>
+                      {category.name}
+                    </option>
+                  ))}
+                </select>
               </div>
 
-              {/* Price */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Giá *
-                </label>
-                <input
-                  type="text"
-                  value={formData.price || ''}
-                  onChange={(e) => setFormData(prev => ({ ...prev, price: e.target.value }))}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  placeholder="Ví dụ: 500,000"
-                />
-              </div>
+
+              {/* Price (only for services and products) */}
+              {(activeTab === 'services' || activeTab === 'products') && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Giá *
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.price || ''}
+                    onChange={(e) => setFormData(prev => ({ ...prev, price: e.target.value }))}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    placeholder="Ví d���: 500,000"
+                  />
+                </div>
+              )}
 
               {/* Service specific fields */}
               {activeTab === 'services' && (
@@ -434,13 +498,18 @@ const Products: React.FC = () => {
                     <label className="block text-sm font-medium text-gray-700 mb-1">
                       Thương hiệu
                     </label>
-                    <input
-                      type="text"
+                    <select
                       value={formData.brand || ''}
                       onChange={(e) => setFormData(prev => ({ ...prev, brand: e.target.value }))}
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      placeholder="Nhập thương hiệu"
-                    />
+                    >
+                      <option value="">Chọn thương hiệu</option>
+                      {getActiveBrands().map((brand) => (
+                        <option key={brand.id} value={brand.name}>
+                          {brand.name}
+                        </option>
+                      ))}
+                    </select>
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -471,19 +540,94 @@ const Products: React.FC = () => {
                 />
               </div>
 
-              {/* Image URL */}
+              {/* Image Upload (only for services and products) */}
+              {(activeTab === 'services' || activeTab === 'products') && (
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  URL hình ảnh
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Hình ảnh
                 </label>
-                <input
-                  type="url"
-                  value={formData.image || ''}
-                  onChange={(e) => setFormData(prev => ({ ...prev, image: e.target.value }))}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  placeholder="https://example.com/image.jpg"
-                />
+
+                {/* Image Preview */}
+                {imagePreview && (
+                  <div className="relative mb-4">
+                    <img
+                      src={imagePreview}
+                      alt="Preview"
+                      className="w-full h-48 object-cover rounded-lg border border-gray-200"
+                    />
+                    <button
+                      type="button"
+                      onClick={removeImage}
+                      className="absolute top-2 right-2 p-1 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  </div>
+                )}
+
+                {/* Upload Buttons */}
+                <div className="flex flex-col space-y-3">
+                  {/* File Upload */}
+                  <div className="relative">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageUpload}
+                      className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                      disabled={uploadingImage}
+                    />
+                    <div className={`w-full px-4 py-3 border-2 border-dashed border-gray-300 rounded-lg text-center hover:border-blue-400 hover:bg-blue-50 transition-colors ${
+                      uploadingImage ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
+                    }`}>
+                      <div className="flex flex-col items-center space-y-2">
+                        {uploadingImage ? (
+                          <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
+                        ) : (
+                          <Upload className="w-6 h-6 text-gray-400" />
+                        )}
+                        <p className="text-sm text-gray-600">
+                          {uploadingImage ? 'Đang tải lên...' : 'Chọn ảnh từ thiết bị'}
+                        </p>
+                        <p className="text-xs text-gray-500">
+                          PNG, JPG, GIF tối đa 5MB
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* URL Input */}
+                  <div className="flex items-center space-x-2">
+                    <div className="flex-1">
+                      <input
+                        type="url"
+                        value={formData.image && !imagePreview ? formData.image : ''}
+                        onChange={(e) => {
+                          const url = e.target.value;
+                          setFormData(prev => ({ ...prev, image: url }));
+                          if (url && url.match(/\.(jpeg|jpg|gif|png)$/i)) {
+                            setImagePreview(url);
+                          }
+                        }}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        placeholder="Hoặc nhập URL hình ảnh"
+                      />
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const url = formData.image;
+                        if (url && url.match(/\.(jpeg|jpg|gif|png)$/i)) {
+                          setImagePreview(url);
+                        }
+                      }}
+                      className="px-3 py-2 bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200 transition-colors"
+                    >
+                      <Image className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
               </div>
+              )}
             </div>
 
             {/* Dialog Actions */}

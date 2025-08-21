@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Search, Plus, Package, AlertTriangle, TrendingUp, TrendingDown, Edit2, Trash2, X, Save, Eye, Filter, Download, Upload, Calendar, User, Tag, Award, Grid, List } from 'lucide-react';
+import { categories as masterCategories, brands as masterBrands, Category, Brand } from '../data/masterData';
 
 interface InventoryItem {
   id: number;
@@ -21,25 +22,6 @@ interface InventoryItem {
   location?: string;
 }
 
-interface Category {
-  id: number;
-  name: string;
-  description: string;
-  productCount: number;
-  createdDate: string;
-  status: 'active' | 'inactive';
-}
-
-interface Brand {
-  id: number;
-  name: string;
-  description: string;
-  supplier: string;
-  productCount: number;
-  createdDate: string;
-  status: 'active' | 'inactive';
-  logo?: string;
-}
 
 interface InventoryFormData {
   name: string;
@@ -90,7 +72,7 @@ const Inventory: React.FC = () => {
       supplier: 'Beauty Supply Co.',
       status: 'in-stock',
       image: 'https://images.pexels.com/photos/4041392/pexels-photo-4041392.jpeg?w=150',
-      description: 'Serum dưỡng trắng da với Vitamin C tự nhiên',
+      description: 'Serum dư��ng trắng da với Vitamin C tự nhiên',
       expiryDate: '2026-01-05',
       location: 'Kệ A1'
     },
@@ -153,83 +135,8 @@ const Inventory: React.FC = () => {
     },
   ]);
 
-  const [categories, setCategories] = useState<Category[]>([
-    {
-      id: 1,
-      name: 'Sản phẩm chăm sóc da',
-      description: 'Các sản phẩm chăm sóc và dưỡng da',
-      productCount: 2,
-      createdDate: '2024-01-01',
-      status: 'active'
-    },
-    {
-      id: 2,
-      name: 'Mặt nạ',
-      description: 'Mặt nạ dưỡng da các loại',
-      productCount: 1,
-      createdDate: '2024-01-01',
-      status: 'active'
-    },
-    {
-      id: 3,
-      name: 'Dầu massage',
-      description: 'Tinh dầu và dầu massage thư giãn',
-      productCount: 1,
-      createdDate: '2024-01-01',
-      status: 'active'
-    },
-    {
-      id: 4,
-      name: 'Serum',
-      description: 'Serum dưỡng da cao cấp',
-      productCount: 0,
-      createdDate: '2024-01-01',
-      status: 'active'
-    }
-  ]);
-
-  const [brands, setBrands] = useState<Brand[]>([
-    {
-      id: 1,
-      name: 'SkinCare Pro',
-      description: 'Thương hiệu chăm sóc da chuyên nghiệp',
-      supplier: 'Beauty Supply Co.',
-      productCount: 1,
-      createdDate: '2024-01-01',
-      status: 'active',
-      logo: 'https://images.pexels.com/photos/4041392/pexels-photo-4041392.jpeg?w=100'
-    },
-    {
-      id: 2,
-      name: 'Beauty Plus',
-      description: 'Thương hiệu mỹ phẩm cao cấp',
-      supplier: 'Cosmetics Wholesale',
-      productCount: 1,
-      createdDate: '2024-01-01',
-      status: 'active',
-      logo: 'https://images.pexels.com/photos/4041390/pexels-photo-4041390.jpeg?w=100'
-    },
-    {
-      id: 3,
-      name: 'GlowSkin',
-      description: 'Thương hiệu làm đẹp tự nhiên',
-      supplier: 'Natural Beauty Ltd.',
-      productCount: 1,
-      createdDate: '2024-01-01',
-      status: 'active',
-      logo: 'https://images.pexels.com/photos/4041388/pexels-photo-4041388.jpeg?w=100'
-    },
-    {
-      id: 4,
-      name: 'Aromatherapy Pro',
-      description: 'Chuyên gia tinh dầu thơm',
-      supplier: 'Essential Oils Inc.',
-      productCount: 1,
-      createdDate: '2024-01-01',
-      status: 'active',
-      logo: 'https://images.pexels.com/photos/4041387/pexels-photo-4041387.jpeg?w=100'
-    }
-  ]);
+  const [categories, setCategories] = useState<Category[]>(masterCategories.filter(cat => cat.type === 'product' || !cat.type));
+  const [brands, setBrands] = useState<Brand[]>(masterBrands);
 
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState<string>('all');
