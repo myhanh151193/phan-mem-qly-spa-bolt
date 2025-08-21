@@ -451,21 +451,6 @@ const Products: React.FC = () => {
                 />
               </div>
 
-              {/* Website (only for brands) */}
-              {activeTab === 'brands' && (
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Website
-                  </label>
-                  <input
-                    type="url"
-                    value={formData.website || ''}
-                    onChange={(e) => setFormData(prev => ({ ...prev, website: e.target.value }))}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    placeholder="https://example.com"
-                  />
-                </div>
-              )}
 
               {/* Price (only for services and products) */}
               {(activeTab === 'services' || activeTab === 'products') && (
