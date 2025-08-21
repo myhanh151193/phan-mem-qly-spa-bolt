@@ -26,6 +26,22 @@ interface Product {
   status: string;
 }
 
+interface Category {
+  id: number;
+  name: string;
+  description: string;
+  type: 'service' | 'product';
+  createdAt: string;
+}
+
+interface Brand {
+  id: number;
+  name: string;
+  description: string;
+  website?: string;
+  createdAt: string;
+}
+
 const Products: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'services' | 'products'>('services');
   const [showDialog, setShowDialog] = useState<boolean>(false);
@@ -465,7 +481,7 @@ const Products: React.FC = () => {
                     value={formData.duration || ''}
                     onChange={(e) => setFormData(prev => ({ ...prev, duration: parseInt(e.target.value) || 0 }))}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    placeholder="Ví d��: 90"
+                    placeholder="Ví dụ: 90"
                   />
                 </div>
               )}
