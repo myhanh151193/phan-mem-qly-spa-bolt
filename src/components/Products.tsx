@@ -692,19 +692,62 @@ const Products: React.FC = () => {
                 />
               </div>
 
-              {/* Category */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Danh mục *
-                </label>
-                <input
-                  type="text"
-                  value={formData.category || ''}
-                  onChange={(e) => setFormData(prev => ({ ...prev, category: e.target.value }))}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  placeholder="Nhập danh mục"
-                />
-              </div>
+              {/* Category Type (only for categories) */}
+              {activeTab === 'categories' && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Loại danh mục *
+                  </label>
+                  <select
+                    value={formData.type || 'service'}
+                    onChange={(e) => setFormData(prev => ({ ...prev, type: e.target.value }))}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  >
+                    <option value="service">Dịch vụ</option>
+                    <option value="product">Sản phẩm</option>
+                  </select>
+                </div>
+              )}
+
+              {/* Category (for services and products) */}
+              {(activeTab === 'services' || activeTab === 'products') && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Danh mục *
+                  </label>
+                  <select
+                    value={formData.category || ''}
+                    onChange={(e) => setFormData(prev => ({ ...prev, category: e.target.value }))}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  >
+                    <option value="">Chọn danh mục</option>
+                    {categories
+                      .filter(cat => cat.type === activeTab.slice(0, -1)) // 'services' -> 'service'
+                      .map(category => (
+                        <option key={category.id} value={category.name}>
+                          {category.name}
+                        </option>
+                      ))
+                    }
+                  </select>
+                </div>
+              )}
+
+              {/* Website (only for brands) */}
+              {activeTab === 'brands' && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Website
+                  </label>
+                  <input
+                    type="url"
+                    value={formData.website || ''}
+                    onChange={(e) => setFormData(prev => ({ ...prev, website: e.target.value }))}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    placeholder="https://example.com"
+                  />
+                </div>
+              )}
 
               {/* Price */}
               <div>
