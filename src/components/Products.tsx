@@ -27,9 +27,9 @@ interface Product {
 }
 
 const Products: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'services' | 'products' | 'categories' | 'brands'>('services');
+  const [activeTab, setActiveTab] = useState<'services' | 'products'>('services');
   const [showDialog, setShowDialog] = useState<boolean>(false);
-  const [editingItem, setEditingItem] = useState<Service | Product | Category | Brand | null>(null);
+  const [editingItem, setEditingItem] = useState<Service | Product | null>(null);
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [formData, setFormData] = useState<any>({});
   const [imagePreview, setImagePreview] = useState<string>('');
