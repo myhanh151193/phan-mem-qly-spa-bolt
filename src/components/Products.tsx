@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Search, Plus, Edit, Eye, Package, Star, Trash2, X, Upload, Image } from 'lucide-react';
+import { Search, Plus, Edit, Eye, Package, Star, Trash2, X, Upload, Image, Tag, Award } from 'lucide-react';
 
 interface Service {
   id: number;
@@ -465,7 +465,7 @@ const Products: React.FC = () => {
                     value={formData.duration || ''}
                     onChange={(e) => setFormData(prev => ({ ...prev, duration: parseInt(e.target.value) || 0 }))}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    placeholder="Ví dụ: 90"
+                    placeholder="Ví d��: 90"
                   />
                 </div>
               )}
