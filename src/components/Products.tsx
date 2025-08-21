@@ -249,7 +249,7 @@ const Products: React.FC = () => {
                 : 'text-gray-600 hover:text-gray-900'
             }`}
           >
-            Dịch v��
+            Dịch vụ
           </button>
           <button
             onClick={() => setActiveTab('products')}
@@ -415,7 +415,7 @@ const Products: React.FC = () => {
               {/* Name */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  T��n {
+                  Tên {
                     activeTab === 'services' ? 'd���ch vụ' :
                     activeTab === 'products' ? 'sản phẩm' :
                     activeTab === 'categories' ? 'danh mục' :
@@ -437,29 +437,19 @@ const Products: React.FC = () => {
               </div>
 
 
-              {/* Category (for services and products) */}
-              {(activeTab === 'services' || activeTab === 'products') && (
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Danh mục *
-                  </label>
-                  <select
-                    value={formData.category || ''}
-                    onChange={(e) => setFormData(prev => ({ ...prev, category: e.target.value }))}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  >
-                    <option value="">Chọn danh mục</option>
-                    {categories
-                      .filter(cat => cat.type === activeTab.slice(0, -1)) // 'services' -> 'service'
-                      .map(category => (
-                        <option key={category.id} value={category.name}>
-                          {category.name}
-                        </option>
-                      ))
-                    }
-                  </select>
-                </div>
-              )}
+              {/* Category */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Danh mục *
+                </label>
+                <input
+                  type="text"
+                  value={formData.category || ''}
+                  onChange={(e) => setFormData(prev => ({ ...prev, category: e.target.value }))}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="Nhập danh mục"
+                />
+              </div>
 
               {/* Website (only for brands) */}
               {activeTab === 'brands' && (
@@ -554,7 +544,7 @@ const Products: React.FC = () => {
                   onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
                   rows={3}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  placeholder="Nhập mô t�� chi tiết"
+                  placeholder="Nhập mô tả chi tiết"
                 />
               </div>
 
