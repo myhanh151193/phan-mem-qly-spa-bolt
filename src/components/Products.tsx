@@ -42,7 +42,7 @@ const Products: React.FC = () => {
       category: 'Chăm sóc da',
       price: '800,000',
       duration: 90,
-      description: 'Liệu trình chăm s��c da mặt cao cấp với công nghệ hiện đại',
+      description: 'Liệu trình chăm s���c da mặt cao cấp với công nghệ hiện đại',
       rating: 4.8,
       reviews: 124,
       image: 'https://images.pexels.com/photos/3997379/pexels-photo-3997379.jpeg?w=300',
@@ -401,12 +401,7 @@ const Products: React.FC = () => {
           <div className="bg-white rounded-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between p-6 border-b">
               <h3 className="text-lg font-semibold text-gray-900">
-                {editingItem ? 'Chỉnh sửa' : 'Thêm'} {
-                  activeTab === 'services' ? 'dịch vụ' :
-                  activeTab === 'products' ? 'sản phẩm' :
-                  activeTab === 'categories' ? 'danh mục' :
-                  'thương hiệu'
-                }
+                {editingItem ? 'Chỉnh sửa' : 'Thêm'} {activeTab === 'services' ? 'dịch vụ' : 'sản phẩm'}
               </h3>
               <button
                 onClick={closeDialog}
@@ -509,7 +504,7 @@ const Products: React.FC = () => {
                     value={formData.price || ''}
                     onChange={(e) => setFormData(prev => ({ ...prev, price: e.target.value }))}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    placeholder="Ví dụ: 500,000"
+                    placeholder="Ví d���: 500,000"
                   />
                 </div>
               )}
@@ -542,7 +537,7 @@ const Products: React.FC = () => {
                       onChange={(e) => setFormData(prev => ({ ...prev, brand: e.target.value }))}
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     >
-                      <option value="">Chọn th��ơng hiệu</option>
+                      <option value="">Chọn thương hiệu</option>
                       {brands.map(brand => (
                         <option key={brand.id} value={brand.name}>
                           {brand.name}
@@ -682,7 +677,7 @@ const Products: React.FC = () => {
                 disabled={!formData.name || ((activeTab === 'services' || activeTab === 'products') && !formData.price)}
                 className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
               >
-                {editingItem ? 'Cập nh��t' : 'Thêm'}
+                {editingItem ? 'Cập nhật' : 'Thêm'}
               </button>
             </div>
           </div>
