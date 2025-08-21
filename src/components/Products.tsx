@@ -279,12 +279,7 @@ const Products: React.FC = () => {
           type="text"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          placeholder={`Tìm kiếm ${
-            activeTab === 'services' ? 'dịch vụ' :
-            activeTab === 'products' ? 'sản phẩm' :
-            activeTab === 'categories' ? 'danh mục' :
-            'thương hiệu'
-          }...`}
+          placeholder={`Tìm kiếm ${activeTab === 'services' ? 'dịch vụ' : 'sản phẩm'}...`}
           className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
         />
       </div>
