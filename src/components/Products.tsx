@@ -236,16 +236,6 @@ const Products: React.FC = () => {
     product.brand.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const filteredCategories = categories.filter(category =>
-    category.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    category.description.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
-  const filteredBrands = brands.filter(brand =>
-    brand.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    brand.description.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
   return (
     <div className="space-y-6">
       {/* Tab Navigation */}
@@ -318,7 +308,7 @@ const Products: React.FC = () => {
             activeTab === 'services' ? 'dịch vụ' :
             activeTab === 'products' ? 'sản phẩm' :
             activeTab === 'categories' ? 'danh mục' :
-            'thương hi��u'
+            'thương hiệu'
           }...`}
           className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
         />
