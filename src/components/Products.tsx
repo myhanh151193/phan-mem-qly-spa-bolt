@@ -276,7 +276,13 @@ const Products: React.FC = () => {
   };
 
   const handleSave = () => {
-    if (!formData.name || !formData.price) return;
+    if (!formData.name) return;
+
+    // Validate required fields based on tab
+    if ((activeTab === 'services' || activeTab === 'products') && !formData.price) return;
+
+    const newId = Date.now();
+    const currentDate = new Date().toISOString().split('T')[0];
 
     if (activeTab === 'services') {
       if (editingItem) {
@@ -284,17 +290,35 @@ const Products: React.FC = () => {
           service.id === editingItem.id ? { ...formData, id: editingItem.id } : service
         ));
       } else {
-        const newService = { ...formData, id: Date.now() };
+        const newService = { ...formData, id: newId };
         setServices(prev => [...prev, newService]);
       }
-    } else {
+    } else if (activeTab === 'products') {
       if (editingItem) {
         setProducts(prev => prev.map(product =>
           product.id === editingItem.id ? { ...formData, id: editingItem.id } : product
         ));
       } else {
-        const newProduct = { ...formData, id: Date.now() };
+        const newProduct = { ...formData, id: newId };
         setProducts(prev => [...prev, newProduct]);
+      }
+    } else if (activeTab === 'categories') {
+      if (editingItem) {
+        setCategories(prev => prev.map(category =>
+          category.id === editingItem.id ? { ...formData, id: editingItem.id } : category
+        ));
+      } else {
+        const newCategory = { ...formData, id: newId, createdAt: currentDate };
+        setCategories(prev => [...prev, newCategory]);
+      }
+    } else if (activeTab === 'brands') {
+      if (editingItem) {
+        setBrands(prev => prev.map(brand =>
+          brand.id === editingItem.id ? { ...formData, id: editingItem.id } : brand
+        ));
+      } else {
+        const newBrand = { ...formData, id: newId, createdAt: currentDate };
+        setBrands(prev => [...prev, newBrand]);
       }
     }
     closeDialog();
