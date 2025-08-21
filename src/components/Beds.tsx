@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Bed, Clock, User, Plus, MapPin, Settings, Eye, CheckCircle, XCircle, Play, Pause, Timer } from 'lucide-react';
+import AppointmentDialog from './AppointmentDialog';
 
 interface BedAssignment {
   customerId: number;
