@@ -288,6 +288,17 @@ const Beds: React.FC = () => {
     alert(`Khách hàng: ${assignment.customerName}\nDịch vụ: ${assignment.service}\nNhân viên: ${assignment.staff}\nThời gian: ${assignment.startTime} - ${assignment.estimatedEndTime}`);
   };
 
+  const handleTimeSlotClick = (bedId: number, timeSlot: string, bed: TreatmentBed) => {
+    if (bed.status === 'available') {
+      // Handle booking for available beds
+      alert(`Đặt lịch cho ${bed.name} vào lúc ${timeSlot}`);
+      // Here you would open a booking form or modal
+    } else {
+      // Show bed status info for non-available beds
+      alert(`${bed.name} hiện tại ${getStatusText(bed.status).toLowerCase()}`);
+    }
+  };
+
   const stats = {
     total: beds.length,
     available: beds.filter(b => b.status === 'available').length,
