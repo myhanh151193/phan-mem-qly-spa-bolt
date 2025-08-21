@@ -268,12 +268,7 @@ const Products: React.FC = () => {
           className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
         >
           <Plus className="w-4 h-4" />
-          <span>Thêm {
-            activeTab === 'services' ? 'dịch vụ' :
-            activeTab === 'products' ? 'sản phẩm' :
-            activeTab === 'categories' ? 'danh mục' :
-            'thương hiệu'
-          }</span>
+          <span>Thêm {activeTab === 'services' ? 'dịch vụ' : 'sản phẩm'}</span>
         </button>
       </div>
 
