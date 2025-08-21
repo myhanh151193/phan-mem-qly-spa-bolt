@@ -385,6 +385,26 @@ const Products: React.FC = () => {
           >
             Sản phẩm
           </button>
+          <button
+            onClick={() => setActiveTab('categories')}
+            className={`px-4 py-2 text-sm font-medium rounded-md transition-colors duration-200 ${
+              activeTab === 'categories'
+                ? 'bg-white text-blue-600 shadow-sm'
+                : 'text-gray-600 hover:text-gray-900'
+            }`}
+          >
+            Danh mục
+          </button>
+          <button
+            onClick={() => setActiveTab('brands')}
+            className={`px-4 py-2 text-sm font-medium rounded-md transition-colors duration-200 ${
+              activeTab === 'brands'
+                ? 'bg-white text-blue-600 shadow-sm'
+                : 'text-gray-600 hover:text-gray-900'
+            }`}
+          >
+            Thương hiệu
+          </button>
         </div>
         
         <button
