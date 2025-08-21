@@ -249,7 +249,7 @@ const Products: React.FC = () => {
                 : 'text-gray-600 hover:text-gray-900'
             }`}
           >
-            Dịch vụ
+            Dịch v��
           </button>
           <button
             onClick={() => setActiveTab('products')}
@@ -415,7 +415,7 @@ const Products: React.FC = () => {
               {/* Name */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Tên {
+                  T��n {
                     activeTab === 'services' ? 'd���ch vụ' :
                     activeTab === 'products' ? 'sản phẩm' :
                     activeTab === 'categories' ? 'danh mục' :
@@ -436,22 +436,6 @@ const Products: React.FC = () => {
                 />
               </div>
 
-              {/* Category Type (only for categories) */}
-              {activeTab === 'categories' && (
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Loại danh mục *
-                  </label>
-                  <select
-                    value={formData.type || 'service'}
-                    onChange={(e) => setFormData(prev => ({ ...prev, type: e.target.value }))}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  >
-                    <option value="service">Dịch vụ</option>
-                    <option value="product">Sản phẩm</option>
-                  </select>
-                </div>
-              )}
 
               {/* Category (for services and products) */}
               {(activeTab === 'services' || activeTab === 'products') && (
@@ -570,7 +554,7 @@ const Products: React.FC = () => {
                   onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
                   rows={3}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  placeholder="Nhập mô tả chi tiết"
+                  placeholder="Nhập mô t�� chi tiết"
                 />
               </div>
 
