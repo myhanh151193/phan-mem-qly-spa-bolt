@@ -491,18 +491,13 @@ const Products: React.FC = () => {
                     <label className="block text-sm font-medium text-gray-700 mb-1">
                       Thương hiệu
                     </label>
-                    <select
+                    <input
+                      type="text"
                       value={formData.brand || ''}
                       onChange={(e) => setFormData(prev => ({ ...prev, brand: e.target.value }))}
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    >
-                      <option value="">Chọn thương hiệu</option>
-                      {brands.map(brand => (
-                        <option key={brand.id} value={brand.name}>
-                          {brand.name}
-                        </option>
-                      ))}
-                    </select>
+                      placeholder="Nhập thương hiệu"
+                    />
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
