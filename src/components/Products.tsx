@@ -32,6 +32,8 @@ const Products: React.FC = () => {
   const [editingItem, setEditingItem] = useState<Service | Product | null>(null);
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [formData, setFormData] = useState<any>({});
+  const [imagePreview, setImagePreview] = useState<string>('');
+  const [uploadingImage, setUploadingImage] = useState<boolean>(false);
 
   const [services, setServices] = useState<Service[]>([
     {
