@@ -151,7 +151,7 @@ const Products: React.FC = () => {
     {
       id: 4,
       name: 'Mặt nạ',
-      description: 'Các loại mặt nạ dư��ng da',
+      description: 'Các loại mặt nạ dưỡng da',
       type: 'product',
       createdAt: '2025-01-01'
     }
@@ -652,7 +652,12 @@ const Products: React.FC = () => {
           <div className="bg-white rounded-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between p-6 border-b">
               <h3 className="text-lg font-semibold text-gray-900">
-                {editingItem ? 'Chỉnh sửa' : 'Thêm'} {activeTab === 'services' ? 'dịch vụ' : 'sản phẩm'}
+                {editingItem ? 'Chỉnh sửa' : 'Thêm'} {
+                  activeTab === 'services' ? 'dịch vụ' :
+                  activeTab === 'products' ? 'sản phẩm' :
+                  activeTab === 'categories' ? 'danh mục' :
+                  'thương hiệu'
+                }
               </h3>
               <button
                 onClick={closeDialog}
