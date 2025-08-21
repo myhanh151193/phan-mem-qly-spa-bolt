@@ -279,6 +279,53 @@ const Beds: React.FC = () => {
     });
   };
 
+  const handleAppointmentSave = (appointmentData: any) => {
+    if (selectedBed) {
+      const newAssignment: BedAssignment = {
+        customerId: appointmentData.customerId || 0,
+        customerName: appointmentData.customerName,
+        service: appointmentData.service,
+        staff: appointmentData.staff || 'Chưa chỉ định',
+        startTime: appointmentData.startTime,
+        estimatedEndTime: appointmentData.estimatedEndTime,
+        status: 'preparing',
+        appointmentId: Date.now() // Simple ID generation
+      };
+
+      if (isEditingAppointment && editingAssignment) {
+        // Update existing assignment
+        setBeds(prev => prev.map(bed =>
+          bed.id === selectedBed.id ? {
+            ...bed,
+            currentAssignment: {
+              ...newAssignment,
+              appointmentId: editingAssignment.appointmentId
+            }
+          } : bed
+        ));
+      } else {
+        // Add new assignment
+        setBeds(prev => prev.map(bed =>
+          bed.id === selectedBed.id ? {
+            ...bed,
+            status: 'occupied',
+            currentAssignment: newAssignment
+          } : bed
+        ));
+      }
+    }
+
+    handleCloseAppointmentDialog();
+  };
+
+  const handleCloseAppointmentDialog = () => {
+    setShowAppointmentDialog(false);
+    setSelectedBed(null);
+    setSelectedTimeSlot('');
+    setEditingAssignment(null);
+    setIsEditingAppointment(false);
+  };
+
   const calculateAssignmentHeight = (startTime: string, endTime: string) => {
     const [startHour, startMinute] = startTime.split(':').map(Number);
     const [endHour, endMinute] = endTime.split(':').map(Number);
