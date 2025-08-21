@@ -790,6 +790,29 @@ const Beds: React.FC = () => {
           </div>
         </div>
       )}
+
+      {/* Appointment Dialog */}
+      {showAppointmentDialog && selectedBed && (
+        <AppointmentDialog
+          isOpen={showAppointmentDialog}
+          onClose={handleCloseAppointmentDialog}
+          onSave={handleAppointmentSave}
+          bedName={selectedBed.name}
+          timeSlot={selectedTimeSlot}
+          date={new Date().toLocaleDateString('vi-VN')}
+          existingAppointment={editingAssignment ? {
+            customerId: editingAssignment.customerId,
+            customerName: editingAssignment.customerName,
+            customerPhone: '', // This might need to be added to BedAssignment interface
+            service: editingAssignment.service,
+            staff: editingAssignment.staff,
+            startTime: editingAssignment.startTime,
+            estimatedEndTime: editingAssignment.estimatedEndTime,
+            notes: ''
+          } : null}
+          isEditing={isEditingAppointment}
+        />
+      )}
     </div>
   );
 };
