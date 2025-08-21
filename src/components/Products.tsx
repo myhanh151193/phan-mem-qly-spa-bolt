@@ -110,60 +110,6 @@ const Products: React.FC = () => {
     },
   ]);
 
-  const [categories, setCategories] = useState<Category[]>([
-    {
-      id: 1,
-      name: 'Chăm sóc da',
-      description: 'Các dịch vụ chăm sóc da mặt và toàn thân',
-      type: 'service',
-      createdAt: '2025-01-01'
-    },
-    {
-      id: 2,
-      name: 'Massage',
-      description: 'Các dịch vụ massage thư giãn',
-      type: 'service',
-      createdAt: '2025-01-01'
-    },
-    {
-      id: 3,
-      name: 'Sản phẩm chăm sóc da',
-      description: 'Các sản phẩm dưỡng da chuyên nghiệp',
-      type: 'product',
-      createdAt: '2025-01-01'
-    },
-    {
-      id: 4,
-      name: 'Mặt nạ',
-      description: 'Các loại mặt nạ dưỡng da',
-      type: 'product',
-      createdAt: '2025-01-01'
-    }
-  ]);
-
-  const [brands, setBrands] = useState<Brand[]>([
-    {
-      id: 1,
-      name: 'SkinCare Pro',
-      description: 'Thương hiệu chăm sóc da hàng đầu',
-      website: 'https://skincarepro.com',
-      createdAt: '2025-01-01'
-    },
-    {
-      id: 2,
-      name: 'Beauty Plus',
-      description: 'Sản phẩm làm đẹp chất lượng cao',
-      website: 'https://beautyplus.com',
-      createdAt: '2025-01-01'
-    },
-    {
-      id: 3,
-      name: 'GlowSkin',
-      description: 'Chuyên về mặt nạ và serum dưỡng da',
-      createdAt: '2025-01-01'
-    }
-  ]);
-
   // CRUD Functions
   const openAddDialog = () => {
     setEditingItem(null);
