@@ -151,7 +151,7 @@ const Products: React.FC = () => {
     {
       id: 4,
       name: 'Mặt nạ',
-      description: 'Các loại mặt nạ dưỡng da',
+      description: 'Các loại mặt nạ dư��ng da',
       type: 'product',
       createdAt: '2025-01-01'
     }
@@ -489,7 +489,7 @@ const Products: React.FC = () => {
             </div>
           ))}
         </div>
-      ) : (
+      ) : activeTab === 'products' ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredProducts.map((product) => (
             <div key={product.id} className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-lg transition-shadow duration-200">
@@ -537,6 +537,103 @@ const Products: React.FC = () => {
                     </button>
                     <button
                       onClick={() => handleDelete(product.id)}
+                      className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors duration-200"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : activeTab === 'categories' ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filteredCategories.map((category) => (
+            <div key={category.id} className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-lg transition-shadow duration-200">
+              <div className="p-6">
+                <div className="flex justify-between items-start mb-4">
+                  <div className="flex items-center space-x-3">
+                    <div className={`p-2 rounded-lg ${
+                      category.type === 'service' ? 'bg-blue-100' : 'bg-green-100'
+                    }`}>
+                      <Tag className={`w-5 h-5 ${
+                        category.type === 'service' ? 'text-blue-600' : 'text-green-600'
+                      }`} />
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-semibold text-gray-900">{category.name}</h3>
+                      <span className={`px-2 py-1 text-xs rounded-full ${
+                        category.type === 'service' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800'
+                      }`}>
+                        {category.type === 'service' ? 'Dịch vụ' : 'Sản phẩm'}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                <p className="text-sm text-gray-600 mb-4">{category.description}</p>
+
+                <div className="flex justify-between items-center">
+                  <span className="text-xs text-gray-500">Tạo: {category.createdAt}</span>
+                  <div className="flex space-x-2">
+                    <button
+                      onClick={() => openEditDialog(category)}
+                      className="p-2 text-gray-400 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors duration-200"
+                    >
+                      <Edit className="w-4 h-4" />
+                    </button>
+                    <button
+                      onClick={() => handleDelete(category.id)}
+                      className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors duration-200"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filteredBrands.map((brand) => (
+            <div key={brand.id} className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-lg transition-shadow duration-200">
+              <div className="p-6">
+                <div className="flex justify-between items-start mb-4">
+                  <div className="flex items-center space-x-3">
+                    <div className="p-2 rounded-lg bg-purple-100">
+                      <Award className="w-5 h-5 text-purple-600" />
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-semibold text-gray-900">{brand.name}</h3>
+                      {brand.website && (
+                        <a
+                          href={brand.website}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-sm text-blue-600 hover:underline"
+                        >
+                          Website
+                        </a>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                <p className="text-sm text-gray-600 mb-4">{brand.description}</p>
+
+                <div className="flex justify-between items-center">
+                  <span className="text-xs text-gray-500">Tạo: {brand.createdAt}</span>
+                  <div className="flex space-x-2">
+                    <button
+                      onClick={() => openEditDialog(brand)}
+                      className="p-2 text-gray-400 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors duration-200"
+                    >
+                      <Edit className="w-4 h-4" />
+                    </button>
+                    <button
+                      onClick={() => handleDelete(brand.id)}
                       className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors duration-200"
                     >
                       <Trash2 className="w-4 h-4" />
