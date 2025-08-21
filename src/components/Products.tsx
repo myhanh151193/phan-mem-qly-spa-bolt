@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Search, Plus, Edit, Eye, Package, Star, Trash2, X, Upload, Image } from 'lucide-react';
+import { getActiveCategories, getActiveBrands } from '../data/masterData';
 
 interface Service {
   id: number;
@@ -419,7 +420,7 @@ const Products: React.FC = () => {
                     activeTab === 'services' ? 'd���ch vụ' :
                     activeTab === 'products' ? 'sản phẩm' :
                     activeTab === 'categories' ? 'danh mục' :
-                    'thương hiệu'
+                    'thương hi��u'
                   } *
                 </label>
                 <input
@@ -489,7 +490,7 @@ const Products: React.FC = () => {
                 <>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Thư��ng hiệu
+                      Thương hiệu
                     </label>
                     <input
                       type="text"
