@@ -350,6 +350,16 @@ const Products: React.FC = () => {
     product.brand.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const filteredCategories = categories.filter(category =>
+    category.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    category.description.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const filteredBrands = brands.filter(brand =>
+    brand.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    brand.description.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <div className="space-y-6">
       {/* Tab Navigation */}
