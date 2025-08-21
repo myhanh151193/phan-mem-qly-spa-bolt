@@ -43,9 +43,9 @@ interface Brand {
 }
 
 const Products: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'services' | 'products'>('services');
+  const [activeTab, setActiveTab] = useState<'services' | 'products' | 'categories' | 'brands'>('services');
   const [showDialog, setShowDialog] = useState<boolean>(false);
-  const [editingItem, setEditingItem] = useState<Service | Product | null>(null);
+  const [editingItem, setEditingItem] = useState<Service | Product | Category | Brand | null>(null);
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [formData, setFormData] = useState<any>({});
   const [imagePreview, setImagePreview] = useState<string>('');
@@ -116,7 +116,7 @@ const Products: React.FC = () => {
     {
       id: 3,
       name: 'Mặt nạ collagen',
-      category: 'Mặt nạ',
+      category: 'M��t nạ',
       price: '150,000',
       stock: 3,
       description: 'Mặt nạ bổ sung collagen cho da căng mịn',
@@ -533,7 +533,7 @@ const Products: React.FC = () => {
               {/* Image Upload */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Hình ảnh
+                  Hình ��nh
                 </label>
 
                 {/* Image Preview */}
