@@ -564,7 +564,11 @@ const Beds: React.FC = () => {
                         const isStartTime = bed.currentAssignment && bed.currentAssignment.startTime === timeSlot;
 
                         return (
-                          <div key={`${bed.id}-${timeSlot}`} className="h-20 border-b border-r border-gray-200 last:border-r-0 relative group hover:bg-blue-50 transition-colors">
+                          <div
+                            key={`${bed.id}-${timeSlot}`}
+                            className="h-20 border-b border-r border-gray-200 last:border-r-0 relative group hover:bg-blue-50 transition-colors cursor-pointer"
+                            onClick={() => handleTimeSlotClick(bed.id, timeSlot, bed)}
+                          >
                             {/* Assignment Block */}
                             {hasAssignment && isStartTime && (
                               <div
@@ -577,7 +581,10 @@ const Beds: React.FC = () => {
                                   height: `${calculateAssignmentHeight(bed.currentAssignment.startTime, bed.currentAssignment.estimatedEndTime)}px`,
                                   zIndex: 10
                                 }}
-                                onClick={() => showAssignmentDetails(bed.currentAssignment)}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  showAssignmentDetails(bed.currentAssignment);
+                                }}
                               >
                                 <div className="text-xs">
                                   <div className="font-medium text-gray-900 truncate mb-1">
@@ -598,7 +605,7 @@ const Beds: React.FC = () => {
 
                             {/* Empty slot indicator */}
                             {!hasAssignment && bed.status === 'available' && (
-                              <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                              <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
                                 <div className="flex items-center space-x-1 text-blue-600 text-xs">
                                   <Plus className="w-3 h-3" />
                                   <span>Đặt lịch</span>
@@ -608,7 +615,7 @@ const Beds: React.FC = () => {
 
                             {/* Status indicator for non-available beds */}
                             {bed.status !== 'available' && !hasAssignment && (
-                              <div className="absolute inset-0 flex items-center justify-center">
+                              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                                 <div className={`text-xs px-2 py-1 rounded-full ${
                                   bed.status === 'cleaning' ? 'bg-yellow-100 text-yellow-800' :
                                   bed.status === 'maintenance' ? 'bg-gray-100 text-gray-800' :
