@@ -298,9 +298,12 @@ const Beds: React.FC = () => {
 
   const handleTimeSlotClick = (bedId: number, timeSlot: string, bed: TreatmentBed) => {
     if (bed.status === 'available') {
-      // Handle booking for available beds
-      alert(`Đặt lịch cho ${bed.name} vào lúc ${timeSlot}`);
-      // Here you would open a booking form or modal
+      // Open booking dialog for available beds
+      setSelectedBed(bed);
+      setSelectedTimeSlot(timeSlot);
+      setEditingAssignment(null);
+      setIsEditingAppointment(false);
+      setShowAppointmentDialog(true);
     } else {
       // Show bed status info for non-available beds
       alert(`${bed.name} hiện tại ${getStatusText(bed.status).toLowerCase()}`);
