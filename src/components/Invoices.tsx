@@ -86,7 +86,7 @@ const serviceCatalog = {
   'Tư vấn dinh dưỡng': { price: 200000, duration: 30, category: 'Tư vấn', description: 'Tư vấn chế độ dinh dưỡng phù hợp' },
   'Triệt lông': { price: 400000, duration: 45, category: 'Làm đẹp', description: 'Triệt lông vĩnh viễn bằng laser diode' },
   'Trị thâm': { price: 350000, duration: 60, category: 'Chăm sóc da', description: 'Điều trị thâm nám, tàn nhang hi���u quả' },
-  'Căng da mặt': { price: 1500000, duration: 180, category: 'Làm đẹp', description: 'Căng da mặt không phẫu thuật bằng Hifu' },
+  'Căng da mặt': { price: 1500000, duration: 180, category: 'Làm ��ẹp', description: 'Căng da mặt không phẫu thuật bằng Hifu' },
 };
 
 // Available products
@@ -731,7 +731,7 @@ const Invoices: React.FC = () => {
             <option value="draft">Nháp</option>
             <option value="pending">Chờ thanh toán</option>
             <option value="paid">Đã thanh toán</option>
-            <option value="overdue">Quá hạn</option>
+            <option value="overdue">Qu�� hạn</option>
             <option value="cancelled">Đã hủy</option>
           </select>
         </div>
@@ -870,11 +870,18 @@ const Invoices: React.FC = () => {
                       <button className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors duration-200">
                         <Eye className="w-4 h-4" />
                       </button>
-                      <button 
+                      <button
                         onClick={() => openEditModal(invoice)}
                         className="p-2 text-gray-400 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors duration-200"
                       >
                         <Edit2 className="w-4 h-4" />
+                      </button>
+                      <button
+                        onClick={() => printInvoice(invoice)}
+                        className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors duration-200"
+                        title="In hóa đơn"
+                      >
+                        <Printer className="w-4 h-4" />
                       </button>
                       <button className="p-2 text-gray-400 hover:text-purple-600 hover:bg-purple-50 rounded-lg transition-colors duration-200">
                         <Download className="w-4 h-4" />
@@ -1416,7 +1423,7 @@ const Invoices: React.FC = () => {
                             className="w-full px-4 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg hover:from-blue-700 hover:to-blue-800 transition-all duration-200 font-medium shadow-sm flex items-center justify-center space-x-2"
                           >
                             <Plus className="w-4 h-4" />
-                            <span>Thêm vào hóa đơn</span>
+                            <span>Thêm vào hóa ��ơn</span>
                           </button>
                         </div>
                       ))}
