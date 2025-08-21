@@ -930,7 +930,7 @@ const Products: React.FC = () => {
               </button>
               <button
                 onClick={handleSave}
-                disabled={!formData.name || !formData.price}
+                disabled={!formData.name || ((activeTab === 'services' || activeTab === 'products') && !formData.price)}
                 className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
               >
                 {editingItem ? 'Cập nhật' : 'Thêm'}
