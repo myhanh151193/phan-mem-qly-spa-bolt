@@ -26,22 +26,6 @@ interface Product {
   status: string;
 }
 
-interface Category {
-  id: number;
-  name: string;
-  description: string;
-  type: 'service' | 'product';
-  createdAt: string;
-}
-
-interface Brand {
-  id: number;
-  name: string;
-  description: string;
-  website?: string;
-  createdAt: string;
-}
-
 const Products: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'services' | 'products' | 'categories' | 'brands'>('services');
   const [showDialog, setShowDialog] = useState<boolean>(false);
