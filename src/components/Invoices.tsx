@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Search, Plus, FileText, Download, Eye, Filter, Edit2, Trash2, X, Save, Calendar, User, ShoppingCart, Package, Percent, CreditCard, DollarSign, Clock, Printer } from 'lucide-react';
+import { useTreatmentPayment } from '../contexts/TreatmentPaymentContext';
 
 interface InvoiceItem {
   id: string;
@@ -1066,7 +1067,7 @@ const Invoices: React.FC = () => {
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   >
                     <option value="cash">Tiền mặt</option>
-                    <option value="transfer">Chuyển khoản</option>
+                    <option value="transfer">Chuy���n khoản</option>
                     <option value="card">Thẻ</option>
                     <option value="other">Khác</option>
                   </select>
