@@ -317,15 +317,64 @@ const Dashboard: React.FC<DashboardProps> = ({ selectedBranch }) => {
             <TrendingUp className="w-5 h-5 text-gray-400" />
           </div>
           <div className="space-y-4">
-            {[
-              { day: 'T2', revenue: '12.5M', growth: true },
-              { day: 'T3', revenue: '14.2M', growth: true },
-              { day: 'T4', revenue: '11.8M', growth: false },
-              { day: 'T5', revenue: '16.3M', growth: true },
-              { day: 'T6', revenue: '18.7M', growth: true },
-              { day: 'T7', revenue: '22.1M', growth: true },
-              { day: 'CN', revenue: '15.2M', growth: false },
-            ].map((day, index) => (
+            {(() => {
+              // Branch-specific revenue data
+              const branchRevenueData = {
+                'branch-1': [
+                  { day: 'T2', revenue: '5.8M', growth: true },
+                  { day: 'T3', revenue: '6.2M', growth: true },
+                  { day: 'T4', revenue: '5.5M', growth: false },
+                  { day: 'T5', revenue: '7.1M', growth: true },
+                  { day: 'T6', revenue: '8.2M', growth: true },
+                  { day: 'T7', revenue: '9.5M', growth: true },
+                  { day: 'CN', revenue: '6.2M', growth: false },
+                ],
+                'branch-2': [
+                  { day: 'T2', revenue: '4.2M', growth: true },
+                  { day: 'T3', revenue: '4.8M', growth: true },
+                  { day: 'T4', revenue: '4.1M', growth: false },
+                  { day: 'T5', revenue: '5.2M', growth: true },
+                  { day: 'T6', revenue: '5.8M', growth: true },
+                  { day: 'T7', revenue: '6.9M', growth: true },
+                  { day: 'CN', revenue: '4.8M', growth: false },
+                ],
+                'branch-3': [
+                  { day: 'T2', revenue: '2.1M', growth: true },
+                  { day: 'T3', revenue: '2.5M', growth: true },
+                  { day: 'T4', revenue: '1.8M', growth: false },
+                  { day: 'T5', revenue: '3.2M', growth: true },
+                  { day: 'T6', revenue: '3.8M', growth: true },
+                  { day: 'T7', revenue: '4.2M', growth: true },
+                  { day: 'CN', revenue: '2.9M', growth: false },
+                ],
+                'branch-4': [
+                  { day: 'T2', revenue: '0.4M', growth: true },
+                  { day: 'T3', revenue: '0.7M', growth: true },
+                  { day: 'T4', revenue: '0.4M', growth: false },
+                  { day: 'T5', revenue: '0.8M', growth: true },
+                  { day: 'T6', revenue: '0.9M', growth: true },
+                  { day: 'T7', revenue: '1.5M', growth: true },
+                  { day: 'CN', revenue: '1.3M', growth: false },
+                ]
+              };
+
+              // All branches aggregated
+              const allBranchesRevenueData = [
+                { day: 'T2', revenue: '12.5M', growth: true },
+                { day: 'T3', revenue: '14.2M', growth: true },
+                { day: 'T4', revenue: '11.8M', growth: false },
+                { day: 'T5', revenue: '16.3M', growth: true },
+                { day: 'T6', revenue: '18.7M', growth: true },
+                { day: 'T7', revenue: '22.1M', growth: true },
+                { day: 'CN', revenue: '15.2M', growth: false },
+              ];
+
+              const revenueData = selectedBranch === 'all-branches'
+                ? allBranchesRevenueData
+                : branchRevenueData[selectedBranch as keyof typeof branchRevenueData] || allBranchesRevenueData;
+
+              return revenueData;
+            })().map((day, index) => (
               <div key={index} className="flex items-center justify-between">
                 <span className="text-sm text-gray-600 w-8">{day.day}</span>
                 <div className="flex-1 mx-4 bg-gray-200 rounded-full h-2">
