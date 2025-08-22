@@ -722,7 +722,7 @@ const Inventory: React.FC<InventoryProps> = ({ selectedBranch }) => {
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {filteredInventory.map((item) => (
+                  {filteredInventory.map((view) => (
                     <tr key={item.id} className="hover:bg-gray-50 transition-colors duration-200">
                       <td className="px-6 py-4">
                         <div className="flex items-center">
