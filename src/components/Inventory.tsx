@@ -382,31 +382,41 @@ const Inventory: React.FC<InventoryProps> = ({ selectedBranch }) => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
-    if (!formData.name || !formData.sku || !formData.category) {
+
+    if (!productFormData.name || !productFormData.sku || !productFormData.category) {
       alert('Vui lòng điền đầy đủ thông tin bắt buộc');
       return;
     }
 
-    const status = calculateStatus(formData.stock, formData.minStock);
-    const totalValue = formData.stock * formData.unitPrice;
-
-    const itemData: InventoryItem = {
-      id: editingItem ? editingItem.id : Date.now(),
-      ...formData,
-      totalValue,
-      status,
-      lastRestocked: editingItem ? editingItem.lastRestocked : new Date().toISOString().split('T')[0]
+    const productData: Product = {
+      id: editingProduct ? editingProduct.id : Date.now(),
+      ...productFormData,
+      createdDate: editingProduct ? editingProduct.createdDate : new Date().toISOString().split('T')[0]
     };
 
-    if (editingItem) {
-      setInventory(prev => prev.map(item => item.id === editingItem.id ? itemData : item));
+    const stockData: BranchStock = {
+      id: editingStock ? editingStock.id : Date.now() + 1,
+      productId: productData.id,
+      branch: selectedBranch === 'all-branches' ? 'branch-1' : selectedBranch,
+      ...stockFormData,
+      lastRestocked: editingStock ? editingStock.lastRestocked : new Date().toISOString().split('T')[0]
+    };
+
+    if (editingProduct) {
+      // Update existing product and stock
+      setProducts(prev => prev.map(product => product.id === editingProduct.id ? productData : product));
+      if (editingStock) {
+        setBranchStocks(prev => prev.map(stock => stock.id === editingStock.id ? stockData : stock));
+      }
     } else {
-      setInventory(prev => [...prev, itemData]);
+      // Create new product and initial stock for current branch
+      setProducts(prev => [...prev, productData]);
+      setBranchStocks(prev => [...prev, stockData]);
     }
 
     setShowModal(false);
-    setEditingItem(null);
+    setEditingProduct(null);
+    setEditingStock(null);
   };
 
   const handleDelete = (id: number) => {
