@@ -121,7 +121,7 @@ const Beds: React.FC<BedsProps> = ({ selectedBranch }) => {
       'branch-1': ['Phòng VIP A', 'Phòng Chăm sóc da'],
       'branch-2': ['Phòng Tắm trắng'],
       'branch-3': ['Phòng Massage'],
-      'branch-4': ['Phòng VIP B', 'Phòng Trị liệu']
+      'branch-4': ['Phòng VIP B', 'Phòng Trị li��u']
     };
     return branchRooms[branchId] || ['Phòng Massage'];
   };
@@ -673,6 +673,14 @@ const Beds: React.FC<BedsProps> = ({ selectedBranch }) => {
                     <MapPin className="w-4 h-4 text-gray-400" />
                     <span className="text-sm text-gray-600">{bed.room}</span>
                   </div>
+                  {selectedBranch === 'all-branches' && (
+                    <div className="flex items-center space-x-2 mt-1">
+                      <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                      <span className="text-xs text-blue-600 font-medium">
+                        {getBranchNameFromId(bed.branch)}
+                      </span>
+                    </div>
+                  )}
                 </div>
                 <div className="flex flex-col items-end space-y-2">
                   <span className={`px-2 py-1 text-xs rounded-full border ${getBedTypeColor(bed.type)}`}>
@@ -1173,7 +1181,7 @@ const Beds: React.FC<BedsProps> = ({ selectedBranch }) => {
       {showDeleteConfirm && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg p-6 w-full max-w-md mx-4">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Xác nhận xóa giường</h3>
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">Xác nh��n xóa giường</h3>
 
             <div className="mb-6">
               <div className="bg-red-50 border border-red-200 rounded-lg p-4">
