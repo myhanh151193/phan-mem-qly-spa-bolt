@@ -320,7 +320,7 @@ const Treatments: React.FC<TreatmentsProps> = ({ selectedBranch }) => {
       return;
     }
 
-    const selectedCustomer = customers.find(c => c.id === formData.customerId);
+    const selectedCustomer = allCustomers.find(c => c.id === formData.customerId);
     if (!selectedCustomer) {
       alert('Vui lòng chọn khách hàng');
       return;
@@ -1235,7 +1235,7 @@ const Treatments: React.FC<TreatmentsProps> = ({ selectedBranch }) => {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Kiểu lịch hẹn
+                    Kiểu lịch h��n
                   </label>
                   <select
                     value={formData.scheduleType}
