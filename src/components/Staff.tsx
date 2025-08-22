@@ -780,7 +780,7 @@ const Staff: React.FC = () => {
                     <select
                       required
                       value={formData.branch}
-                      onChange={(e) => setFormData(prev => ({ ...prev, branch: e.target.value }))}
+                      onChange={(e) => handlePrimaryBranchChange(e.target.value)}
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     >
                       <option value="">Chọn chi nhánh</option>
