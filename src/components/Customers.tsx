@@ -39,6 +39,7 @@ interface Customer {
   loyaltyPoints: number;
   nextBirthday: string;
   personalOffers: string[];
+  branch: string; // Branch where customer is primarily managed
 }
 
 interface NewCustomer {
@@ -50,6 +51,7 @@ interface NewCustomer {
   allergies?: string;
   preferences?: string;
   skinType?: string;
+  branch?: string;
 }
 
 const Customers: React.FC = () => {
@@ -235,7 +237,7 @@ const Customers: React.FC = () => {
     
     if (!editCustomer.name.trim()) newErrors.name = 'Họ tên là bắt buộc';
     if (!editCustomer.phone.trim()) {
-      newErrors.phone = 'Số điện thoại là bắt buộc';
+      newErrors.phone = 'Số điện thoại là bắt bu���c';
     } else if (!/^[0-9]{10,11}$/.test(editCustomer.phone.replace(/\s/g, ''))) {
       newErrors.phone = 'Số điện thoại không hợp lệ';
     }
