@@ -121,6 +121,7 @@ const Beds: React.FC<BedsProps> = ({ selectedBranch }) => {
       room: 'Phòng VIP A',
       type: 'vip',
       status: 'occupied',
+      branch: 'branch-1',
       currentAssignment: {
         customerId: 1,
         customerName: 'Nguyễn Thu Hà',
