@@ -91,7 +91,7 @@ const Reports: React.FC<ReportsProps> = ({ selectedBranch }) => {
       { name: 'Chăm sóc da mặt Premium', revenue: '9.8M', sessions: 18, growth: '+12%' },
       { name: 'Massage toàn thân', revenue: '7.5M', sessions: 15, growth: '+8%' },
       { name: 'Điều trị mụn', revenue: '6.2M', sessions: 12, growth: '+3%' },
-      { name: 'Tắm trắng toàn thân', revenue: '5.8M', sessions: 8, growth: '+18%' },
+      { name: 'Tắm tr���ng toàn thân', revenue: '5.8M', sessions: 8, growth: '+18%' },
       { name: 'Liệu trình giảm béo', revenue: '4.5M', sessions: 6, growth: '+10%' },
     ],
     'branch-4': [
@@ -134,7 +134,8 @@ const Reports: React.FC<ReportsProps> = ({ selectedBranch }) => {
       specialties: ['Chăm sóc da mặt', 'Điều trị mụn', 'Tái tạo da'],
       customers: 89,
       avgSessionValue: 272000,
-      branch: 'Chi nhánh Quận 1',
+      branchId: 'branch-1',
+      branchName: 'Chi nhánh Quận 1',
       efficiency: 92,
       monthlyTarget: 45000000,
       targetAchievement: 94.4
