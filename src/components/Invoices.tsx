@@ -56,7 +56,7 @@ const sampleTreatments = [
     id: 3,
     customer: 'Lê Minh Châu',
     customerId: 3,
-    name: 'Li��u trình giảm béo 6 tháng',
+    name: 'Liệu trình giảm béo 6 tháng',
     services: ['Giảm béo RF', 'Massage giảm béo', 'Tư vấn dinh dưỡng'],
     status: 'completed'
   },
@@ -158,7 +158,8 @@ const Invoices: React.FC<InvoicesProps> = ({ selectedBranch }) => {
       tax: 180000,
       total: 1980000,
       status: 'pending',
-      paymentMethod: 'transfer'
+      paymentMethod: 'transfer',
+      branch: 'branch-2'
     },
     {
       id: 'HD003',
@@ -1225,7 +1226,7 @@ const Invoices: React.FC<InvoicesProps> = ({ selectedBranch }) => {
                       : 'text-blue-700'
                   }`}>
                     {!formData.customerId ? (
-                      <>⚠️ <strong>Lưu ý:</strong> Vui lòng chọn khách hàng trước để xem dịch vụ từ liệu trình của họ.</>
+                      <>⚠️ <strong>Lưu ý:</strong> Vui lòng ch��n khách hàng trước để xem dịch vụ từ liệu trình của họ.</>
                     ) : (
                       <>💡 <strong>Mẹo:</strong> Nhấn "Chọn từ liệu tr��nh" để thêm các dịch vụ từ liệu trình hiện tại của khách hàng này.</>
                     )}
