@@ -3,7 +3,11 @@ import { Calendar, Clock, Plus, Filter, ChevronLeft, ChevronRight, X, Edit, Tras
 import AppointmentForm from './AppointmentForm';
 import { useAppointments, Appointment } from '../contexts/AppointmentContext';
 
-const Schedule: React.FC = () => {
+interface ScheduleProps {
+  selectedBranch: string;
+}
+
+const Schedule: React.FC<ScheduleProps> = ({ selectedBranch }) => {
   const { appointments, updateAppointment, deleteAppointment: deleteFromContext, addAppointment } = useAppointments();
   
   const [currentDate, setCurrentDate] = useState(new Date());
@@ -91,7 +95,11 @@ const Schedule: React.FC = () => {
       const appointmentDate = new Date(appointment.date);
       const isDateMatch = appointmentDate.toDateString() === date.toDateString();
       const statusMatch = filterStatus === 'all' || appointment.status === filterStatus;
-      return isDateMatch && statusMatch;
+
+      // Branch filtering
+      const branchMatch = selectedBranch === 'all-branches' || appointment.branch === selectedBranch;
+
+      return isDateMatch && statusMatch && branchMatch;
     });
   };
 
@@ -131,7 +139,11 @@ const Schedule: React.FC = () => {
     }
 
     const statusMatch = filterStatus === 'all' || appointment.status === filterStatus;
-    return dateMatch && statusMatch;
+
+    // Branch filtering
+    const branchMatch = selectedBranch === 'all-branches' || appointment.branch === selectedBranch;
+
+    return dateMatch && statusMatch && branchMatch;
   });
 
   const openAppointmentModal = (appointment?: Appointment, selectedDate?: Date) => {
