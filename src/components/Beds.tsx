@@ -353,6 +353,7 @@ const Beds: React.FC<BedsProps> = ({ selectedBranch }) => {
       room: newBedForm.room,
       type: newBedForm.type,
       status: 'available',
+      branch: newBedForm.branch,
       equipment: newBedForm.equipment.length > 0 ? newBedForm.equipment : ['Thiết bị cơ bản'],
       lastCleaned: getCurrentTime()
     };
@@ -362,7 +363,8 @@ const Beds: React.FC<BedsProps> = ({ selectedBranch }) => {
       name: '',
       room: 'Phòng Massage',
       type: 'massage',
-      equipment: []
+      equipment: [],
+      branch: selectedBranch !== 'all-branches' ? selectedBranch : (user?.accessibleBranches[0] || 'branch-1')
     });
   };
 
@@ -372,7 +374,8 @@ const Beds: React.FC<BedsProps> = ({ selectedBranch }) => {
       name: '',
       room: 'Phòng Massage',
       type: 'massage',
-      equipment: []
+      equipment: [],
+      branch: selectedBranch !== 'all-branches' ? selectedBranch : (user?.accessibleBranches[0] || 'branch-1')
     });
   };
 
@@ -383,7 +386,8 @@ const Beds: React.FC<BedsProps> = ({ selectedBranch }) => {
       name: bed.name,
       room: bed.room,
       type: bed.type,
-      equipment: [...bed.equipment]
+      equipment: [...bed.equipment],
+      branch: bed.branch
     });
     setShowEditDialog(true);
   };
@@ -396,6 +400,7 @@ const Beds: React.FC<BedsProps> = ({ selectedBranch }) => {
       name: editBedForm.name,
       room: editBedForm.room,
       type: editBedForm.type,
+      branch: editBedForm.branch,
       equipment: editBedForm.equipment.length > 0 ? editBedForm.equipment : ['Thiết bị cơ bản']
     };
 
@@ -413,7 +418,8 @@ const Beds: React.FC<BedsProps> = ({ selectedBranch }) => {
       name: '',
       room: 'Phòng Massage',
       type: 'massage',
-      equipment: []
+      equipment: [],
+      branch: 'branch-1'
     });
   };
 
