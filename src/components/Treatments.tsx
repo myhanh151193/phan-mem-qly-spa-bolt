@@ -1093,7 +1093,9 @@ const Treatments: React.FC<TreatmentsProps> = ({ selectedBranch }) => {
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none"
                     >
                       <option value="">Chọn khách hàng</option>
-                      {customers.map((customer) => (
+                      {allCustomers
+                        .filter(customer => customer.branch === formData.branch)
+                        .map((customer) => (
                         <option key={customer.id} value={customer.id}>
                           {customer.name} - {customer.phone} ({customer.membershipLevel})
                         </option>
