@@ -248,8 +248,32 @@ const Dashboard: React.FC<DashboardProps> = ({ selectedBranch }) => {
     ? allBranchesAppointments
     : branchAppointments[selectedBranch as keyof typeof branchAppointments] || [];
 
+  // Helper function to get branch name
+  const getBranchName = (branchId: string) => {
+    const branchNames = {
+      'branch-1': 'Chi nhánh Quận 1',
+      'branch-2': 'Chi nhánh Quận 3',
+      'branch-3': 'Chi nhánh Thủ Đức',
+      'branch-4': 'Chi nhánh Gò Vấp',
+      'all-branches': 'Tất cả chi nhánh'
+    };
+    return branchNames[branchId as keyof typeof branchNames] || 'Không xác định';
+  };
+
   return (
     <div className="space-y-6">
+      {/* Branch Info */}
+      {selectedBranch !== 'all-branches' && (
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+          <div className="flex items-center space-x-2">
+            <div className="w-2 h-2 bg-blue-600 rounded-full"></div>
+            <p className="text-blue-800 font-medium">
+              Hiển thị dữ liệu cho: {getBranchName(selectedBranch)}
+            </p>
+          </div>
+        </div>
+      )}
+
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {stats.map((stat, index) => {
