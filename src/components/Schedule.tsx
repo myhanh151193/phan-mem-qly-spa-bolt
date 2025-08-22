@@ -220,6 +220,7 @@ const Schedule: React.FC<ScheduleProps> = ({ selectedBranch }) => {
         date: currentDate.toISOString().split('T')[0],
         status: 'pending',
         services: [],
+        branch: selectedBranch === 'all-branches' ? 'branch-1' : selectedBranch,
         ...appointmentData
       } as Appointment;
       addAppointment(newAppointment);
