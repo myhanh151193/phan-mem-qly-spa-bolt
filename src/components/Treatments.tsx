@@ -937,54 +937,6 @@ const Treatments: React.FC = () => {
         ))}
       </div>
 
-      {/* Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="bg-white rounded-lg p-4 border border-gray-200">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-gray-600">Đang thực hiện</p>
-              <p className="text-2xl font-bold text-green-600">{stats.active}</p>
-            </div>
-            <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
-              <div className="w-4 h-4 bg-green-600 rounded-full"></div>
-            </div>
-          </div>
-        </div>
-        <div className="bg-white rounded-lg p-4 border border-gray-200">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-gray-600">Hoàn thành</p>
-              <p className="text-2xl font-bold text-blue-600">{stats.completed}</p>
-            </div>
-            <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-              <div className="w-4 h-4 bg-blue-600 rounded-full"></div>
-            </div>
-          </div>
-        </div>
-        <div className="bg-white rounded-lg p-4 border border-gray-200">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-gray-600">Tổng giá trị</p>
-              <p className="text-2xl font-bold text-purple-600">{stats.totalValue.toFixed(1)}M</p>
-            </div>
-            <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
-              <div className="w-4 h-4 bg-purple-600 rounded-full"></div>
-            </div>
-          </div>
-        </div>
-        <div className="bg-white rounded-lg p-4 border border-gray-200">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-gray-600">Tỷ lệ hoàn thành</p>
-              <p className="text-2xl font-bold text-orange-600">{stats.completionRate}%</p>
-            </div>
-            <div className="w-8 h-8 bg-orange-100 rounded-full flex items-center justify-center">
-              <div className="w-4 h-4 bg-orange-600 rounded-full"></div>
-            </div>
-          </div>
-        </div>
-      </div>
-
       {/* Create/Edit Modal */}
       {showModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
@@ -1121,7 +1073,7 @@ const Treatments: React.FC = () => {
 
             {/* Scheduling Options */}
             <div className="border-t pt-4">
-              <h3 className="text-lg font-medium text-gray-900 mb-4">Lịch hẹn định kỳ</h3>
+              <h3 className="text-lg font-medium text-gray-900 mb-4">Lịch hẹn ��ịnh kỳ</h3>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
                 <div>
@@ -1245,7 +1197,7 @@ const Treatments: React.FC = () => {
                         <h4 className="text-sm font-medium text-blue-900">Tự động tạo lịch hẹn</h4>
                         <p className="text-sm text-blue-700 mt-1">
                           {formData.scheduleType === 'weekly' && formData.weekDay !== undefined && (
-                            <>Hệ thống sẽ tự đ���ng tạo {formData.totalSessions} lịch hẹn vào {
+                            <>Hệ thống sẽ tự động tạo {formData.totalSessions} lịch hẹn vào {
                               ['Chủ Nhật', 'Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy'][formData.weekDay]
                             } hàng tuần l��c {formData.recurringTime}</>
                           )}
