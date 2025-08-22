@@ -185,6 +185,8 @@ const Invoices: React.FC = () => {
   const [formData, setFormData] = useState<Partial<Invoice>>({
     customer: '',
     customerId: undefined,
+    treatmentId: undefined,
+    treatmentName: '',
     date: new Date().toISOString().split('T')[0],
     dueDate: '',
     items: [],
@@ -804,7 +806,7 @@ const Invoices: React.FC = () => {
         <div className="bg-white rounded-lg p-4 border border-gray-200">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600">Quá h��n</p>
+              <p className="text-sm text-gray-600">Quá hạn</p>
               <p className="text-2xl font-bold text-red-600">{stats.overdue}</p>
             </div>
             <div className="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center">
@@ -1173,7 +1175,7 @@ const Invoices: React.FC = () => {
                     {!formData.customerId ? (
                       <>⚠️ <strong>Lưu ý:</strong> Vui lòng chọn khách hàng trước để xem dịch vụ từ liệu trình của họ.</>
                     ) : (
-                      <>💡 <strong>Mẹo:</strong> Nhấn "Chọn từ liệu tr��nh" đ�� thêm các dịch vụ từ liệu trình hiện tại của khách hàng này.</>
+                      <>💡 <strong>Mẹo:</strong> Nhấn "Chọn từ liệu tr��nh" để thêm các dịch vụ từ liệu trình hiện tại của khách hàng này.</>
                     )}
                   </p>
                 </div>
