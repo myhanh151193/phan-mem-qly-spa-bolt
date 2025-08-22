@@ -949,7 +949,7 @@ const Inventory: React.FC<InventoryProps> = ({ selectedBranch }) => {
           <div className="bg-white rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between p-6 border-b border-gray-200">
               <h2 className="text-xl font-semibold text-gray-900">
-                {editingItem ? 'Chỉnh sửa sản phẩm' : 'Thêm sản phẩm mới'}
+                {editingItem ? 'Chỉnh sửa sản ph��m' : 'Thêm sản phẩm mới'}
               </h2>
               <button onClick={() => setShowModal(false)} className="text-gray-400 hover:text-gray-600 transition-colors">
                 <X className="w-6 h-6" />
@@ -1053,8 +1053,8 @@ const Inventory: React.FC<InventoryProps> = ({ selectedBranch }) => {
                   <label className="block text-sm font-medium text-gray-700 mb-2">Nhà cung cấp</label>
                   <input
                     type="text"
-                    value={formData.supplier}
-                    onChange={(e) => setFormData(prev => ({ ...prev, supplier: e.target.value }))}
+                    value={productFormData.supplier}
+                    onChange={(e) => setProductFormData(prev => ({ ...prev, supplier: e.target.value }))}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
                 </div>
