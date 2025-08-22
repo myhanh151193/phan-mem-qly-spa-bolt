@@ -184,7 +184,7 @@ const Customers: React.FC<CustomersProps> = ({ selectedBranch }) => {
       ],
       notes: {
         allergies: 'Không dị ứng',
-        skinType: 'Da mụn, d���u',
+        skinType: 'Da mụn, dầu',
         favoriteServices: ['Điều trị mụn']
       },
       branch: 'branch-3'
@@ -518,8 +518,10 @@ const Customers: React.FC<CustomersProps> = ({ selectedBranch }) => {
         <div className="bg-white rounded-lg p-4 border border-gray-200">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600">Tổng khách hàng</p>
-              <p className="text-2xl font-bold text-gray-900">{customers.length}</p>
+              <p className="text-sm text-gray-600">
+                {selectedBranch === 'all-branches' ? 'Tổng khách hàng' : 'Khách hàng chi nhánh'}
+              </p>
+              <p className="text-2xl font-bold text-gray-900">{filteredCustomers.length}</p>
             </div>
             <Award className="w-8 h-8 text-blue-600" />
           </div>
@@ -529,7 +531,7 @@ const Customers: React.FC<CustomersProps> = ({ selectedBranch }) => {
             <div>
               <p className="text-sm text-gray-600">VVIP</p>
               <p className="text-2xl font-bold text-purple-600">
-                {customers.filter(c => c.membershipLevel === 'VVIP').length}
+                {filteredCustomers.filter(c => c.membershipLevel === 'VVIP').length}
               </p>
             </div>
             <Star className="w-8 h-8 text-purple-600" />
@@ -540,7 +542,7 @@ const Customers: React.FC<CustomersProps> = ({ selectedBranch }) => {
             <div>
               <p className="text-sm text-gray-600">Sinh nhật tháng này</p>
               <p className="text-2xl font-bold text-pink-600">
-                {customers.filter(c => isUpcomingBirthday(c.nextBirthday)).length}
+                {filteredCustomers.filter(c => isUpcomingBirthday(c.nextBirthday)).length}
               </p>
             </div>
             <Cake className="w-8 h-8 text-pink-600" />
@@ -551,7 +553,7 @@ const Customers: React.FC<CustomersProps> = ({ selectedBranch }) => {
             <div>
               <p className="text-sm text-gray-600">Tổng chi tiêu</p>
               <p className="text-2xl font-bold text-green-600">
-                {formatCurrency(customers.reduce((sum, c) => sum + c.totalSpent, 0))}
+                {formatCurrency(filteredCustomers.reduce((sum, c) => sum + c.totalSpent, 0))}
               </p>
             </div>
             <Gift className="w-8 h-8 text-green-600" />
