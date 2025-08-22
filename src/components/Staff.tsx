@@ -170,7 +170,13 @@ const Staff: React.FC = () => {
 
   // Available options
   const departments = ['Điều trị', 'Massage', 'Làm đẹp', 'Quản lý', 'Lễ tân', 'Kỹ thuật'];
-  const branches = ['Chi nhánh Quận 1', 'Chi nhánh Quận 3', 'Chi nhánh Thủ Đức', 'Chi nhánh Gò Vấp'];
+  const allBranches: Branch[] = [
+    { id: 'branch-1', name: 'Chi nhánh Quận 1', address: '123 Nguyễn Huệ, Q1' },
+    { id: 'branch-2', name: 'Chi nhánh Quận 3', address: '456 Võ Văn Tần, Q3' },
+    { id: 'branch-3', name: 'Chi nhánh Thủ Đức', address: '789 Phạm Văn Đồng, Thủ Đức' },
+    { id: 'branch-4', name: 'Chi nhánh Gò Vấp', address: '321 Quang Trung, Gò Vấp' }
+  ];
+  const branches = allBranches.map(b => b.name);
   const availableSpecialties = [
     'Chăm sóc da mặt', 'Điều trị mụn', 'Tái tạo da', 'Massage toàn thân', 
     'Massage thái', 'Massage đá nóng', 'Tắm trắng', 'Triệt lông', 'RF giảm béo',
