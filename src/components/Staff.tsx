@@ -488,7 +488,7 @@ const Staff: React.FC = () => {
             <option value="all">Tất cả trạng thái</option>
             <option value="active">Đang làm việc</option>
             <option value="on-leave">Nghỉ phép</option>
-            <option value="inactive">Không hoạt động</option>
+            <option value="inactive">Không hoạt đ��ng</option>
           </select>
 
           <select
@@ -983,6 +983,109 @@ const Staff: React.FC = () => {
                 </div>
               </div>
 
+              {/* Branch Access Management */}
+              <div>
+                <h3 className="text-lg font-medium text-gray-900 mb-4">Quyền truy cập chi nhánh</h3>
+                <div className="space-y-4">
+                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                    <div className="flex items-start space-x-2">
+                      <MapPin className="w-5 h-5 text-blue-600 mt-0.5" />
+                      <div>
+                        <h4 className="text-sm font-medium text-blue-900">Cài đặt quyền truy cập</h4>
+                        <p className="text-sm text-blue-700 mt-1">
+                          Chọn những chi nhánh mà nhân viên này có thể xem và làm việc. Chi nhánh chính sẽ được tự động thêm vào danh sách.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-3">
+                      Chi nhánh có thể truy cập ({formData.accessibleBranches.length}/{allBranches.length})
+                    </label>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      {allBranches.map((branch) => {
+                        const isAccessible = formData.accessibleBranches.includes(branch.id);
+                        const isPrimary = formData.branch === branch.name;
+                        return (
+                          <div
+                            key={branch.id}
+                            className={`border rounded-lg p-4 transition-all ${
+                              isAccessible
+                                ? 'border-blue-500 bg-blue-50'
+                                : 'border-gray-200 bg-white hover:border-gray-300'
+                            }`}
+                          >
+                            <label className="flex items-start space-x-3 cursor-pointer">
+                              <input
+                                type="checkbox"
+                                checked={isAccessible}
+                                onChange={() => toggleBranchAccess(branch.id)}
+                                className="mt-1 rounded text-blue-600 focus:ring-blue-500"
+                              />
+                              <div className="flex-1">
+                                <div className="flex items-center space-x-2">
+                                  <h4 className="text-sm font-medium text-gray-900">{branch.name}</h4>
+                                  {isPrimary && (
+                                    <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                      Chi nhánh chính
+                                    </span>
+                                  )}
+                                </div>
+                                <p className="text-xs text-gray-500 mt-1">{branch.address}</p>
+                                {isAccessible && (
+                                  <div className="flex items-center space-x-1 mt-2">
+                                    <Check className="w-3 h-3 text-green-600" />
+                                    <span className="text-xs text-green-600">Có quyền truy cập</span>
+                                  </div>
+                                )}
+                              </div>
+                            </label>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Quick access buttons */}
+                  <div className="flex flex-wrap gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setFormData(prev => ({
+                        ...prev,
+                        accessibleBranches: allBranches.map(b => b.id)
+                      }))}
+                      className="px-3 py-1 text-sm bg-blue-100 text-blue-700 rounded-md hover:bg-blue-200 transition-colors"
+                    >
+                      Chọn tất cả
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const primaryBranchId = getBranchIdByName(formData.branch);
+                        setFormData(prev => ({
+                          ...prev,
+                          accessibleBranches: primaryBranchId ? [primaryBranchId] : []
+                        }));
+                      }}
+                      className="px-3 py-1 text-sm bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors"
+                    >
+                      Chỉ chi nhánh chính
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setFormData(prev => ({
+                        ...prev,
+                        accessibleBranches: []
+                      }))}
+                      className="px-3 py-1 text-sm bg-red-100 text-red-700 rounded-md hover:bg-red-200 transition-colors"
+                    >
+                      Bỏ chọn tất cả
+                    </button>
+                  </div>
+                </div>
+              </div>
+
               {/* Specialties */}
               <div>
                 <h3 className="text-lg font-medium text-gray-900 mb-4">Chuyên môn</h3>
@@ -1200,7 +1303,7 @@ const Staff: React.FC = () => {
                 </div>
                 <div className="text-center">
                   <p className="text-2xl font-bold text-gray-900">{selectedStaff.permissions.length}</p>
-                  <p className="text-sm text-gray-500">Quyền hạn</p>
+                  <p className="text-sm text-gray-500">Quyền h���n</p>
                 </div>
               </div>
             </div>
