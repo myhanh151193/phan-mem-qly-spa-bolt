@@ -948,6 +948,173 @@ const Beds: React.FC<BedsProps> = ({ selectedBranch }) => {
         </div>
       )}
 
+      {/* Edit Bed Dialog */}
+      {showEditDialog && editingBed && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 w-full max-w-md mx-4">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">Chỉnh sửa giường</h3>
+
+            <div className="space-y-4">
+              {/* Bed Name */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Tên giường *
+                </label>
+                <input
+                  type="text"
+                  value={editBedForm.name}
+                  onChange={(e) => setEditBedForm(prev => ({ ...prev, name: e.target.value }))}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="Ví dụ: Giường Massage 1"
+                />
+              </div>
+
+              {/* Room */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Phòng
+                </label>
+                <select
+                  value={editBedForm.room}
+                  onChange={(e) => setEditBedForm(prev => ({ ...prev, room: e.target.value }))}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                >
+                  {rooms.filter(room => room !== 'all').map(room => (
+                    <option key={room} value={room}>{room}</option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Type */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Loại giường
+                </label>
+                <select
+                  value={editBedForm.type}
+                  onChange={(e) => setEditBedForm(prev => ({ ...prev, type: e.target.value as TreatmentBed['type'] }))}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                >
+                  <option value="massage">Massage</option>
+                  <option value="facial">Facial</option>
+                  <option value="body">Body</option>
+                  <option value="vip">VIP</option>
+                </select>
+              </div>
+
+              {/* Equipment */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Thiết bị (cách nhau bởi dấu phẩy)
+                </label>
+                <input
+                  type="text"
+                  value={editBedForm.equipment.join(', ')}
+                  onChange={(e) => setEditBedForm(prev => ({
+                    ...prev,
+                    equipment: e.target.value.split(',').map(item => item.trim()).filter(item => item)
+                  }))}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="Ví dụ: Máy massage, Đèn LED, Hệ thống âm thanh"
+                />
+              </div>
+
+              {/* Current Status Warning */}
+              {editingBed.status !== 'available' && (
+                <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
+                  <div className="flex items-start space-x-2">
+                    <div className="w-4 h-4 bg-yellow-400 rounded-full mt-0.5"></div>
+                    <div>
+                      <p className="text-sm font-medium text-yellow-800">Lưu ý</p>
+                      <p className="text-sm text-yellow-700">
+                        Giường đang có trạng thái: <strong>{getStatusText(editingBed.status)}</strong>.
+                        Việc chỉnh sửa có thể ảnh hưởng đến lịch hẹn hiện tại.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Dialog Actions */}
+            <div className="flex space-x-3 mt-6">
+              <button
+                onClick={handleCancelEdit}
+                className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+              >
+                Hủy
+              </button>
+              <button
+                onClick={handleEditBed}
+                disabled={!editBedForm.name.trim()}
+                className="flex-1 px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors flex items-center justify-center space-x-2"
+              >
+                <Save className="w-4 h-4" />
+                <span>Cập nhật</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {showDeleteConfirm && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 w-full max-w-md mx-4">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">Xác nhận xóa giường</h3>
+
+            <div className="mb-6">
+              <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+                <div className="flex items-start space-x-3">
+                  <div className="w-5 h-5 bg-red-500 rounded-full flex items-center justify-center mt-0.5">
+                    <Trash2 className="w-3 h-3 text-white" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-red-800">Cảnh báo</p>
+                    <p className="text-sm text-red-700 mt-1">
+                      Bạn có chắc chắn muốn xóa giường này? Hành động này không thể hoàn tác và sẽ:
+                    </p>
+                    <ul className="text-sm text-red-700 mt-2 space-y-1">
+                      <li>• Xóa tất cả thông tin về giường</li>
+                      <li>• Hủy các lịch hẹn đang được lên kế hoạch (nếu có)</li>
+                      <li>• Không thể khôi phục sau khi xóa</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              {(() => {
+                const bedToDelete = beds.find(bed => bed.id === showDeleteConfirm);
+                return bedToDelete ? (
+                  <div className="mt-4 p-3 bg-gray-50 rounded-lg">
+                    <h4 className="text-sm font-medium text-gray-900">{bedToDelete.name}</h4>
+                    <p className="text-sm text-gray-600">{bedToDelete.room} • {bedToDelete.type.toUpperCase()}</p>
+                    <p className="text-sm text-gray-500">Trạng thái: {getStatusText(bedToDelete.status)}</p>
+                  </div>
+                ) : null;
+              })()}
+            </div>
+
+            {/* Dialog Actions */}
+            <div className="flex space-x-3">
+              <button
+                onClick={handleCancelDelete}
+                className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+              >
+                Hủy
+              </button>
+              <button
+                onClick={() => handleDeleteBed(showDeleteConfirm)}
+                className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors flex items-center justify-center space-x-2"
+              >
+                <Trash2 className="w-4 h-4" />
+                <span>Xóa giường</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Appointment Dialog */}
       {showAppointmentDialog && selectedBed && (
         <AppointmentDialog
