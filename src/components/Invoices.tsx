@@ -27,6 +27,11 @@ interface Invoice {
   status: 'draft' | 'pending' | 'paid' | 'overdue' | 'cancelled';
   paymentMethod: 'cash' | 'transfer' | 'card' | 'other';
   notes?: string;
+  branch: string;
+}
+
+interface InvoicesProps {
+  selectedBranch: string;
 }
 
 // Sample treatment data - this should come from treatments context in real app
@@ -68,7 +73,7 @@ const sampleTreatments = [
     customer: 'Hoàng Văn Nam',
     customerId: 5,
     name: 'Liệu trình trị thâm nám',
-    services: ['Trị thâm', 'Chăm sóc da mặt', 'Căng da mặt'],
+    services: ['Trị thâm', 'Chăm s��c da mặt', 'Căng da mặt'],
     status: 'active'
   }
 ];
