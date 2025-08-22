@@ -489,7 +489,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
               className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             >
               <option value="">Chọn nhân viên (không bắt buộc)</option>
-              {staffMembers.map(staff => (
+              {filteredStaffMembers.map(staff => (
                 <option key={staff.name} value={staff.name}>{staff.name}</option>
               ))}
             </select>
