@@ -198,7 +198,7 @@ const AppointmentDialog: React.FC<AppointmentDialogProps> = ({
               {isEditing ? 'Chỉnh sửa lịch hẹn' : 'Đặt lịch hẹn'}
             </h2>
             <p className="text-sm text-gray-600 mt-1">
-              {bedName} • {date} • {timeSlot}
+              {bedName ? `${bedName} • ` : ''}{date} • {timeSlot}
             </p>
           </div>
           <button
