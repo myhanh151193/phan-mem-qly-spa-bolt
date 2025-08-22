@@ -965,7 +965,7 @@ const Invoices: React.FC = () => {
           <div className="bg-white rounded-xl shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between p-6 border-b border-gray-200">
               <h2 className="text-xl font-semibold text-gray-900">
-                {editingInvoice ? 'Sửa hóa đơn' : 'Tạo hóa đơn mới'}
+                {editingInvoice ? 'Sửa hóa ��ơn' : 'Tạo hóa đơn mới'}
               </h2>
               <button 
                 onClick={closeModal}
@@ -976,6 +976,19 @@ const Invoices: React.FC = () => {
             </div>
 
             <form onSubmit={handleSubmit} className="p-6 space-y-6">
+              {/* Treatment Link Info */}
+              {formData.treatmentId && formData.treatmentName && (
+                <div className="bg-purple-50 border border-purple-200 rounded-lg p-4">
+                  <div className="flex items-center space-x-2 mb-2">
+                    <Calendar className="w-5 h-5 text-purple-600" />
+                    <h3 className="font-medium text-purple-900">Hóa đơn liên kết với liệu trình</h3>
+                  </div>
+                  <p className="text-purple-700 text-sm">
+                    <strong>{formData.treatmentName}</strong> - Khi hóa đơn được thanh toán, hệ thống sẽ tự động cập nhật tình trạng thanh toán của liệu trình này.
+                  </p>
+                </div>
+              )}
+
               {/* Basic Information */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
@@ -1037,7 +1050,7 @@ const Invoices: React.FC = () => {
                     {formData.treatmentId && (
                       <div className="mt-2 p-3 bg-green-50 border border-green-200 rounded-lg">
                         <p className="text-sm text-green-700">
-                          ✓ Đã chọn li��u trình: <strong>{formData.treatmentName}</strong>
+                          ✓ Đã chọn liệu trình: <strong>{formData.treatmentName}</strong>
                         </p>
                         <button
                           type="button"
