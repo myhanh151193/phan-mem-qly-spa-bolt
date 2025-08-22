@@ -71,13 +71,50 @@ const Reports: React.FC<ReportsProps> = ({ selectedBranch }) => {
     ? aggregatedData
     : branchData[selectedBranch as keyof typeof branchData] || aggregatedData;
 
-  const topServices = [
-    { name: 'Chăm sóc da mặt Premium', revenue: '45.2M', sessions: 89, growth: '+15%' },
-    { name: 'Massage toàn thân', revenue: '38.7M', sessions: 76, growth: '+8%' },
-    { name: 'Tắm trắng toàn thân', revenue: '32.1M', sessions: 42, growth: '+22%' },
-    { name: 'Điều trị mụn', revenue: '28.9M', sessions: 65, growth: '+5%' },
-    { name: 'Liệu trình giảm béo', revenue: '25.3M', sessions: 28, growth: '+18%' },
+  // Branch-specific top services
+  const branchTopServices = {
+    'branch-1': [
+      { name: 'Chăm sóc da mặt Premium', revenue: '18.5M', sessions: 42, growth: '+18%' },
+      { name: 'Massage toàn thân', revenue: '15.2M', sessions: 35, growth: '+12%' },
+      { name: 'Tắm trắng toàn thân', revenue: '12.8M', sessions: 28, growth: '+25%' },
+      { name: 'Điều trị mụn', revenue: '11.3M', sessions: 32, growth: '+8%' },
+      { name: 'Liệu trình giảm béo', revenue: '9.8M', sessions: 15, growth: '+22%' },
+    ],
+    'branch-2': [
+      { name: 'Massage toàn thân', revenue: '12.8M', sessions: 28, growth: '+10%' },
+      { name: 'Chăm sóc da mặt Premium', revenue: '11.2M', sessions: 24, growth: '+15%' },
+      { name: 'Tắm trắng toàn thân', revenue: '9.8M', sessions: 18, growth: '+20%' },
+      { name: 'Điều trị mụn', revenue: '8.5M', sessions: 22, growth: '+5%' },
+      { name: 'Liệu trình giảm béo', revenue: '7.2M', sessions: 8, growth: '+15%' },
+    ],
+    'branch-3': [
+      { name: 'Chăm sóc da mặt Premium', revenue: '9.8M', sessions: 18, growth: '+12%' },
+      { name: 'Massage toàn thân', revenue: '7.5M', sessions: 15, growth: '+8%' },
+      { name: 'Điều trị mụn', revenue: '6.2M', sessions: 12, growth: '+3%' },
+      { name: 'Tắm trắng toàn thân', revenue: '5.8M', sessions: 8, growth: '+18%' },
+      { name: 'Liệu trình giảm béo', revenue: '4.5M', sessions: 6, growth: '+10%' },
+    ],
+    'branch-4': [
+      { name: 'Massage toàn thân', revenue: '3.2M', sessions: 8, growth: '+15%' },
+      { name: 'Chăm sóc da mặt Premium', revenue: '2.8M', sessions: 6, growth: '+12%' },
+      { name: 'Điều trị mụn', revenue: '2.1M', sessions: 5, growth: '+8%' },
+      { name: 'Tắm trắng toàn thân', revenue: '1.8M', sessions: 3, growth: '+20%' },
+      { name: 'Liệu trình giảm béo', revenue: '1.2M', sessions: 2, growth: '+25%' },
+    ]
+  };
+
+  // All branches aggregated
+  const allBranchesTopServices = [
+    { name: 'Chăm sóc da mặt Premium', revenue: '42.3M', sessions: 90, growth: '+15%' },
+    { name: 'Massage toàn thân', revenue: '38.7M', sessions: 86, growth: '+11%' },
+    { name: 'Tắm trắng toàn thân', revenue: '30.2M', sessions: 57, growth: '+21%' },
+    { name: 'Điều trị mụn', revenue: '28.1M', sessions: 71, growth: '+6%' },
+    { name: 'Liệu trình giảm béo', revenue: '22.7M', sessions: 31, growth: '+18%' },
   ];
+
+  const topServices = selectedBranch === 'all-branches'
+    ? allBranchesTopServices
+    : branchTopServices[selectedBranch as keyof typeof branchTopServices] || allBranchesTopServices;
 
   // Employee revenue data
   const employeeRevenue = [
@@ -115,7 +152,7 @@ const Reports: React.FC<ReportsProps> = ({ selectedBranch }) => {
       commissionFormatted: '3.82M',
       rating: 4.9,
       growth: '+18%',
-      specialties: ['Massage toàn thân', 'Massage thái', 'Massage đá nóng'],
+      specialties: ['Massage to��n thân', 'Massage thái', 'Massage đá nóng'],
       customers: 102,
       avgSessionValue: 163000,
       branch: 'Chi nhánh Quận 3',
@@ -157,7 +194,7 @@ const Reports: React.FC<ReportsProps> = ({ selectedBranch }) => {
       commissionFormatted: '2.89M',
       rating: 4.6,
       growth: '+5%',
-      specialties: ['Tư vấn làm đẹp', 'Liệu trình cá nhân', 'Chăm sóc sau điều trị'],
+      specialties: ['Tư vấn làm ��ẹp', 'Liệu trình cá nhân', 'Chăm sóc sau điều trị'],
       customers: 67,
       avgSessionValue: 202000,
       branch: 'Chi nhánh Quận 3',
