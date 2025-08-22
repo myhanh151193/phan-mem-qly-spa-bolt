@@ -64,6 +64,8 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
     customerPhone: '',
     services: [] as string[],
     staff: '',
+    bedId: undefined as number | undefined,
+    bedName: '',
     date: new Date().toISOString().split('T')[0], // Default to today
     time: '',
     duration: 60,
@@ -580,7 +582,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Thời gian dự kiến
+              Thời gian d��� kiến
             </label>
             <div className="w-full p-3 border border-gray-300 rounded-lg bg-gray-50">
               <span className="font-medium text-gray-900">{formData.duration} phút</span>
