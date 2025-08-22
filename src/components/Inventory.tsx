@@ -2,40 +2,64 @@ import React, { useState } from 'react';
 import { Search, Plus, Package, AlertTriangle, TrendingUp, TrendingDown, Edit2, Trash2, X, Save, Eye, Filter, Download, Upload, Calendar, User, Tag, Award, Grid, List } from 'lucide-react';
 import { categories as masterCategories, brands as masterBrands, Category, Brand } from '../data/masterData';
 
-interface InventoryItem {
+// Product master data (shared across all branches)
+interface Product {
   id: number;
   name: string;
   category: string;
   brand: string;
   sku: string;
+  description?: string;
+  image: string;
+  unitPrice: number;
+  supplier: string;
+  expiryDate?: string;
+  status: 'active' | 'inactive';
+  createdDate: string;
+}
+
+// Stock tracking per branch
+interface BranchStock {
+  id: number;
+  productId: number;
+  branch: string;
   stock: number;
   minStock: number;
   maxStock: number;
-  unitPrice: number;
-  totalValue: number;
-  lastRestocked: string;
-  supplier: string;
-  status: 'in-stock' | 'low-stock' | 'out-of-stock';
-  image: string;
-  description?: string;
-  expiryDate?: string;
   location?: string;
+  lastRestocked: string;
+}
+
+// Combined view for display
+interface InventoryView {
+  product: Product;
+  branchStock: BranchStock;
+  status: 'in-stock' | 'low-stock' | 'out-of-stock';
+  totalValue: number;
+}
+
+interface InventoryProps {
+  selectedBranch: string;
 }
 
 
-interface InventoryFormData {
+interface ProductFormData {
   name: string;
   category: string;
   brand: string;
   sku: string;
-  stock: number;
-  minStock: number;
-  maxStock: number;
   unitPrice: number;
   supplier: string;
   image: string;
   description: string;
   expiryDate: string;
+  status: 'active' | 'inactive';
+}
+
+interface StockFormData {
+  stock: number;
+  minStock: number;
+  maxStock: number;
   location: string;
 }
 
@@ -53,7 +77,7 @@ interface BrandFormData {
   logo: string;
 }
 
-const Inventory: React.FC = () => {
+const Inventory: React.FC<InventoryProps> = ({ selectedBranch }) => {
   const [activeTab, setActiveTab] = useState<'inventory' | 'categories' | 'brands'>('inventory');
   
   const [inventory, setInventory] = useState<InventoryItem[]>([
@@ -799,7 +823,7 @@ const Inventory: React.FC = () => {
                 
                 <div className="flex justify-between items-center text-sm">
                   <div className="text-gray-500">
-                    Ngày tạo: {brand.createdDate}
+                    Ngày t��o: {brand.createdDate}
                   </div>
                   <div className="flex items-center space-x-1 text-blue-600 font-medium">
                     <Package className="w-4 h-4" />
