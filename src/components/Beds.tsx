@@ -23,6 +23,7 @@ interface TreatmentBed {
   currentAssignment?: BedAssignment;
   equipment: string[];
   lastCleaned: string;
+  branch: string; // Branch ID where the bed is located
 }
 
 interface BedsProps {
@@ -86,6 +87,31 @@ const Beds: React.FC<BedsProps> = ({ selectedBranch }) => {
       'branch-4': 'Chi nhánh Gò Vấp'
     };
     return branchMap[branchId] || '';
+  };
+
+  // Get accessible branches for current user
+  const getAccessibleBranches = () => {
+    if (!user) return [];
+
+    const allBranches = [
+      { id: 'branch-1', name: 'Chi nhánh Quận 1' },
+      { id: 'branch-2', name: 'Chi nhánh Quận 3' },
+      { id: 'branch-3', name: 'Chi nhánh Thủ Đức' },
+      { id: 'branch-4', name: 'Chi nhánh Gò Vấp' }
+    ];
+
+    return allBranches.filter(branch => canAccessBranch(branch.id));
+  };
+
+  // Get rooms for selected branch
+  const getRoomsForBranch = (branchId: string): string[] => {
+    const branchRooms: { [key: string]: string[] } = {
+      'branch-1': ['Phòng VIP A', 'Phòng Chăm sóc da'],
+      'branch-2': ['Phòng Tắm trắng'],
+      'branch-3': ['Phòng Massage'],
+      'branch-4': ['Phòng VIP B', 'Phòng Trị liệu']
+    };
+    return branchRooms[branchId] || ['Phòng Massage'];
   };
 
   const [beds, setBeds] = useState<TreatmentBed[]>([
@@ -1032,7 +1058,7 @@ const Beds: React.FC<BedsProps> = ({ selectedBranch }) => {
                       <p className="text-sm font-medium text-yellow-800">Lưu ý</p>
                       <p className="text-sm text-yellow-700">
                         Giường đang có trạng thái: <strong>{getStatusText(editingBed.status)}</strong>.
-                        Việc chỉnh sửa có thể ảnh hưởng đến lịch hẹn hiện tại.
+                        Việc chỉnh sửa có thể ảnh hưởng đến lịch hẹn hi���n tại.
                       </p>
                     </div>
                   </div>
