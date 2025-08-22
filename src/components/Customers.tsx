@@ -54,7 +54,11 @@ interface NewCustomer {
   branch?: string;
 }
 
-const Customers: React.FC = () => {
+interface CustomersProps {
+  selectedBranch: string;
+}
+
+const Customers: React.FC<CustomersProps> = ({ selectedBranch }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [showDetailModal, setShowDetailModal] = useState(false);
@@ -62,6 +66,14 @@ const Customers: React.FC = () => {
   const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
   const [activeTab, setActiveTab] = useState<'info' | 'history' | 'notes' | 'offers'>('info');
   const [filterLevel, setFilterLevel] = useState<string>('all');
+
+  // Branch mapping for display
+  const branchMap: { [key: string]: string } = {
+    'branch-1': 'Chi nhánh Quận 1',
+    'branch-2': 'Chi nhánh Quận 3',
+    'branch-3': 'Chi nhánh Thủ Đức',
+    'branch-4': 'Chi nhánh Gò Vấp'
+  };
   
   const [customers, setCustomers] = useState<Customer[]>([
     {
@@ -202,10 +214,13 @@ const Customers: React.FC = () => {
     const matchesSearch = customer.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          customer.phone.includes(searchTerm) ||
                          customer.email.toLowerCase().includes(searchTerm.toLowerCase());
-    
+
     const matchesFilter = filterLevel === 'all' || customer.membershipLevel === filterLevel;
-    
-    return matchesSearch && matchesFilter;
+
+    // Branch filtering
+    const matchesBranch = selectedBranch === 'all-branches' || customer.branch === selectedBranch;
+
+    return matchesSearch && matchesFilter && matchesBranch;
   });
 
   const validateForm = (): boolean => {
@@ -294,7 +309,7 @@ const Customers: React.FC = () => {
       const newCustomerData: Customer = {
         id: Math.max(...customers.map(c => c.id)) + 1,
         ...newCustomer,
-        branch: newCustomer.branch || 'branch-1',
+        branch: newCustomer.branch || (selectedBranch === 'all-branches' ? 'branch-1' : selectedBranch),
         avatar: 'https://images.pexels.com/photos/1181519/pexels-photo-1181519.jpeg?w=150',
         membershipLevel: 'Member',
         totalSpent: 0,
@@ -360,7 +375,7 @@ const Customers: React.FC = () => {
       setEditCustomer(null);
       
     } catch (error) {
-      alert('Có lỗi xảy ra khi cập nhật khách hàng');
+      alert('Có lỗi xảy ra khi c��p nhật khách hàng');
     } finally {
       setIsEditSubmitting(false);
     }
@@ -430,7 +445,7 @@ const Customers: React.FC = () => {
             onChange={(e) => setFilterLevel(e.target.value)}
             className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           >
-            <option value="all">Tất cả hạng</option>
+            <option value="all">Tất c��� hạng</option>
             <option value="Member">Member</option>
             <option value="VIP">VIP</option>
             <option value="VVIP">VVIP</option>
@@ -910,7 +925,7 @@ const Customers: React.FC = () => {
                     <option value="Da khô">Da khô</option>
                     <option value="Da dầu">Da dầu</option>
                     <option value="Da hỗn hợp">Da hỗn hợp</option>
-                    <option value="Da nhạy cảm">Da nhạy cảm</option>
+                    <option value="Da nhạy c��m">Da nhạy cảm</option>
                     <option value="Da thường">Da thường</option>
                   </select>
                 </div>
