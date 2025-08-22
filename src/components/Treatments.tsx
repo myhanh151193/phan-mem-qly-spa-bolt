@@ -70,6 +70,7 @@ const Treatments: React.FC = () => {
       services: ['Điều trị mụn', 'Tái tạo da', 'Chăm sóc da'],
       totalValue: '15,600,000',
       totalAmount: 15600000,
+      branch: 'branch-1',
       appointments: [
         { id: 1, treatmentId: 1, date: '2025-01-15', time: '09:00', duration: 90, staff: 'Nguyễn Mai', status: 'scheduled', services: ['Điều trị mụn'], notes: 'Buổi 9' },
         { id: 2, treatmentId: 1, date: '2025-01-22', time: '09:00', duration: 90, staff: 'Nguyễn Mai', status: 'scheduled', services: ['Tái tạo da'], notes: 'Buổi 10' },
@@ -90,6 +91,7 @@ const Treatments: React.FC = () => {
       services: ['Chăm sóc da mặt', 'Massage', 'Tắm trắng'],
       totalValue: '12,800,000',
       totalAmount: 12800000,
+      branch: 'branch-2',
       appointments: [
         { id: 4, treatmentId: 2, date: '2025-01-20', time: '14:00', duration: 120, staff: 'Lê Hoa', status: 'scheduled', services: ['Chăm sóc da mặt', 'Massage'], notes: 'Buổi 7' },
         { id: 5, treatmentId: 2, date: '2025-02-03', time: '14:00', duration: 120, staff: 'Lê Hoa', status: 'scheduled', services: ['T���m trắng'], notes: 'Buổi cuối' }
@@ -109,6 +111,7 @@ const Treatments: React.FC = () => {
       services: ['Giảm béo RF', 'Massage giảm béo', 'Tư vấn dinh dưỡng'],
       totalValue: '28,800,000',
       totalAmount: 28800000,
+      branch: 'branch-3',
       appointments: []
     },
   ]);
@@ -930,7 +933,7 @@ const Treatments: React.FC = () => {
                     className="px-4 py-2 bg-indigo-600 text-white text-sm rounded-lg hover:bg-indigo-700 transition-colors duration-200 flex items-center justify-center space-x-1"
                   >
                     <Plus className="w-3 h-3" />
-                    <span>Đ���t lịch</span>
+                    <span>Đặt lịch</span>
                   </button>
                 )}
               </div>
@@ -1196,7 +1199,7 @@ const Treatments: React.FC = () => {
                     <div className="flex items-start space-x-2">
                       <Calendar className="w-5 h-5 text-blue-600 mt-0.5" />
                       <div>
-                        <h4 className="text-sm font-medium text-blue-900">Tự động t���o lịch hẹn</h4>
+                        <h4 className="text-sm font-medium text-blue-900">Tự động tạo lịch hẹn</h4>
                         <p className="text-sm text-blue-700 mt-1">
                           {formData.scheduleType === 'weekly' && formData.weekDay !== undefined && (
                             <>Hệ thống sẽ tự động tạo {formData.totalSessions} lịch hẹn vào {
