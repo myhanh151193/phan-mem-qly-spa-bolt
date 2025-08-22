@@ -85,7 +85,7 @@ const Treatments: React.FC = () => {
       ],
       appointments: [
         { id: 1, treatmentId: 1, date: '2025-01-15', time: '09:00', duration: 90, staff: 'Nguyễn Mai', status: 'scheduled', services: ['Điều trị mụn'], notes: 'Buổi 9' },
-        { id: 2, treatmentId: 1, date: '2025-01-22', time: '09:00', duration: 90, staff: 'Nguyễn Mai', status: 'scheduled', services: ['Tái t��o da'], notes: 'Buổi 10' },
+        { id: 2, treatmentId: 1, date: '2025-01-22', time: '09:00', duration: 90, staff: 'Nguyễn Mai', status: 'scheduled', services: ['Tái tạo da'], notes: 'Buổi 10' },
         { id: 3, treatmentId: 1, date: '2025-01-08', time: '09:00', duration: 90, staff: 'Nguyễn Mai', status: 'completed', services: ['Điều trị mụn'], notes: 'Buổi 8 - hoàn thành tốt' }
       ]
     },
@@ -214,6 +214,13 @@ const Treatments: React.FC = () => {
     staff: '',
     notes: '',
     services: [] as string[]
+  });
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [selectedTreatmentForPayment, setSelectedTreatmentForPayment] = useState<Treatment | null>(null);
+  const [paymentForm, setPaymentForm] = useState({
+    amount: '',
+    method: 'cash' as 'cash' | 'transfer' | 'card',
+    note: ''
   });
 
   const availableServices = [
@@ -1333,7 +1340,7 @@ const Treatments: React.FC = () => {
                 Xác nhận xóa liệu trình
               </h3>
               <p className="text-gray-600 mb-6">
-                Bạn có chắc chắn muốn xóa liệu trình này? Hành động này không thể hoàn tác.
+                Bạn có chắc chắn muốn xóa li���u trình này? Hành động này không thể hoàn tác.
               </p>
               <div className="flex justify-end space-x-3">
                 <button
