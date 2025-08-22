@@ -9,7 +9,164 @@ interface DashboardProps {
 }
 
 const Dashboard: React.FC<DashboardProps> = ({ selectedBranch }) => {
-  const stats = [
+  // Branch-specific stats
+  const branchStats = {
+    'branch-1': [
+      {
+        title: 'Doanh thu hôm nay',
+        value: '6.2M VNĐ',
+        change: '+15.2%',
+        trend: 'up',
+        icon: DollarSign,
+        color: 'text-green-600',
+        bg: 'bg-green-50',
+      },
+      {
+        title: 'Khách hàng mới',
+        value: '12',
+        change: '+10.5%',
+        trend: 'up',
+        icon: Users,
+        color: 'text-blue-600',
+        bg: 'bg-blue-50',
+      },
+      {
+        title: 'Lịch hẹn hôm nay',
+        value: '18',
+        change: '+5.2%',
+        trend: 'up',
+        icon: Calendar,
+        color: 'text-purple-600',
+        bg: 'bg-purple-50',
+      },
+      {
+        title: 'Đánh giá trung bình',
+        value: '4.9/5',
+        change: '+0.2',
+        trend: 'up',
+        icon: Star,
+        color: 'text-yellow-600',
+        bg: 'bg-yellow-50',
+      },
+    ],
+    'branch-2': [
+      {
+        title: 'Doanh thu hôm nay',
+        value: '4.8M VNĐ',
+        change: '+10.3%',
+        trend: 'up',
+        icon: DollarSign,
+        color: 'text-green-600',
+        bg: 'bg-green-50',
+      },
+      {
+        title: 'Khách hàng mới',
+        value: '8',
+        change: '+6.8%',
+        trend: 'up',
+        icon: Users,
+        color: 'text-blue-600',
+        bg: 'bg-blue-50',
+      },
+      {
+        title: 'Lịch hẹn hôm nay',
+        value: '12',
+        change: '-1.5%',
+        trend: 'down',
+        icon: Calendar,
+        color: 'text-purple-600',
+        bg: 'bg-purple-50',
+      },
+      {
+        title: 'Đánh giá trung bình',
+        value: '4.7/5',
+        change: '+0.4',
+        trend: 'up',
+        icon: Star,
+        color: 'text-yellow-600',
+        bg: 'bg-yellow-50',
+      },
+    ],
+    'branch-3': [
+      {
+        title: 'Doanh thu hôm nay',
+        value: '2.9M VNĐ',
+        change: '+8.7%',
+        trend: 'up',
+        icon: DollarSign,
+        color: 'text-green-600',
+        bg: 'bg-green-50',
+      },
+      {
+        title: 'Khách hàng mới',
+        value: '3',
+        change: '+12.5%',
+        trend: 'up',
+        icon: Users,
+        color: 'text-blue-600',
+        bg: 'bg-blue-50',
+      },
+      {
+        title: 'Lịch hẹn hôm nay',
+        value: '5',
+        change: '-5.2%',
+        trend: 'down',
+        icon: Calendar,
+        color: 'text-purple-600',
+        bg: 'bg-purple-50',
+      },
+      {
+        title: 'Đánh giá trung bình',
+        value: '4.6/5',
+        change: '+0.1',
+        trend: 'up',
+        icon: Star,
+        color: 'text-yellow-600',
+        bg: 'bg-yellow-50',
+      },
+    ],
+    'branch-4': [
+      {
+        title: 'Doanh thu hôm nay',
+        value: '1.3M VNĐ',
+        change: '+12.8%',
+        trend: 'up',
+        icon: DollarSign,
+        color: 'text-green-600',
+        bg: 'bg-green-50',
+      },
+      {
+        title: 'Khách hàng mới',
+        value: '1',
+        change: '+0%',
+        trend: 'up',
+        icon: Users,
+        color: 'text-blue-600',
+        bg: 'bg-blue-50',
+      },
+      {
+        title: 'Lịch hẹn hôm nay',
+        value: '1',
+        change: '-50%',
+        trend: 'down',
+        icon: Calendar,
+        color: 'text-purple-600',
+        bg: 'bg-purple-50',
+      },
+      {
+        title: 'Đánh giá trung bình',
+        value: '4.8/5',
+        change: '+0.5',
+        trend: 'up',
+        icon: Star,
+        color: 'text-yellow-600',
+        bg: 'bg-yellow-50',
+      },
+    ]
+  };
+
+  // Aggregated stats for all branches
+  const allBranchesStats = [
     {
       title: 'Doanh thu hôm nay',
       value: '15.2M VNĐ',
@@ -47,6 +204,11 @@ const Dashboard: React.FC<DashboardProps> = ({ selectedBranch }) => {
       bg: 'bg-yellow-50',
     },
   ];
+
+  // Get current stats based on selected branch
+  const stats = selectedBranch === 'all-branches'
+    ? allBranchesStats
+    : branchStats[selectedBranch as keyof typeof branchStats] || allBranchesStats;
 
   const recentAppointments = [
     { id: 1, customer: 'Nguyễn Thu Hà', service: 'Chăm sóc da mặt', time: '09:00', status: 'confirmed' },
