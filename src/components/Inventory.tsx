@@ -154,6 +154,37 @@ const Inventory: React.FC<InventoryProps> = ({ selectedBranch }) => {
     }
   ]);
 
+  // Branch stock data (stock per branch for each product)
+  const [branchStocks, setBranchStocks] = useState<BranchStock[]>([
+    // Chi nhánh Quận 1 stocks
+    { id: 1, productId: 1, branch: 'branch-1', stock: 25, minStock: 10, maxStock: 100, location: 'Kệ A1', lastRestocked: '2025-01-05' },
+    { id: 2, productId: 2, branch: 'branch-1', stock: 18, minStock: 15, maxStock: 80, location: 'Kệ A2', lastRestocked: '2024-12-28' },
+    { id: 3, productId: 3, branch: 'branch-1', stock: 3, minStock: 15, maxStock: 50, location: 'Kệ B1', lastRestocked: '2024-12-20' },
+    { id: 4, productId: 4, branch: 'branch-1', stock: 0, minStock: 8, maxStock: 40, location: 'Kệ C1', lastRestocked: '2024-11-15' },
+    { id: 5, productId: 5, branch: 'branch-1', stock: 12, minStock: 10, maxStock: 60, location: 'Kệ A3', lastRestocked: '2025-01-08' },
+
+    // Chi nhánh Quận 3 stocks
+    { id: 6, productId: 1, branch: 'branch-2', stock: 30, minStock: 12, maxStock: 80, location: 'Kệ B1', lastRestocked: '2025-01-10' },
+    { id: 7, productId: 2, branch: 'branch-2', stock: 22, minStock: 15, maxStock: 70, location: 'Kệ B2', lastRestocked: '2025-01-02' },
+    { id: 8, productId: 3, branch: 'branch-2', stock: 8, minStock: 10, maxStock: 40, location: 'Kệ C1', lastRestocked: '2024-12-25' },
+    { id: 9, productId: 4, branch: 'branch-2', stock: 15, minStock: 8, maxStock: 35, location: 'Kệ D1', lastRestocked: '2024-12-30' },
+    { id: 10, productId: 5, branch: 'branch-2', stock: 5, minStock: 8, maxStock: 50, location: 'Kệ B3', lastRestocked: '2024-12-20' },
+
+    // Chi nhánh Thủ Đức stocks
+    { id: 11, productId: 1, branch: 'branch-3', stock: 15, minStock: 8, maxStock: 60, location: 'Kệ A1', lastRestocked: '2024-12-28' },
+    { id: 12, productId: 2, branch: 'branch-3', stock: 10, minStock: 12, maxStock: 50, location: 'Kệ A2', lastRestocked: '2024-12-25' },
+    { id: 13, productId: 3, branch: 'branch-3', stock: 20, minStock: 15, maxStock: 45, location: 'Kệ B1', lastRestocked: '2025-01-03' },
+    { id: 14, productId: 4, branch: 'branch-3', stock: 8, minStock: 5, maxStock: 30, location: 'Kệ C1', lastRestocked: '2025-01-01' },
+    { id: 15, productId: 5, branch: 'branch-3', stock: 18, minStock: 10, maxStock: 55, location: 'Kệ A3', lastRestocked: '2025-01-12' },
+
+    // Chi nhánh Gò Vấp stocks
+    { id: 16, productId: 1, branch: 'branch-4', stock: 8, minStock: 10, maxStock: 70, location: 'Kệ A1', lastRestocked: '2024-12-15' },
+    { id: 17, productId: 2, branch: 'branch-4', stock: 25, minStock: 12, maxStock: 65, location: 'Kệ A2', lastRestocked: '2025-01-06' },
+    { id: 18, productId: 3, branch: 'branch-4', stock: 0, minStock: 10, maxStock: 40, location: 'Kệ B1', lastRestocked: '2024-11-20' },
+    { id: 19, productId: 4, branch: 'branch-4', stock: 12, minStock: 6, maxStock: 35, location: 'Kệ C1', lastRestocked: '2024-12-28' },
+    { id: 20, productId: 5, branch: 'branch-4', stock: 22, minStock: 10, maxStock: 60, location: 'Kệ A3', lastRestocked: '2025-01-10' }
+  ]);
+
   const [categories, setCategories] = useState<Category[]>(masterCategories.filter(cat => cat.type === 'product' || !cat.type));
   const [brands, setBrands] = useState<Brand[]>(masterBrands);
 
