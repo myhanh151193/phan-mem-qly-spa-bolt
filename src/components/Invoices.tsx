@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Plus, FileText, Download, Eye, Filter, Edit2, Trash2, X, Save, Calendar, User, ShoppingCart, Package, Percent, CreditCard, DollarSign, Clock } from 'lucide-react';
+import { Search, Plus, FileText, Download, Eye, Filter, Edit2, Trash2, X, Save, Calendar, User, ShoppingCart, Package, Percent, CreditCard, DollarSign, Clock, Printer } from 'lucide-react';
+import { useTreatmentPayment } from '../contexts/TreatmentPaymentContext';
 
 interface InvoiceItem {
   id: string;
@@ -14,6 +15,8 @@ interface Invoice {
   id: string;
   customer: string;
   customerId?: number;
+  treatmentId?: number;
+  treatmentName?: string;
   date: string;
   dueDate: string;
   items: InvoiceItem[];
@@ -86,7 +89,7 @@ const serviceCatalog = {
   'Tư vấn dinh dưỡng': { price: 200000, duration: 30, category: 'Tư vấn', description: 'Tư vấn chế độ dinh dưỡng phù hợp' },
   'Triệt lông': { price: 400000, duration: 45, category: 'Làm đẹp', description: 'Triệt lông vĩnh viễn bằng laser diode' },
   'Trị thâm': { price: 350000, duration: 60, category: 'Chăm sóc da', description: 'Điều trị thâm nám, tàn nhang hi���u quả' },
-  'Căng da mặt': { price: 1500000, duration: 180, category: 'Làm đẹp', description: 'Căng da mặt không phẫu thuật bằng Hifu' },
+  'Căng da mặt': { price: 1500000, duration: 180, category: 'Làm ��ẹp', description: 'Căng da mặt không phẫu thuật bằng Hifu' },
 };
 
 // Available products
@@ -109,6 +112,8 @@ const customers = [
 ];
 
 const Invoices: React.FC = () => {
+  const { updateInvoicePayment } = useTreatmentPayment();
+
   // Check URL params for treatment linking
   const urlParams = new URLSearchParams(window.location.hash.split('?')[1] || '');
   const treatmentIdFromUrl = urlParams.get('treatmentId');
@@ -180,6 +185,8 @@ const Invoices: React.FC = () => {
   const [formData, setFormData] = useState<Partial<Invoice>>({
     customer: '',
     customerId: undefined,
+    treatmentId: undefined,
+    treatmentName: '',
     date: new Date().toISOString().split('T')[0],
     dueDate: '',
     items: [],
@@ -227,9 +234,17 @@ const Invoices: React.FC = () => {
 
   const openCreateModal = () => {
     setEditingInvoice(null);
+
+    // Auto-fill treatment info if coming from treatment page
+    const treatmentId = treatmentIdFromUrl ? parseInt(treatmentIdFromUrl) : undefined;
+    const customerId = customerIdFromUrl ? parseInt(customerIdFromUrl) : undefined;
+    const treatment = treatmentId ? sampleTreatments.find(t => t.id === treatmentId) : undefined;
+
     setFormData({
-      customer: '',
-      customerId: undefined,
+      customer: treatment?.customer || '',
+      customerId: customerId,
+      treatmentId: treatmentId,
+      treatmentName: treatment?.name || '',
       date: new Date().toISOString().split('T')[0],
       dueDate: '',
       items: [],
@@ -257,7 +272,20 @@ const Invoices: React.FC = () => {
   const closeModal = () => {
     setShowModal(false);
     setEditingInvoice(null);
-    setFormData({});
+    setFormData({
+      customer: '',
+      customerId: undefined,
+      treatmentId: undefined,
+      treatmentName: '',
+      date: new Date().toISOString().split('T')[0],
+      dueDate: '',
+      items: [],
+      discount: 0,
+      tax: 10,
+      paymentMethod: 'cash',
+      status: 'draft',
+      notes: ''
+    });
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -278,6 +306,8 @@ const Invoices: React.FC = () => {
       id: editingInvoice ? editingInvoice.id : `HD${String(Date.now()).slice(-3)}`,
       customer: formData.customer!,
       customerId: formData.customerId,
+      treatmentId: formData.treatmentId,
+      treatmentName: formData.treatmentName,
       date: formData.date!,
       dueDate: formData.dueDate!,
       items: formData.items!,
@@ -289,6 +319,27 @@ const Invoices: React.FC = () => {
       paymentMethod: formData.paymentMethod as Invoice['paymentMethod'] || 'cash',
       notes: formData.notes
     };
+
+    // Update treatment payment if invoice is paid and linked to a treatment
+    if (invoiceData.status === 'paid' && invoiceData.treatmentId) {
+      // Check if this is a status change from non-paid to paid
+      const wasAlreadyPaid = editingInvoice && editingInvoice.status === 'paid';
+
+      if (!wasAlreadyPaid) {
+        updateInvoicePayment(
+          invoiceData.id,
+          invoiceData.treatmentId,
+          invoiceData.total,
+          invoiceData.paymentMethod === 'other' ? 'cash' : invoiceData.paymentMethod as 'cash' | 'transfer' | 'card',
+          `Thanh toán từ hóa đơn ${invoiceData.id}`
+        );
+
+        // Show success notification
+        setTimeout(() => {
+          alert(`✅ Hóa đơn đã được thanh toán và cập nhật vào liệu trình "${invoiceData.treatmentName}"`);
+        }, 500);
+      }
+    }
 
     if (editingInvoice) {
       setInvoices(prev => prev.map(inv => inv.id === editingInvoice.id ? invoiceData : inv));
@@ -302,6 +353,295 @@ const Invoices: React.FC = () => {
   const handleDelete = (id: string) => {
     setInvoices(prev => prev.filter(inv => inv.id !== id));
     setShowDeleteConfirm(null);
+  };
+
+  const printInvoice = (invoice: Invoice) => {
+    const customer = customers.find(c => c.id === invoice.customerId);
+    const printWindow = window.open('', '_blank');
+
+    if (!printWindow) {
+      alert('Vui lòng cho phép popup để in hóa đơn');
+      return;
+    }
+
+    const printContent = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <title>Hóa đơn ${invoice.id}</title>
+        <meta charset="UTF-8">
+        <style>
+          @media print {
+            @page {
+              margin: 20mm;
+              size: A4;
+            }
+            .no-print { display: none !important; }
+          }
+
+          * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+          }
+
+          body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+          }
+
+          .header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #e5e7eb;
+            padding-bottom: 20px;
+          }
+
+          .company-name {
+            font-size: 28px;
+            font-weight: bold;
+            color: #1f2937;
+            margin-bottom: 5px;
+          }
+
+          .company-info {
+            color: #6b7280;
+            font-size: 14px;
+          }
+
+          .invoice-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #1f2937;
+            margin: 20px 0;
+          }
+
+          .invoice-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+          }
+
+          .info-section h3 {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #374151;
+          }
+
+          .info-section p {
+            margin-bottom: 5px;
+            color: #6b7280;
+          }
+
+          .info-section .highlight {
+            color: #1f2937;
+            font-weight: 600;
+          }
+
+          .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+          }
+
+          .status-paid { background-color: #d1fae5; color: #047857; }
+          .status-pending { background-color: #fef3c7; color: #92400e; }
+          .status-overdue { background-color: #fee2e2; color: #dc2626; }
+          .status-draft { background-color: #f3f4f6; color: #374151; }
+          .status-cancelled { background-color: #fee2e2; color: #dc2626; }
+
+          .items-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+            border: 1px solid #e5e7eb;
+          }
+
+          .items-table th,
+          .items-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+          }
+
+          .items-table th {
+            background-color: #f9fafb;
+            font-weight: 600;
+            color: #374151;
+          }
+
+          .items-table tr:nth-child(even) {
+            background-color: #f9fafb;
+          }
+
+          .text-center { text-align: center; }
+          .text-right { text-align: right; }
+
+          .totals {
+            margin-left: auto;
+            width: 300px;
+            border: 1px solid #e5e7eb;
+          }
+
+          .totals tr td {
+            padding: 8px 12px;
+            border-bottom: 1px solid #e5e7eb;
+          }
+
+          .totals tr:last-child {
+            font-weight: bold;
+            background-color: #f3f4f6;
+          }
+
+          .totals tr:last-child td {
+            border-bottom: none;
+          }
+
+          .notes {
+            margin-top: 30px;
+            padding: 15px;
+            background-color: #f9fafb;
+            border-radius: 8px;
+            border-left: 4px solid #3b82f6;
+          }
+
+          .print-button {
+            background-color: #3b82f6;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-bottom: 20px;
+          }
+
+          .print-button:hover {
+            background-color: #2563eb;
+          }
+
+          .footer {
+            margin-top: 40px;
+            text-align: center;
+            color: #6b7280;
+            font-size: 12px;
+            border-top: 1px solid #e5e7eb;
+            padding-top: 20px;
+          }
+        </style>
+      </head>
+      <body>
+        <button class="print-button no-print" onclick="window.print()">🖨️ In hóa đơn</button>
+
+        <div class="header">
+          <div class="company-name">SPA & BEAUTY CENTER</div>
+          <div class="company-info">
+            Địa chỉ: 123 Đường ABC, Quận XYZ, TP.HCM<br>
+            Điện thoại: 0123 456 789 | Email: contact@spa.com
+          </div>
+        </div>
+
+        <div class="invoice-title text-center">HÓA ĐƠN THANH TOÁN</div>
+
+        <div class="invoice-info">
+          <div class="info-section">
+            <h3>Thông tin hóa đơn</h3>
+            <p><strong>Mã hóa đơn:</strong> <span class="highlight">${invoice.id}</span></p>
+            <p><strong>Ngày tạo:</strong> <span class="highlight">${new Date(invoice.date).toLocaleDateString('vi-VN')}</span></p>
+            <p><strong>Hạn thanh toán:</strong> <span class="highlight">${new Date(invoice.dueDate).toLocaleDateString('vi-VN')}</span></p>
+            <p><strong>Trạng thái:</strong>
+              <span class="status-badge status-${invoice.status}">${getStatusText(invoice.status)}</span>
+            </p>
+          </div>
+
+          <div class="info-section">
+            <h3>Thông tin khách hàng</h3>
+            <p><strong>Tên khách hàng:</strong> <span class="highlight">${invoice.customer}</span></p>
+            ${customer ? `
+              <p><strong>Số điện thoại:</strong> <span class="highlight">${customer.phone}</span></p>
+              <p><strong>Hạng thành viên:</strong> <span class="highlight">${customer.membershipLevel}</span></p>
+            ` : ''}
+            ${invoice.treatmentName ? `
+              <p><strong>Liệu trình:</strong> <span class="highlight">${invoice.treatmentName}</span></p>
+            ` : ''}
+          </div>
+        </div>
+
+        <table class="items-table">
+          <thead>
+            <tr>
+              <th>STT</th>
+              <th>Tên dịch vụ/sản phẩm</th>
+              <th>Loại</th>
+              <th class="text-center">Số lượng</th>
+              <th class="text-right">Đơn giá</th>
+              <th class="text-right">Thành tiền</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${invoice.items.map((item, index) => `
+              <tr>
+                <td class="text-center">${index + 1}</td>
+                <td>${item.name}</td>
+                <td>
+                  <span class="status-badge ${item.type === 'service' ? 'status-paid' : 'status-pending'}">
+                    ${item.type === 'service' ? 'Dịch vụ' : 'Sản phẩm'}
+                  </span>
+                </td>
+                <td class="text-center">${item.quantity}</td>
+                <td class="text-right">${formatCurrency(item.price)}</td>
+                <td class="text-right">${formatCurrency(item.total)}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+
+        <table class="totals">
+          <tr>
+            <td>Tạm tính:</td>
+            <td class="text-right">${formatCurrency(invoice.subtotal)}</td>
+          </tr>
+          <tr>
+            <td>Giảm giá:</td>
+            <td class="text-right">-${formatCurrency(invoice.discount)}</td>
+          </tr>
+          <tr>
+            <td>Thuế VAT:</td>
+            <td class="text-right">${formatCurrency(invoice.tax)}</td>
+          </tr>
+          <tr>
+            <td><strong>Tổng cộng:</strong></td>
+            <td class="text-right"><strong>${formatCurrency(invoice.total)}</strong></td>
+          </tr>
+        </table>
+
+        ${invoice.notes ? `
+          <div class="notes">
+            <h3>Ghi chú:</h3>
+            <p>${invoice.notes}</p>
+          </div>
+        ` : ''}
+
+        <div class="footer">
+          <p>Cảm ơn quý khách đã sử dụng dịch vụ của chúng tôi!</p>
+          <p>Hóa đơn được in vào ${new Date().toLocaleString('vi-VN')}</p>
+        </div>
+      </body>
+      </html>
+    `;
+
+    printWindow.document.write(printContent);
+    printWindow.document.close();
+    printWindow.focus();
   };
 
   const addService = (serviceName: string) => {
@@ -442,7 +782,7 @@ const Invoices: React.FC = () => {
             <option value="draft">Nháp</option>
             <option value="pending">Chờ thanh toán</option>
             <option value="paid">Đã thanh toán</option>
-            <option value="overdue">Quá hạn</option>
+            <option value="overdue">Qu�� hạn</option>
             <option value="cancelled">Đã hủy</option>
           </select>
         </div>
@@ -551,10 +891,17 @@ const Invoices: React.FC = () => {
                   </td>
                   <td className="px-6 py-4">
                     <div>
-                      <span className="text-sm font-medium text-gray-900">{invoice.customer}</span>
+                      <div className="flex items-center space-x-2">
+                        <span className="text-sm font-medium text-gray-900">{invoice.customer}</span>
+                        {invoice.treatmentId && (
+                          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+                            <Calendar className="w-3 h-3 mr-1" />
+                            Liệu trình
+                          </span>
+                        )}
+                      </div>
                       {invoice.treatmentName && (
                         <div className="text-xs text-purple-600 mt-1 flex items-center space-x-1">
-                          <Calendar className="w-3 h-3" />
                           <span>{invoice.treatmentName}</span>
                         </div>
                       )}
@@ -581,11 +928,18 @@ const Invoices: React.FC = () => {
                       <button className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors duration-200">
                         <Eye className="w-4 h-4" />
                       </button>
-                      <button 
+                      <button
                         onClick={() => openEditModal(invoice)}
                         className="p-2 text-gray-400 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors duration-200"
                       >
                         <Edit2 className="w-4 h-4" />
+                      </button>
+                      <button
+                        onClick={() => printInvoice(invoice)}
+                        className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors duration-200"
+                        title="In hóa đơn"
+                      >
+                        <Printer className="w-4 h-4" />
                       </button>
                       <button className="p-2 text-gray-400 hover:text-purple-600 hover:bg-purple-50 rounded-lg transition-colors duration-200">
                         <Download className="w-4 h-4" />
@@ -611,7 +965,7 @@ const Invoices: React.FC = () => {
           <div className="bg-white rounded-xl shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between p-6 border-b border-gray-200">
               <h2 className="text-xl font-semibold text-gray-900">
-                {editingInvoice ? 'Sửa hóa đơn' : 'Tạo hóa đơn mới'}
+                {editingInvoice ? 'Sửa hóa ��ơn' : 'Tạo hóa đơn mới'}
               </h2>
               <button 
                 onClick={closeModal}
@@ -622,6 +976,19 @@ const Invoices: React.FC = () => {
             </div>
 
             <form onSubmit={handleSubmit} className="p-6 space-y-6">
+              {/* Treatment Link Info */}
+              {formData.treatmentId && formData.treatmentName && (
+                <div className="bg-purple-50 border border-purple-200 rounded-lg p-4">
+                  <div className="flex items-center space-x-2 mb-2">
+                    <Calendar className="w-5 h-5 text-purple-600" />
+                    <h3 className="font-medium text-purple-900">Hóa đơn liên kết với liệu trình</h3>
+                  </div>
+                  <p className="text-purple-700 text-sm">
+                    <strong>{formData.treatmentName}</strong> - Khi hóa đơn được thanh toán, hệ thống sẽ tự động cập nhật tình trạng thanh toán của liệu trình này.
+                  </p>
+                </div>
+              )}
+
               {/* Basic Information */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
@@ -1127,7 +1494,7 @@ const Invoices: React.FC = () => {
                             className="w-full px-4 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg hover:from-blue-700 hover:to-blue-800 transition-all duration-200 font-medium shadow-sm flex items-center justify-center space-x-2"
                           >
                             <Plus className="w-4 h-4" />
-                            <span>Thêm vào hóa đơn</span>
+                            <span>Thêm vào hóa ��ơn</span>
                           </button>
                         </div>
                       ))}

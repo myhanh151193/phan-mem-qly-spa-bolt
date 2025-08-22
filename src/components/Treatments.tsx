@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
-import { Search, Plus, Calendar, User, ClipboardCheck, Edit2, Trash2, X, Save, ChevronDown, Clock, CalendarDays, UserCheck, FileText } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Search, Plus, Calendar, User, ClipboardCheck, Edit2, Trash2, X, Save, ChevronDown, Clock, CalendarDays, UserCheck, FileText, CreditCard, DollarSign } from 'lucide-react';
 import { useAppointments, Appointment as ContextAppointment } from '../contexts/AppointmentContext';
+import { useTreatmentPayment } from '../contexts/TreatmentPaymentContext';
 
 // Using Appointment from context
 type Appointment = ContextAppointment;
@@ -18,6 +19,7 @@ interface Treatment {
   progress: number;
   services: string[];
   totalValue: string;
+  totalAmount: number; // Total package amount in VND
   appointments: Appointment[];
 }
 
@@ -49,6 +51,7 @@ interface TreatmentFormData {
 
 const Treatments: React.FC = () => {
   const { addTreatmentAppointments, getAppointmentsForTreatment, updateAppointment, deleteAppointment: deleteAppointmentFromContext } = useAppointments();
+  const { getTreatmentPayment, updateTreatmentPayment, initializeTreatmentPayment, getPaymentStatusColor, getPaymentStatusText, formatCurrency } = useTreatmentPayment();
 
   const [treatments, setTreatments] = useState<Treatment[]>([
     {
@@ -64,6 +67,7 @@ const Treatments: React.FC = () => {
       progress: 67,
       services: ['Điều trị mụn', 'Tái tạo da', 'Chăm sóc da'],
       totalValue: '15,600,000',
+      totalAmount: 15600000,
       appointments: [
         { id: 1, treatmentId: 1, date: '2025-01-15', time: '09:00', duration: 90, staff: 'Nguyễn Mai', status: 'scheduled', services: ['Điều trị mụn'], notes: 'Buổi 9' },
         { id: 2, treatmentId: 1, date: '2025-01-22', time: '09:00', duration: 90, staff: 'Nguyễn Mai', status: 'scheduled', services: ['Tái tạo da'], notes: 'Buổi 10' },
@@ -83,9 +87,10 @@ const Treatments: React.FC = () => {
       progress: 75,
       services: ['Chăm sóc da mặt', 'Massage', 'Tắm trắng'],
       totalValue: '12,800,000',
+      totalAmount: 12800000,
       appointments: [
         { id: 4, treatmentId: 2, date: '2025-01-20', time: '14:00', duration: 120, staff: 'Lê Hoa', status: 'scheduled', services: ['Chăm sóc da mặt', 'Massage'], notes: 'Buổi 7' },
-        { id: 5, treatmentId: 2, date: '2025-02-03', time: '14:00', duration: 120, staff: 'Lê Hoa', status: 'scheduled', services: ['Tắm trắng'], notes: 'Buổi cuối' }
+        { id: 5, treatmentId: 2, date: '2025-02-03', time: '14:00', duration: 120, staff: 'Lê Hoa', status: 'scheduled', services: ['T���m trắng'], notes: 'Buổi cuối' }
       ]
     },
     {
@@ -101,6 +106,7 @@ const Treatments: React.FC = () => {
       progress: 100,
       services: ['Giảm béo RF', 'Massage giảm béo', 'Tư vấn dinh dưỡng'],
       totalValue: '28,800,000',
+      totalAmount: 28800000,
       appointments: []
     },
   ]);
@@ -181,6 +187,13 @@ const Treatments: React.FC = () => {
     notes: '',
     services: [] as string[]
   });
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [selectedTreatmentForPayment, setSelectedTreatmentForPayment] = useState<Treatment | null>(null);
+  const [paymentForm, setPaymentForm] = useState({
+    amount: '',
+    method: 'cash' as 'cash' | 'transfer' | 'card',
+    note: ''
+  });
 
   const availableServices = [
     'Điều trị mụn', 'Tái tạo da', 'Chăm sóc da', 'Chăm sóc da mặt', 
@@ -197,6 +210,7 @@ const Treatments: React.FC = () => {
       default: return 'bg-gray-100 text-gray-800';
     }
   };
+
 
   const getStatusText = (status: string) => {
     switch (status) {
@@ -433,6 +447,58 @@ const Treatments: React.FC = () => {
     }
   };
 
+  const openPaymentModal = (treatment: Treatment) => {
+    const paymentData = getTreatmentPayment(treatment.id);
+    setSelectedTreatmentForPayment(treatment);
+    setPaymentForm({
+      amount: paymentData && paymentData.remainingAmount > 0 ? paymentData.remainingAmount.toString() : '',
+      method: 'cash',
+      note: ''
+    });
+    setShowPaymentModal(true);
+  };
+
+  const closePaymentModal = () => {
+    setShowPaymentModal(false);
+    setSelectedTreatmentForPayment(null);
+    setPaymentForm({
+      amount: '',
+      method: 'cash',
+      note: ''
+    });
+  };
+
+  const handlePaymentSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!selectedTreatmentForPayment || !paymentForm.amount) {
+      alert('Vui lòng nhập số tiền thanh toán');
+      return;
+    }
+
+    const paymentData = getTreatmentPayment(selectedTreatmentForPayment.id);
+    if (!paymentData) {
+      alert('Không tìm thấy thông tin thanh toán');
+      return;
+    }
+
+    const paymentAmount = parseInt(paymentForm.amount);
+    if (paymentAmount <= 0 || paymentAmount > paymentData.remainingAmount) {
+      alert('Số tiền thanh toán không hợp lệ');
+      return;
+    }
+
+    // Update payment through context
+    updateTreatmentPayment(selectedTreatmentForPayment.id, {
+      date: new Date().toISOString().split('T')[0],
+      amount: paymentAmount,
+      method: paymentForm.method,
+      note: paymentForm.note
+    });
+
+    closePaymentModal();
+    alert('Thanh toán đã được ghi nhận thành công!');
+  };
+
   const openAppointmentModal = (treatment: Treatment) => {
     // Sync appointments from context
     const contextAppointments = getAppointmentsForTreatment(treatment.id);
@@ -652,6 +718,54 @@ const Treatments: React.FC = () => {
         </button>
       </div>
 
+      {/* Stats Overview */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div className="bg-white rounded-lg p-4 border border-gray-200">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm text-gray-600">Đang thực hiện</p>
+              <p className="text-2xl font-bold text-green-600">{stats.active}</p>
+            </div>
+            <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+              <div className="w-4 h-4 bg-green-600 rounded-full"></div>
+            </div>
+          </div>
+        </div>
+        <div className="bg-white rounded-lg p-4 border border-gray-200">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm text-gray-600">Hoàn thành</p>
+              <p className="text-2xl font-bold text-blue-600">{stats.completed}</p>
+            </div>
+            <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+              <div className="w-4 h-4 bg-blue-600 rounded-full"></div>
+            </div>
+          </div>
+        </div>
+        <div className="bg-white rounded-lg p-4 border border-gray-200">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm text-gray-600">Tổng giá trị</p>
+              <p className="text-2xl font-bold text-purple-600">{stats.totalValue.toFixed(1)}M</p>
+            </div>
+            <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
+              <div className="w-4 h-4 bg-purple-600 rounded-full"></div>
+            </div>
+          </div>
+        </div>
+        <div className="bg-white rounded-lg p-4 border border-gray-200">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm text-gray-600">Tỷ lệ hoàn thành</p>
+              <p className="text-2xl font-bold text-orange-600">{stats.completionRate}%</p>
+            </div>
+            <div className="w-8 h-8 bg-orange-100 rounded-full flex items-center justify-center">
+              <div className="w-4 h-4 bg-orange-600 rounded-full"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* Treatments List */}
       <div className="space-y-4">
         {filteredTreatments.map((treatment) => (
@@ -706,6 +820,53 @@ const Treatments: React.FC = () => {
                   </div>
                 </div>
 
+                {(() => {
+                  const paymentData = getTreatmentPayment(treatment.id);
+                  if (!paymentData) return null;
+
+                  return (
+                    <div className="mb-4 p-3 bg-gray-50 rounded-lg border border-gray-200">
+                      <div className="flex items-center justify-between mb-2">
+                        <div className="flex items-center space-x-2">
+                          <CreditCard className="w-4 h-4 text-gray-600" />
+                          <span className="text-sm font-medium text-gray-700">Tình trạng thanh toán</span>
+                        </div>
+                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${getPaymentStatusColor(paymentData.paymentStatus)}`}>
+                          {getPaymentStatusText(paymentData.paymentStatus)}
+                        </span>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-4 text-sm">
+                        <div>
+                          <span className="text-gray-600">Đã thanh toán:</span>
+                          <p className="font-semibold text-green-600">{formatCurrency(paymentData.paidAmount)}</p>
+                        </div>
+                        <div>
+                          <span className="text-gray-600">Còn lại:</span>
+                          <p className={`font-semibold ${paymentData.remainingAmount > 0 ? 'text-red-600' : 'text-green-600'}`}>
+                            {formatCurrency(paymentData.remainingAmount)}
+                          </p>
+                        </div>
+                      </div>
+
+                      {paymentData.remainingAmount > 0 && (
+                        <div className="mt-2">
+                          <div className="w-full bg-gray-200 rounded-full h-2">
+                            <div
+                              className="bg-green-500 h-2 rounded-full transition-all duration-300"
+                              style={{ width: `${(paymentData.paidAmount / paymentData.totalAmount) * 100}%` }}
+                            ></div>
+                          </div>
+                          <div className="flex justify-between items-center mt-1 text-xs text-gray-500">
+                            <span>{Math.round((paymentData.paidAmount / paymentData.totalAmount) * 100)}% đã thanh toán</span>
+                            <span>Tổng: {formatCurrency(paymentData.totalAmount)}</span>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })()}
+
                 {/* Next Session & Value */}
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between text-sm">
                   <div className="text-gray-600">
@@ -729,6 +890,13 @@ const Treatments: React.FC = () => {
                 >
                   <CalendarDays className="w-4 h-4" />
                   <span>Lịch hẹn</span>
+                </button>
+                <button
+                  onClick={() => openPaymentModal(treatment)}
+                  className="px-4 py-2 bg-green-600 text-white text-sm rounded-lg hover:bg-green-700 transition-colors duration-200 flex items-center justify-center space-x-1"
+                >
+                  <DollarSign className="w-4 h-4" />
+                  <span>Thanh toán</span>
                 </button>
                 <button
                   onClick={() => window.location.href = `#invoices?treatmentId=${treatment.id}&customerId=${customers.find(c => c.name === treatment.customer)?.id}`}
@@ -757,7 +925,7 @@ const Treatments: React.FC = () => {
                       setSelectedTreatment(treatment);
                       openAppointmentForm();
                     }}
-                    className="px-4 py-2 bg-green-600 text-white text-sm rounded-lg hover:bg-green-700 transition-colors duration-200 flex items-center justify-center space-x-1"
+                    className="px-4 py-2 bg-indigo-600 text-white text-sm rounded-lg hover:bg-indigo-700 transition-colors duration-200 flex items-center justify-center space-x-1"
                   >
                     <Plus className="w-3 h-3" />
                     <span>Đặt lịch</span>
@@ -767,54 +935,6 @@ const Treatments: React.FC = () => {
             </div>
           </div>
         ))}
-      </div>
-
-      {/* Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="bg-white rounded-lg p-4 border border-gray-200">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-gray-600">Đang thực hiện</p>
-              <p className="text-2xl font-bold text-green-600">{stats.active}</p>
-            </div>
-            <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
-              <div className="w-4 h-4 bg-green-600 rounded-full"></div>
-            </div>
-          </div>
-        </div>
-        <div className="bg-white rounded-lg p-4 border border-gray-200">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-gray-600">Hoàn thành</p>
-              <p className="text-2xl font-bold text-blue-600">{stats.completed}</p>
-            </div>
-            <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-              <div className="w-4 h-4 bg-blue-600 rounded-full"></div>
-            </div>
-          </div>
-        </div>
-        <div className="bg-white rounded-lg p-4 border border-gray-200">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-gray-600">Tổng giá trị</p>
-              <p className="text-2xl font-bold text-purple-600">{stats.totalValue.toFixed(1)}M</p>
-            </div>
-            <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
-              <div className="w-4 h-4 bg-purple-600 rounded-full"></div>
-            </div>
-          </div>
-        </div>
-        <div className="bg-white rounded-lg p-4 border border-gray-200">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-gray-600">Tỷ lệ hoàn thành</p>
-              <p className="text-2xl font-bold text-orange-600">{stats.completionRate}%</p>
-            </div>
-            <div className="w-8 h-8 bg-orange-100 rounded-full flex items-center justify-center">
-              <div className="w-4 h-4 bg-orange-600 rounded-full"></div>
-            </div>
-          </div>
-        </div>
       </div>
 
       {/* Create/Edit Modal */}
@@ -953,7 +1073,7 @@ const Treatments: React.FC = () => {
 
             {/* Scheduling Options */}
             <div className="border-t pt-4">
-              <h3 className="text-lg font-medium text-gray-900 mb-4">Lịch hẹn định kỳ</h3>
+              <h3 className="text-lg font-medium text-gray-900 mb-4">Lịch hẹn ��ịnh kỳ</h3>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
                 <div>
@@ -1079,7 +1199,7 @@ const Treatments: React.FC = () => {
                           {formData.scheduleType === 'weekly' && formData.weekDay !== undefined && (
                             <>Hệ thống sẽ tự động tạo {formData.totalSessions} lịch hẹn vào {
                               ['Chủ Nhật', 'Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy'][formData.weekDay]
-                            } hàng tuần lúc {formData.recurringTime}</>
+                            } hàng tuần l��c {formData.recurringTime}</>
                           )}
                           {formData.scheduleType === 'monthly' && formData.monthDay !== undefined && (
                             <>Hệ thống sẽ tự động tạo {formData.totalSessions} lịch hẹn vào ngày {formData.monthDay} hàng tháng lúc {formData.recurringTime}</>
@@ -1229,7 +1349,7 @@ const Treatments: React.FC = () => {
                 Xác nhận xóa liệu trình
               </h3>
               <p className="text-gray-600 mb-6">
-                Bạn có chắc chắn muốn xóa liệu trình này? Hành động này không thể hoàn tác.
+                Bạn có chắc chắn muốn x��a liệu trình này? Hành động này không thể hoàn tác.
               </p>
               <div className="flex justify-end space-x-3">
                 <button
@@ -1533,6 +1653,174 @@ const Treatments: React.FC = () => {
           </div>
         </div>
       )}
+
+      {/* Payment Modal */}
+      {showPaymentModal && selectedTreatmentForPayment && (() => {
+        const paymentData = getTreatmentPayment(selectedTreatmentForPayment.id);
+        if (!paymentData) return null;
+
+        return (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+            <div className="bg-white rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+              <div className="flex items-center justify-between p-6 border-b border-gray-200">
+                <h2 className="text-xl font-semibold text-gray-900 flex items-center space-x-2">
+                  <DollarSign className="w-6 h-6 text-green-600" />
+                  <span>Thanh toán liệu trình</span>
+                </h2>
+                <button
+                  onClick={closePaymentModal}
+                  className="text-gray-400 hover:text-gray-600 transition-colors"
+                >
+                  <X className="w-6 h-6" />
+                </button>
+              </div>
+
+              <div className="p-6">
+                {/* Treatment Info */}
+                <div className="bg-gray-50 rounded-lg p-4 mb-6">
+                  <h3 className="font-semibold text-gray-900 mb-2">{selectedTreatmentForPayment.name}</h3>
+                  <p className="text-gray-600 mb-3">Khách hàng: {selectedTreatmentForPayment.customer}</p>
+
+                  <div className="grid grid-cols-3 gap-4 text-sm">
+                    <div>
+                      <span className="text-gray-600">Tổng giá trị:</span>
+                      <p className="font-semibold text-gray-900">{formatCurrency(paymentData.totalAmount)}</p>
+                    </div>
+                    <div>
+                      <span className="text-gray-600">Đã thanh toán:</span>
+                      <p className="font-semibold text-green-600">{formatCurrency(paymentData.paidAmount)}</p>
+                    </div>
+                    <div>
+                      <span className="text-gray-600">Còn lại:</span>
+                      <p className="font-semibold text-red-600">{formatCurrency(paymentData.remainingAmount)}</p>
+                    </div>
+                  </div>
+
+                  <div className="mt-3">
+                    <div className="w-full bg-gray-200 rounded-full h-3">
+                      <div
+                        className="bg-green-500 h-3 rounded-full transition-all duration-300"
+                        style={{ width: `${(paymentData.paidAmount / paymentData.totalAmount) * 100}%` }}
+                      ></div>
+                    </div>
+                    <p className="text-xs text-gray-500 mt-1">
+                      {Math.round((paymentData.paidAmount / paymentData.totalAmount) * 100)}% đã thanh toán
+                    </p>
+                  </div>
+                </div>
+
+                {/* Payment History */}
+                <div className="mb-6">
+                  <h4 className="font-medium text-gray-900 mb-3">Lịch sử thanh toán</h4>
+                  <div className="space-y-2 max-h-32 overflow-y-auto">
+                    {paymentData.paymentHistory.map((payment) => (
+                      <div key={payment.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                        <div>
+                          <p className="text-sm font-medium text-gray-900">{formatCurrency(payment.amount)}</p>
+                          <p className="text-xs text-gray-500">{payment.date} - {payment.method}</p>
+                          {payment.note && <p className="text-xs text-gray-400">{payment.note}</p>}
+                          {payment.invoiceId && (
+                            <p className="text-xs text-blue-600">Từ hóa đơn: {payment.invoiceId}</p>
+                          )}
+                        </div>
+                        <span className="text-xs px-2 py-1 bg-green-100 text-green-800 rounded-full">
+                          {payment.method === 'cash' ? 'Tiền mặt' : payment.method === 'transfer' ? 'Chuyển khoản' : 'Thẻ'}
+                        </span>
+                      </div>
+                    ))}
+                    {paymentData.paymentHistory.length === 0 && (
+                      <p className="text-gray-500 text-sm text-center py-4">Chưa có giao dịch nào</p>
+                    )}
+                  </div>
+                </div>
+
+                {/* Payment Form */}
+                {paymentData.remainingAmount > 0 && (
+                  <form onSubmit={handlePaymentSubmit} className="space-y-4">
+                    <h4 className="font-medium text-gray-900">Thêm thanh toán mới</h4>
+
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Số tiền thanh toán *
+                        </label>
+                        <input
+                          type="number"
+                          required
+                          min="1"
+                          max={paymentData.remainingAmount}
+                          value={paymentForm.amount}
+                          onChange={(e) => setPaymentForm(prev => ({ ...prev, amount: e.target.value }))}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          placeholder="VD: 1000000"
+                        />
+                        <p className="text-xs text-gray-500 mt-1">
+                          Tối đa: {formatCurrency(paymentData.remainingAmount)}
+                        </p>
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Phương thức *
+                        </label>
+                        <select
+                          value={paymentForm.method}
+                          onChange={(e) => setPaymentForm(prev => ({ ...prev, method: e.target.value as 'cash' | 'transfer' | 'card' }))}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        >
+                          <option value="cash">Tiền mặt</option>
+                          <option value="transfer">Chuyển khoản</option>
+                          <option value="card">Thẻ</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Ghi chú
+                      </label>
+                      <input
+                        type="text"
+                        value={paymentForm.note}
+                        onChange={(e) => setPaymentForm(prev => ({ ...prev, note: e.target.value }))}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        placeholder="VD: Thanh toán buổi 10-12"
+                      />
+                    </div>
+
+                    <div className="flex justify-end space-x-3 pt-4">
+                      <button
+                        type="button"
+                        onClick={closePaymentModal}
+                        className="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+                      >
+                        Hủy
+                      </button>
+                      <button
+                        type="submit"
+                        className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors flex items-center space-x-2"
+                      >
+                        <DollarSign className="w-4 h-4" />
+                        <span>Xác nhận thanh toán</span>
+                      </button>
+                    </div>
+                  </form>
+                )}
+
+                {paymentData.remainingAmount === 0 && (
+                  <div className="text-center py-6">
+                    <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <DollarSign className="w-8 h-8 text-green-600" />
+                    </div>
+                    <h3 className="text-lg font-semibold text-green-600 mb-2">Đã thanh toán đầy đủ</h3>
+                    <p className="text-gray-600">Liệu trình này đã được thanh toán hoàn tất.</p>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        );
+      })()}
     </div>
   );
 };
