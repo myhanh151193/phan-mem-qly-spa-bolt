@@ -492,7 +492,7 @@ const Treatments: React.FC = () => {
   const handlePaymentSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedTreatmentForPayment || !paymentForm.amount) {
-      alert('Vui l��ng nhập số tiền thanh toán');
+      alert('Vui lòng nhập số tiền thanh toán');
       return;
     }
 
@@ -517,7 +517,7 @@ const Treatments: React.FC = () => {
     });
 
     closePaymentModal();
-    alert('Thanh toán đã được ghi nhận thành công!');
+    alert('Thanh toán đã đ��ợc ghi nhận thành công!');
   };
 
   const openAppointmentModal = (treatment: Treatment) => {
@@ -1676,164 +1676,172 @@ const Treatments: React.FC = () => {
       )}
 
       {/* Payment Modal */}
-      {showPaymentModal && selectedTreatmentForPayment && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-            <div className="flex items-center justify-between p-6 border-b border-gray-200">
-              <h2 className="text-xl font-semibold text-gray-900 flex items-center space-x-2">
-                <DollarSign className="w-6 h-6 text-green-600" />
-                <span>Thanh toán liệu trình</span>
-              </h2>
-              <button
-                onClick={closePaymentModal}
-                className="text-gray-400 hover:text-gray-600 transition-colors"
-              >
-                <X className="w-6 h-6" />
-              </button>
-            </div>
+      {showPaymentModal && selectedTreatmentForPayment && (() => {
+        const paymentData = getTreatmentPayment(selectedTreatmentForPayment.id);
+        if (!paymentData) return null;
 
-            <div className="p-6">
-              {/* Treatment Info */}
-              <div className="bg-gray-50 rounded-lg p-4 mb-6">
-                <h3 className="font-semibold text-gray-900 mb-2">{selectedTreatmentForPayment.name}</h3>
-                <p className="text-gray-600 mb-3">Khách hàng: {selectedTreatmentForPayment.customer}</p>
-
-                <div className="grid grid-cols-3 gap-4 text-sm">
-                  <div>
-                    <span className="text-gray-600">Tổng giá trị:</span>
-                    <p className="font-semibold text-gray-900">{formatCurrency(selectedTreatmentForPayment.totalAmount)}</p>
-                  </div>
-                  <div>
-                    <span className="text-gray-600">Đã thanh toán:</span>
-                    <p className="font-semibold text-green-600">{formatCurrency(selectedTreatmentForPayment.paidAmount)}</p>
-                  </div>
-                  <div>
-                    <span className="text-gray-600">Còn lại:</span>
-                    <p className="font-semibold text-red-600">{formatCurrency(selectedTreatmentForPayment.remainingAmount)}</p>
-                  </div>
-                </div>
-
-                <div className="mt-3">
-                  <div className="w-full bg-gray-200 rounded-full h-3">
-                    <div
-                      className="bg-green-500 h-3 rounded-full transition-all duration-300"
-                      style={{ width: `${(selectedTreatmentForPayment.paidAmount / selectedTreatmentForPayment.totalAmount) * 100}%` }}
-                    ></div>
-                  </div>
-                  <p className="text-xs text-gray-500 mt-1">
-                    {Math.round((selectedTreatmentForPayment.paidAmount / selectedTreatmentForPayment.totalAmount) * 100)}% đã thanh toán
-                  </p>
-                </div>
+        return (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+            <div className="bg-white rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+              <div className="flex items-center justify-between p-6 border-b border-gray-200">
+                <h2 className="text-xl font-semibold text-gray-900 flex items-center space-x-2">
+                  <DollarSign className="w-6 h-6 text-green-600" />
+                  <span>Thanh toán liệu trình</span>
+                </h2>
+                <button
+                  onClick={closePaymentModal}
+                  className="text-gray-400 hover:text-gray-600 transition-colors"
+                >
+                  <X className="w-6 h-6" />
+                </button>
               </div>
 
-              {/* Payment History */}
-              <div className="mb-6">
-                <h4 className="font-medium text-gray-900 mb-3">Lịch sử thanh toán</h4>
-                <div className="space-y-2 max-h-32 overflow-y-auto">
-                  {selectedTreatmentForPayment.paymentHistory.map((payment) => (
-                    <div key={payment.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                      <div>
-                        <p className="text-sm font-medium text-gray-900">{formatCurrency(payment.amount)}</p>
-                        <p className="text-xs text-gray-500">{payment.date} - {payment.method}</p>
-                        {payment.note && <p className="text-xs text-gray-400">{payment.note}</p>}
-                      </div>
-                      <span className="text-xs px-2 py-1 bg-green-100 text-green-800 rounded-full">
-                        {payment.method === 'cash' ? 'Tiền mặt' : payment.method === 'transfer' ? 'Chuyển khoản' : 'Thẻ'}
-                      </span>
+              <div className="p-6">
+                {/* Treatment Info */}
+                <div className="bg-gray-50 rounded-lg p-4 mb-6">
+                  <h3 className="font-semibold text-gray-900 mb-2">{selectedTreatmentForPayment.name}</h3>
+                  <p className="text-gray-600 mb-3">Khách hàng: {selectedTreatmentForPayment.customer}</p>
+
+                  <div className="grid grid-cols-3 gap-4 text-sm">
+                    <div>
+                      <span className="text-gray-600">Tổng giá trị:</span>
+                      <p className="font-semibold text-gray-900">{formatCurrency(paymentData.totalAmount)}</p>
                     </div>
-                  ))}
-                  {selectedTreatmentForPayment.paymentHistory.length === 0 && (
-                    <p className="text-gray-500 text-sm text-center py-4">Chưa có giao dịch nào</p>
-                  )}
+                    <div>
+                      <span className="text-gray-600">Đã thanh toán:</span>
+                      <p className="font-semibold text-green-600">{formatCurrency(paymentData.paidAmount)}</p>
+                    </div>
+                    <div>
+                      <span className="text-gray-600">Còn lại:</span>
+                      <p className="font-semibold text-red-600">{formatCurrency(paymentData.remainingAmount)}</p>
+                    </div>
+                  </div>
+
+                  <div className="mt-3">
+                    <div className="w-full bg-gray-200 rounded-full h-3">
+                      <div
+                        className="bg-green-500 h-3 rounded-full transition-all duration-300"
+                        style={{ width: `${(paymentData.paidAmount / paymentData.totalAmount) * 100}%` }}
+                      ></div>
+                    </div>
+                    <p className="text-xs text-gray-500 mt-1">
+                      {Math.round((paymentData.paidAmount / paymentData.totalAmount) * 100)}% đã thanh toán
+                    </p>
+                  </div>
                 </div>
-              </div>
 
-              {/* Payment Form */}
-              {selectedTreatmentForPayment.remainingAmount > 0 && (
-                <form onSubmit={handlePaymentSubmit} className="space-y-4">
-                  <h4 className="font-medium text-gray-900">Thêm thanh toán mới</h4>
+                {/* Payment History */}
+                <div className="mb-6">
+                  <h4 className="font-medium text-gray-900 mb-3">Lịch sử thanh toán</h4>
+                  <div className="space-y-2 max-h-32 overflow-y-auto">
+                    {paymentData.paymentHistory.map((payment) => (
+                      <div key={payment.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                        <div>
+                          <p className="text-sm font-medium text-gray-900">{formatCurrency(payment.amount)}</p>
+                          <p className="text-xs text-gray-500">{payment.date} - {payment.method}</p>
+                          {payment.note && <p className="text-xs text-gray-400">{payment.note}</p>}
+                          {payment.invoiceId && (
+                            <p className="text-xs text-blue-600">Từ hóa đơn: {payment.invoiceId}</p>
+                          )}
+                        </div>
+                        <span className="text-xs px-2 py-1 bg-green-100 text-green-800 rounded-full">
+                          {payment.method === 'cash' ? 'Tiền mặt' : payment.method === 'transfer' ? 'Chuyển khoản' : 'Thẻ'}
+                        </span>
+                      </div>
+                    ))}
+                    {paymentData.paymentHistory.length === 0 && (
+                      <p className="text-gray-500 text-sm text-center py-4">Chưa có giao dịch nào</p>
+                    )}
+                  </div>
+                </div>
 
-                  <div className="grid grid-cols-2 gap-4">
+                {/* Payment Form */}
+                {paymentData.remainingAmount > 0 && (
+                  <form onSubmit={handlePaymentSubmit} className="space-y-4">
+                    <h4 className="font-medium text-gray-900">Thêm thanh toán mới</h4>
+
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Số tiền thanh toán *
+                        </label>
+                        <input
+                          type="number"
+                          required
+                          min="1"
+                          max={paymentData.remainingAmount}
+                          value={paymentForm.amount}
+                          onChange={(e) => setPaymentForm(prev => ({ ...prev, amount: e.target.value }))}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          placeholder="VD: 1000000"
+                        />
+                        <p className="text-xs text-gray-500 mt-1">
+                          Tối đa: {formatCurrency(paymentData.remainingAmount)}
+                        </p>
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Phương thức *
+                        </label>
+                        <select
+                          value={paymentForm.method}
+                          onChange={(e) => setPaymentForm(prev => ({ ...prev, method: e.target.value as 'cash' | 'transfer' | 'card' }))}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        >
+                          <option value="cash">Tiền mặt</option>
+                          <option value="transfer">Chuyển khoản</option>
+                          <option value="card">Thẻ</option>
+                        </select>
+                      </div>
+                    </div>
+
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Số tiền thanh toán *
+                        Ghi chú
                       </label>
                       <input
-                        type="number"
-                        required
-                        min="1"
-                        max={selectedTreatmentForPayment.remainingAmount}
-                        value={paymentForm.amount}
-                        onChange={(e) => setPaymentForm(prev => ({ ...prev, amount: e.target.value }))}
+                        type="text"
+                        value={paymentForm.note}
+                        onChange={(e) => setPaymentForm(prev => ({ ...prev, note: e.target.value }))}
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                        placeholder="VD: 1000000"
+                        placeholder="VD: Thanh toán buổi 10-12"
                       />
-                      <p className="text-xs text-gray-500 mt-1">
-                        Tối đa: {formatCurrency(selectedTreatmentForPayment.remainingAmount)}
-                      </p>
                     </div>
 
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Phương thức *
-                      </label>
-                      <select
-                        value={paymentForm.method}
-                        onChange={(e) => setPaymentForm(prev => ({ ...prev, method: e.target.value as 'cash' | 'transfer' | 'card' }))}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    <div className="flex justify-end space-x-3 pt-4">
+                      <button
+                        type="button"
+                        onClick={closePaymentModal}
+                        className="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
                       >
-                        <option value="cash">Tiền mặt</option>
-                        <option value="transfer">Chuyển khoản</option>
-                        <option value="card">Thẻ</option>
-                      </select>
+                        Hủy
+                      </button>
+                      <button
+                        type="submit"
+                        className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors flex items-center space-x-2"
+                      >
+                        <DollarSign className="w-4 h-4" />
+                        <span>Xác nhận thanh toán</span>
+                      </button>
                     </div>
-                  </div>
+                  </form>
+                )}
 
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Ghi chú
-                    </label>
-                    <input
-                      type="text"
-                      value={paymentForm.note}
-                      onChange={(e) => setPaymentForm(prev => ({ ...prev, note: e.target.value }))}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      placeholder="VD: Thanh toán buổi 10-12"
-                    />
+                {paymentData.remainingAmount === 0 && (
+                  <div className="text-center py-6">
+                    <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <DollarSign className="w-8 h-8 text-green-600" />
+                    </div>
+                    <h3 className="text-lg font-semibold text-green-600 mb-2">Đã thanh toán đầy đủ</h3>
+                    <p className="text-gray-600">Liệu trình này đã được thanh toán hoàn tất.</p>
                   </div>
-
-                  <div className="flex justify-end space-x-3 pt-4">
-                    <button
-                      type="button"
-                      onClick={closePaymentModal}
-                      className="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
-                    >
-                      Hủy
-                    </button>
-                    <button
-                      type="submit"
-                      className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors flex items-center space-x-2"
-                    >
-                      <DollarSign className="w-4 h-4" />
-                      <span>Xác nhận thanh toán</span>
-                    </button>
-                  </div>
-                </form>
-              )}
-
-              {selectedTreatmentForPayment.remainingAmount === 0 && (
-                <div className="text-center py-6">
-                  <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <DollarSign className="w-8 h-8 text-green-600" />
-                  </div>
-                  <h3 className="text-lg font-semibold text-green-600 mb-2">Đã thanh toán đầy đủ</h3>
-                  <p className="text-gray-600">Liệu trình này đã được thanh toán hoàn tất.</p>
-                </div>
-              )}
+                )}
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        );
+      })()}
     </div>
   );
 };
