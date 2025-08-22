@@ -292,9 +292,8 @@ const Beds: React.FC<BedsProps> = ({ selectedBranch }) => {
     // Room filtering
     const roomMatch = selectedRoom === 'all' || bed.room === selectedRoom;
 
-    // Branch filtering
-    const bedBranch = getRoomBranch(bed.room);
-    const branchMatch = selectedBranch === 'all-branches' || bedBranch === selectedBranch;
+    // Branch filtering - use bed.branch instead of getRoomBranch
+    const branchMatch = selectedBranch === 'all-branches' || bed.branch === selectedBranch;
 
     return roomMatch && branchMatch;
   });
