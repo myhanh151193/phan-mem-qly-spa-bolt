@@ -85,12 +85,37 @@ const AppointmentDialog: React.FC<AppointmentDialogProps> = ({
 
   const staffMembers = [
     'Nguyễn Mai',
-    'Lê Hoa', 
+    'Lê Hoa',
     'Trần An',
     'Phạm Thùy',
     'Lý Thu',
     'Vũ Lan'
   ];
+
+  // Beds/Treatment rooms data with their branches
+  const allBeds = [
+    { id: 1, name: 'Phòng VIP 1', room: 'Phòng VIP', branch: 'branch-1' },
+    { id: 2, name: 'Phòng VIP 2', room: 'Phòng VIP', branch: 'branch-1' },
+    { id: 3, name: 'Phòng thường 1', room: 'Phòng thường', branch: 'branch-1' },
+    { id: 4, name: 'Phòng thường 2', room: 'Phòng thường', branch: 'branch-1' },
+    { id: 5, name: 'Phòng VIP A', room: 'Phòng VIP', branch: 'branch-2' },
+    { id: 6, name: 'Phòng VIP B', room: 'Phòng VIP', branch: 'branch-2' },
+    { id: 7, name: 'Phòng thường A', room: 'Phòng thường', branch: 'branch-2' },
+    { id: 8, name: 'Phòng thường B', room: 'Phòng thường', branch: 'branch-2' },
+    { id: 9, name: 'Phòng đặc biệt 1', room: 'Phòng đặc biệt', branch: 'branch-3' },
+    { id: 10, name: 'Phòng đặc biệt 2', room: 'Phòng đặc biệt', branch: 'branch-3' },
+    { id: 11, name: 'Phòng cơ bản 1', room: 'Phòng cơ bản', branch: 'branch-3' },
+    { id: 12, name: 'Phòng cơ bản 2', room: 'Phòng cơ bản', branch: 'branch-3' },
+    { id: 13, name: 'Phòng spa 1', room: 'Phòng spa', branch: 'branch-4' },
+    { id: 14, name: 'Phòng spa 2', room: 'Phòng spa', branch: 'branch-4' },
+    { id: 15, name: 'Phòng massage 1', room: 'Phòng massage', branch: 'branch-4' },
+    { id: 16, name: 'Phòng massage 2', room: 'Phòng massage', branch: 'branch-4' }
+  ];
+
+  // Filter beds by selected branch
+  const filteredBeds = selectedBranch === 'all-branches'
+    ? allBeds
+    : allBeds.filter(bed => bed.branch === selectedBranch);
 
   useEffect(() => {
     if (existingAppointment) {
