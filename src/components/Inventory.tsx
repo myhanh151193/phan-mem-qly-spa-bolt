@@ -199,23 +199,27 @@ const Inventory: React.FC<InventoryProps> = ({ selectedBranch }) => {
   const [editingBrand, setEditingBrand] = useState<Brand | null>(null);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState<number | null>(null);
   const [showDetailModal, setShowDetailModal] = useState(false);
-  const [selectedItem, setSelectedItem] = useState<InventoryItem | null>(null);
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [showStockModal, setShowStockModal] = useState(false);
   const [stockAdjustment, setStockAdjustment] = useState({ quantity: 0, type: 'in', note: '' });
 
-  const [formData, setFormData] = useState<InventoryFormData>({
+  const [productFormData, setProductFormData] = useState<ProductFormData>({
     name: '',
     category: '',
     brand: '',
     sku: '',
-    stock: 0,
-    minStock: 0,
-    maxStock: 0,
     unitPrice: 0,
     supplier: '',
     image: '',
     description: '',
     expiryDate: '',
+    status: 'active'
+  });
+
+  const [stockFormData, setStockFormData] = useState<StockFormData>({
+    stock: 0,
+    minStock: 0,
+    maxStock: 0,
     location: ''
   });
 
