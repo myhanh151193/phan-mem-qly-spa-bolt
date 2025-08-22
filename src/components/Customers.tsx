@@ -615,6 +615,12 @@ const Customers: React.FC<CustomersProps> = ({ selectedBranch }) => {
                 <Clock className="w-4 h-4" />
                 <span>Lần cuối: {customer.lastVisit}</span>
               </div>
+              {selectedBranch === 'all-branches' && (
+                <div className="flex items-center space-x-2 text-sm text-gray-500">
+                  <MapPin className="w-4 h-4" />
+                  <span>{branchMap[customer.branch]}</span>
+                </div>
+              )}
             </div>
 
             <div className="grid grid-cols-3 gap-4 pt-4 border-t border-gray-100">
