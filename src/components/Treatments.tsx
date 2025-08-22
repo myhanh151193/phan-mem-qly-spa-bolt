@@ -21,6 +21,7 @@ interface Treatment {
   totalValue: string;
   totalAmount: number; // Total package amount in VND
   appointments: Appointment[];
+  branch: string; // Branch where the treatment is managed
 }
 
 interface Customer {
@@ -30,6 +31,7 @@ interface Customer {
   email: string;
   membershipLevel: 'Member' | 'VIP' | 'VVIP';
   avatar: string;
+  branch: string;
 }
 
 interface TreatmentFormData {
@@ -928,7 +930,7 @@ const Treatments: React.FC = () => {
                     className="px-4 py-2 bg-indigo-600 text-white text-sm rounded-lg hover:bg-indigo-700 transition-colors duration-200 flex items-center justify-center space-x-1"
                   >
                     <Plus className="w-3 h-3" />
-                    <span>Đặt lịch</span>
+                    <span>Đ���t lịch</span>
                   </button>
                 )}
               </div>
@@ -1194,7 +1196,7 @@ const Treatments: React.FC = () => {
                     <div className="flex items-start space-x-2">
                       <Calendar className="w-5 h-5 text-blue-600 mt-0.5" />
                       <div>
-                        <h4 className="text-sm font-medium text-blue-900">Tự động tạo lịch hẹn</h4>
+                        <h4 className="text-sm font-medium text-blue-900">Tự động t���o lịch hẹn</h4>
                         <p className="text-sm text-blue-700 mt-1">
                           {formData.scheduleType === 'weekly' && formData.weekDay !== undefined && (
                             <>Hệ thống sẽ tự động tạo {formData.totalSessions} lịch hẹn vào {
