@@ -674,7 +674,7 @@ const Customers: React.FC<CustomersProps> = ({ selectedBranch }) => {
                 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Số điện thoại <span className="text-red-500">*</span>
+                    Số điện tho���i <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="tel"
@@ -760,6 +760,25 @@ const Customers: React.FC<CustomersProps> = ({ selectedBranch }) => {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Chi nhánh <span className="text-red-500">*</span>
+                  </label>
+                  <select
+                    value={newCustomer.branch || ''}
+                    onChange={(e) => handleInputChange('branch', e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  >
+                    <option value="branch-1">{branchMap['branch-1']}</option>
+                    <option value="branch-2">{branchMap['branch-2']}</option>
+                    <option value="branch-3">{branchMap['branch-3']}</option>
+                    <option value="branch-4">{branchMap['branch-4']}</option>
+                  </select>
+                  <p className="text-xs text-gray-500 mt-1">
+                    Chi nhánh chính để quản lý khách hàng
+                  </p>
+                </div>
+
+                <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Loại da</label>
                   <select
                     value={newCustomer.skinType || ''}
@@ -774,17 +793,17 @@ const Customers: React.FC<CustomersProps> = ({ selectedBranch }) => {
                     <option value="Da thường">Da thường</option>
                   </select>
                 </div>
+              </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Dị ứng</label>
-                  <input
-                    type="text"
-                    value={newCustomer.allergies || ''}
-                    onChange={(e) => handleInputChange('allergies', e.target.value)}
-                    placeholder="Ghi chú về dị ứng (nếu có)"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  />
-                </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Dị ứng</label>
+                <input
+                  type="text"
+                  value={newCustomer.allergies || ''}
+                  onChange={(e) => handleInputChange('allergies', e.target.value)}
+                  placeholder="Ghi chú về dị ứng (nếu có)"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
               </div>
 
               <div>
