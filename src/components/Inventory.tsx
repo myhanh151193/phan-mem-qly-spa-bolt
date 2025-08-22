@@ -756,15 +756,15 @@ const Inventory: React.FC<InventoryProps> = ({ selectedBranch }) => {
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center space-x-3">
                           <div className="flex flex-col">
-                            <span className="text-sm font-medium text-gray-900">{item.stock}</span>
-                            <div className="text-xs text-gray-500">Min: {item.minStock}</div>
+                            <span className="text-sm font-medium text-gray-900">{view.branchStock.stock}</span>
+                            <div className="text-xs text-gray-500">Min: {view.branchStock.minStock}</div>
                             <div className="w-20 bg-gray-200 rounded-full h-2 mt-1">
                               <div
-                                className={`h-2 rounded-full transition-all duration-300 ${getStockLevelColor(item.stock, item.minStock)} ${getStockLevel(item.stock, item.minStock, item.maxStock)}`}
+                                className={`h-2 rounded-full transition-all duration-300 ${getStockLevelColor(view.branchStock.stock, view.branchStock.minStock)} ${getStockLevel(view.branchStock.stock, view.branchStock.minStock, view.branchStock.maxStock)}`}
                               ></div>
                             </div>
                           </div>
-                          {item.stock <= item.minStock && item.stock > 0 && (
+                          {view.branchStock.stock <= view.branchStock.minStock && view.branchStock.stock > 0 && (
                             <AlertTriangle className="w-4 h-4 text-yellow-500" />
                           )}
                         </div>
