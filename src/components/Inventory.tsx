@@ -161,7 +161,7 @@ const Inventory: React.FC<InventoryProps> = ({ selectedBranch }) => {
     { id: 2, productId: 2, branch: 'branch-1', stock: 18, minStock: 15, maxStock: 80, location: 'Kệ A2', lastRestocked: '2024-12-28' },
     { id: 3, productId: 3, branch: 'branch-1', stock: 3, minStock: 15, maxStock: 50, location: 'Kệ B1', lastRestocked: '2024-12-20' },
     { id: 4, productId: 4, branch: 'branch-1', stock: 0, minStock: 8, maxStock: 40, location: 'Kệ C1', lastRestocked: '2024-11-15' },
-    { id: 5, productId: 5, branch: 'branch-1', stock: 12, minStock: 10, maxStock: 60, location: 'Kệ A3', lastRestocked: '2025-01-08' },
+    { id: 5, productId: 5, branch: 'branch-1', stock: 12, minStock: 10, maxStock: 60, location: 'K��� A3', lastRestocked: '2025-01-08' },
 
     // Chi nhánh Quận 3 stocks
     { id: 6, productId: 1, branch: 'branch-2', stock: 30, minStock: 12, maxStock: 80, location: 'Kệ B1', lastRestocked: '2025-01-10' },
@@ -963,8 +963,8 @@ const Inventory: React.FC<InventoryProps> = ({ selectedBranch }) => {
                   <input
                     type="text"
                     required
-                    value={formData.name}
-                    onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+                    value={productFormData.name}
+                    onChange={(e) => setProductFormData(prev => ({ ...prev, name: e.target.value }))}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
                 </div>
@@ -974,8 +974,8 @@ const Inventory: React.FC<InventoryProps> = ({ selectedBranch }) => {
                   <input
                     type="text"
                     required
-                    value={formData.sku}
-                    onChange={(e) => setFormData(prev => ({ ...prev, sku: e.target.value }))}
+                    value={productFormData.sku}
+                    onChange={(e) => setProductFormData(prev => ({ ...prev, sku: e.target.value }))}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
                 </div>
@@ -984,8 +984,8 @@ const Inventory: React.FC<InventoryProps> = ({ selectedBranch }) => {
                   <label className="block text-sm font-medium text-gray-700 mb-2">Danh mục *</label>
                   <select
                     required
-                    value={formData.category}
-                    onChange={(e) => setFormData(prev => ({ ...prev, category: e.target.value }))}
+                    value={productFormData.category}
+                    onChange={(e) => setProductFormData(prev => ({ ...prev, category: e.target.value }))}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   >
                     <option value="">Chọn danh mục</option>
