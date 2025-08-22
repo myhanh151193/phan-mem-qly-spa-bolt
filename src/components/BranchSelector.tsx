@@ -1,5 +1,5 @@
 import React from 'react';
-import { MapPin, ChevronDown } from 'lucide-react';
+import { MapPin, ChevronDown, Building2 } from 'lucide-react';
 
 interface Branch {
   id: string;
@@ -11,12 +11,14 @@ interface BranchSelectorProps {
   selectedBranch: string;
   setSelectedBranch: (branch: string) => void;
   accessibleBranches?: Branch[];
+  canViewAllBranches?: boolean;
 }
 
-const BranchSelector: React.FC<BranchSelectorProps> = ({ 
-  selectedBranch, 
-  setSelectedBranch, 
-  accessibleBranches 
+const BranchSelector: React.FC<BranchSelectorProps> = ({
+  selectedBranch,
+  setSelectedBranch,
+  accessibleBranches,
+  canViewAllBranches = false
 }) => {
   // Default branches if accessibleBranches is not provided (for backward compatibility)
   const defaultBranches = [
