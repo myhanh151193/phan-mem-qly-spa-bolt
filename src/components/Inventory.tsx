@@ -88,18 +88,13 @@ const Inventory: React.FC<InventoryProps> = ({ selectedBranch }) => {
       category: 'Sản phẩm chăm sóc da',
       brand: 'SkinCare Pro',
       sku: 'SKU001',
-      stock: 25,
-      minStock: 10,
-      maxStock: 100,
-      unitPrice: 450000,
-      totalValue: 11250000,
-      lastRestocked: '2025-01-05',
-      supplier: 'Beauty Supply Co.',
-      status: 'in-stock',
+      description: 'Serum dưỡng trắng da với Vitamin C tự nhiên',
       image: 'https://images.pexels.com/photos/4041392/pexels-photo-4041392.jpeg?w=150',
-      description: 'Serum dư��ng trắng da với Vitamin C tự nhiên',
+      unitPrice: 450000,
+      supplier: 'Beauty Supply Co.',
       expiryDate: '2026-01-05',
-      location: 'Kệ A1'
+      status: 'active',
+      createdDate: '2024-11-01'
     },
     {
       id: 2,
@@ -107,18 +102,13 @@ const Inventory: React.FC<InventoryProps> = ({ selectedBranch }) => {
       category: 'Sản phẩm chăm sóc da',
       brand: 'Beauty Plus',
       sku: 'SKU002',
-      stock: 18,
-      minStock: 15,
-      maxStock: 80,
-      unitPrice: 320000,
-      totalValue: 5760000,
-      lastRestocked: '2024-12-28',
-      supplier: 'Cosmetics Wholesale',
-      status: 'in-stock',
-      image: 'https://images.pexels.com/photos/4041390/pexels-photo-4041390.jpeg?w=150',
       description: 'Kem dưỡng ẩm sâu cho da ban đêm',
+      image: 'https://images.pexels.com/photos/4041390/pexels-photo-4041390.jpeg?w=150',
+      unitPrice: 320000,
+      supplier: 'Cosmetics Wholesale',
       expiryDate: '2025-12-28',
-      location: 'Kệ A2'
+      status: 'active',
+      createdDate: '2024-11-01'
     },
     {
       id: 3,
@@ -126,18 +116,13 @@ const Inventory: React.FC<InventoryProps> = ({ selectedBranch }) => {
       category: 'Mặt nạ',
       brand: 'GlowSkin',
       sku: 'SKU003',
-      stock: 3,
-      minStock: 15,
-      maxStock: 50,
-      unitPrice: 150000,
-      totalValue: 450000,
-      lastRestocked: '2024-12-20',
-      supplier: 'Natural Beauty Ltd.',
-      status: 'low-stock',
-      image: 'https://images.pexels.com/photos/4041388/pexels-photo-4041388.jpeg?w=150',
       description: 'Mặt nạ bổ sung collagen cho da căng mịn',
+      image: 'https://images.pexels.com/photos/4041388/pexels-photo-4041388.jpeg?w=150',
+      unitPrice: 150000,
+      supplier: 'Natural Beauty Ltd.',
       expiryDate: '2025-06-20',
-      location: 'Kệ B1'
+      status: 'active',
+      createdDate: '2024-11-01'
     },
     {
       id: 4,
@@ -145,19 +130,28 @@ const Inventory: React.FC<InventoryProps> = ({ selectedBranch }) => {
       category: 'Dầu massage',
       brand: 'Aromatherapy Pro',
       sku: 'SKU004',
-      stock: 0,
-      minStock: 8,
-      maxStock: 40,
-      unitPrice: 280000,
-      totalValue: 0,
-      lastRestocked: '2024-11-15',
-      supplier: 'Essential Oils Inc.',
-      status: 'out-of-stock',
-      image: 'https://images.pexels.com/photos/4041387/pexels-photo-4041387.jpeg?w=150',
       description: 'Tinh dầu thư giãn cho massage toàn thân',
+      image: 'https://images.pexels.com/photos/4041387/pexels-photo-4041387.jpeg?w=150',
+      unitPrice: 280000,
+      supplier: 'Essential Oils Inc.',
       expiryDate: '2025-11-15',
-      location: 'Kệ C1'
+      status: 'active',
+      createdDate: '2024-11-01'
     },
+    {
+      id: 5,
+      name: 'Kem chống nắng SPF50',
+      category: 'Sản phẩm chăm sóc da',
+      brand: 'SunGuard',
+      sku: 'SKU005',
+      description: 'Kem chống nắng bảo vệ da hiệu quả',
+      image: 'https://images.pexels.com/photos/4041392/pexels-photo-4041392.jpeg?w=150',
+      unitPrice: 380000,
+      supplier: 'Beauty Supply Co.',
+      expiryDate: '2026-06-15',
+      status: 'active',
+      createdDate: '2024-11-01'
+    }
   ]);
 
   const [categories, setCategories] = useState<Category[]>(masterCategories.filter(cat => cat.type === 'product' || !cat.type));
@@ -403,7 +397,7 @@ const Inventory: React.FC<InventoryProps> = ({ selectedBranch }) => {
     e.preventDefault();
     
     if (!brandFormData.name) {
-      alert('Vui lòng nh��p tên thương hiệu');
+      alert('Vui lòng nhập tên thương hiệu');
       return;
     }
 
@@ -843,7 +837,7 @@ const Inventory: React.FC<InventoryProps> = ({ selectedBranch }) => {
           <div className="bg-white rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between p-6 border-b border-gray-200">
               <h2 className="text-xl font-semibold text-gray-900">
-                {editingItem ? 'Ch���nh sửa sản phẩm' : 'Thêm sản phẩm mới'}
+                {editingItem ? 'Chỉnh sửa sản phẩm' : 'Thêm sản phẩm mới'}
               </h2>
               <button onClick={() => setShowModal(false)} className="text-gray-400 hover:text-gray-600 transition-colors">
                 <X className="w-6 h-6" />
