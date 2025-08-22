@@ -281,6 +281,35 @@ const AppointmentDialog: React.FC<AppointmentDialogProps> = ({
             </select>
           </div>
 
+          {/* Bed Selection (only show if not pre-selected) */}
+          {!bedName && (
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Phòng / Giường
+              </label>
+              <select
+                value={formData.bedId || ''}
+                onChange={(e) => {
+                  const selectedBedId = e.target.value ? parseInt(e.target.value) : undefined;
+                  const selectedBed = allBeds.find(bed => bed.id === selectedBedId);
+                  setFormData(prev => ({
+                    ...prev,
+                    bedId: selectedBedId,
+                    bedName: selectedBed ? selectedBed.name : ''
+                  }));
+                }}
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              >
+                <option value="">Chọn phòng/giường (không bắt buộc)</option>
+                {filteredBeds.map(bed => (
+                  <option key={bed.id} value={bed.id}>
+                    {bed.name} • {bed.room}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+
           {/* Staff Selection */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
