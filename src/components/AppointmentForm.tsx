@@ -34,6 +34,8 @@ interface Appointment {
   customerPhone?: string;
   services: string[];
   staff: string;
+  bedId?: number;
+  bedName?: string;
   status: 'confirmed' | 'in-progress' | 'pending' | 'cancelled' | 'completed';
   totalPrice: string;
   notes?: string;
@@ -633,7 +635,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
             >
               <option value="pending">Chờ xác nhận</option>
               <option value="confirmed">Đã xác nhận</option>
-              <option value="in-progress">Đang thực hiện</option>
+              <option value="in-progress">Đang thực hi��n</option>
               <option value="completed">Hoàn thành</option>
               <option value="cancelled">Đã hủy</option>
             </select>
