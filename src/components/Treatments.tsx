@@ -272,7 +272,8 @@ const Treatments: React.FC<TreatmentsProps> = ({ selectedBranch }) => {
       weekDay: 1,
       monthDay: 1,
       sessionDuration: 90,
-      preferredStaff: ''
+      preferredStaff: '',
+      branch: selectedBranch === 'all-branches' ? 'branch-1' : selectedBranch
     });
     setShowModal(true);
   };
@@ -1431,7 +1432,7 @@ const Treatments: React.FC<TreatmentsProps> = ({ selectedBranch }) => {
                 Xác nhận xóa liệu trình
               </h3>
               <p className="text-gray-600 mb-6">
-                Bạn có chắc chắn muốn x���a liệu trình này? Hành động này không thể hoàn tác.
+                Bạn có chắc chắn muốn x��a liệu trình này? Hành động này không thể hoàn tác.
               </p>
               <div className="flex justify-end space-x-3">
                 <button
