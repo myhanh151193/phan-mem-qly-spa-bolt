@@ -56,8 +56,8 @@ const sampleTreatments = [
     id: 3,
     customer: 'Lê Minh Châu',
     customerId: 3,
-    name: 'Liệu trình giảm béo 6 tháng',
-    services: ['Giảm béo RF', 'Massage giảm béo', 'Tư vấn dinh dư���ng'],
+    name: 'Li��u trình giảm béo 6 tháng',
+    services: ['Giảm béo RF', 'Massage giảm béo', 'Tư vấn dinh dưỡng'],
     status: 'completed'
   },
   {
@@ -140,7 +140,8 @@ const Invoices: React.FC<InvoicesProps> = ({ selectedBranch }) => {
       tax: 112500,
       total: 1237500,
       status: 'paid',
-      paymentMethod: 'cash'
+      paymentMethod: 'cash',
+      branch: 'branch-1'
     },
     {
       id: 'HD002',
