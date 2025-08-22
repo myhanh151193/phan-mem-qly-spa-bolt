@@ -496,6 +496,69 @@ const Treatments: React.FC = () => {
     }
   };
 
+  const openPaymentModal = (treatment: Treatment) => {
+    setSelectedTreatmentForPayment(treatment);
+    setPaymentForm({
+      amount: treatment.remainingAmount > 0 ? treatment.remainingAmount.toString() : '',
+      method: 'cash',
+      note: ''
+    });
+    setShowPaymentModal(true);
+  };
+
+  const closePaymentModal = () => {
+    setShowPaymentModal(false);
+    setSelectedTreatmentForPayment(null);
+    setPaymentForm({
+      amount: '',
+      method: 'cash',
+      note: ''
+    });
+  };
+
+  const handlePaymentSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!selectedTreatmentForPayment || !paymentForm.amount) {
+      alert('Vui lòng nhập số tiền thanh toán');
+      return;
+    }
+
+    const paymentAmount = parseInt(paymentForm.amount);
+    if (paymentAmount <= 0 || paymentAmount > selectedTreatmentForPayment.remainingAmount) {
+      alert('Số tiền thanh toán không hợp lệ');
+      return;
+    }
+
+    const newPayment = {
+      id: Date.now(),
+      date: new Date().toISOString().split('T')[0],
+      amount: paymentAmount,
+      method: paymentForm.method,
+      note: paymentForm.note
+    };
+
+    const updatedTreatment = {
+      ...selectedTreatmentForPayment,
+      paidAmount: selectedTreatmentForPayment.paidAmount + paymentAmount,
+      remainingAmount: selectedTreatmentForPayment.remainingAmount - paymentAmount,
+      paymentHistory: [...selectedTreatmentForPayment.paymentHistory, newPayment]
+    };
+
+    // Update payment status
+    if (updatedTreatment.remainingAmount === 0) {
+      updatedTreatment.paymentStatus = 'completed';
+    } else if (updatedTreatment.paidAmount > 0) {
+      updatedTreatment.paymentStatus = 'partial';
+    }
+
+    setTreatments(prev => prev.map(t =>
+      t.id === selectedTreatmentForPayment.id ? updatedTreatment : t
+    ));
+
+    closePaymentModal();
+    alert('Thanh toán đã được ghi nhận thành công!');
+  };
+
   const openAppointmentModal = (treatment: Treatment) => {
     // Sync appointments from context
     const contextAppointments = getAppointmentsForTreatment(treatment.id);
@@ -1340,7 +1403,7 @@ const Treatments: React.FC = () => {
                 Xác nhận xóa liệu trình
               </h3>
               <p className="text-gray-600 mb-6">
-                Bạn có chắc chắn muốn xóa li���u trình này? Hành động này không thể hoàn tác.
+                Bạn có chắc chắn muốn x��a liệu trình này? Hành động này không thể hoàn tác.
               </p>
               <div className="flex justify-end space-x-3">
                 <button
