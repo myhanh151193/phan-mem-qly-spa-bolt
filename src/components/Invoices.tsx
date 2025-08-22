@@ -176,8 +176,45 @@ const Invoices: React.FC<InvoicesProps> = ({ selectedBranch }) => {
       tax: 102600,
       total: 1128600,
       status: 'overdue',
-      paymentMethod: 'card'
+      paymentMethod: 'card',
+      branch: 'branch-1'
     },
+    {
+      id: 'HD004',
+      customer: 'Phạm Thị Lan',
+      customerId: 4,
+      date: '2025-01-12',
+      dueDate: '2025-01-19',
+      items: [
+        { id: '1', name: 'Triệt lông', type: 'service', quantity: 1, price: 400000, total: 400000 },
+        { id: '2', name: 'Kem chống nắng SPF50', type: 'product', quantity: 1, price: 380000, total: 380000 }
+      ],
+      subtotal: 780000,
+      discount: 0,
+      tax: 78000,
+      total: 858000,
+      status: 'paid',
+      paymentMethod: 'card',
+      branch: 'branch-3'
+    },
+    {
+      id: 'HD005',
+      customer: 'Hoàng Văn Nam',
+      customerId: 5,
+      date: '2025-01-14',
+      dueDate: '2025-01-21',
+      items: [
+        { id: '1', name: 'Căng da mặt', type: 'service', quantity: 1, price: 1500000, total: 1500000 },
+        { id: '2', name: 'Toner cân bằng pH', type: 'product', quantity: 1, price: 200000, total: 200000 }
+      ],
+      subtotal: 1700000,
+      discount: 170000,
+      tax: 153000,
+      total: 1683000,
+      status: 'draft',
+      paymentMethod: 'transfer',
+      branch: 'branch-4'
+    }
   ]);
 
   const [searchTerm, setSearchTerm] = useState('');
@@ -1226,7 +1263,7 @@ const Invoices: React.FC<InvoicesProps> = ({ selectedBranch }) => {
                       : 'text-blue-700'
                   }`}>
                     {!formData.customerId ? (
-                      <>⚠️ <strong>Lưu ý:</strong> Vui lòng ch��n khách hàng trước để xem dịch vụ từ liệu trình của họ.</>
+                      <>⚠️ <strong>Lưu ý:</strong> Vui lòng chọn khách hàng trước để xem dịch vụ từ liệu trình của họ.</>
                     ) : (
                       <>💡 <strong>Mẹo:</strong> Nhấn "Chọn từ liệu tr��nh" để thêm các dịch vụ từ liệu trình hiện tại của khách hàng này.</>
                     )}
