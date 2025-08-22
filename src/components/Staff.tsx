@@ -668,6 +668,41 @@ const Staff: React.FC = () => {
               </div>
             </div>
 
+            {/* Branch Access */}
+            <div className="mb-4">
+              <p className="text-sm text-gray-500 mb-2">Quyền truy cập chi nhánh ({member.accessibleBranches?.length || 0}):</p>
+              <div className="flex flex-wrap gap-2">
+                {member.accessibleBranches?.slice(0, 2).map((branchId) => {
+                  const branchName = getBranchNameById(branchId);
+                  const isPrimary = member.branch === branchName;
+                  return (
+                    <span
+                      key={branchId}
+                      className={`px-2 py-1 text-xs rounded-md flex items-center space-x-1 ${
+                        isPrimary
+                          ? 'bg-green-50 text-green-700 border border-green-200'
+                          : 'bg-orange-50 text-orange-700'
+                      }`}
+                    >
+                      <MapPin className="w-3 h-3" />
+                      <span>{branchName.replace('Chi nhánh ', '')}</span>
+                      {isPrimary && <span className="text-green-600">★</span>}
+                    </span>
+                  );
+                }) || []}
+                {(member.accessibleBranches?.length || 0) > 2 && (
+                  <span className="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded-md">
+                    +{(member.accessibleBranches?.length || 0) - 2} khác
+                  </span>
+                )}
+                {(!member.accessibleBranches || member.accessibleBranches.length === 0) && (
+                  <span className="px-2 py-1 bg-red-50 text-red-700 text-xs rounded-md">
+                    Chưa có quyền truy cập
+                  </span>
+                )}
+              </div>
+            </div>
+
             {/* Performance Metrics */}
             <div className="grid grid-cols-3 gap-4 pt-4 border-t border-gray-100">
               <div className="text-center">
