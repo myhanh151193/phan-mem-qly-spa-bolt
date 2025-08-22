@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Bed, Clock, User, Plus, MapPin, Settings, Eye, CheckCircle, XCircle, Play, Pause, Timer, Edit, Trash2, X, Save } from 'lucide-react';
 import AppointmentDialog from './AppointmentDialog';
+import { useAuth } from '../contexts/AuthContext';
 
 interface BedAssignment {
   customerId: number;
@@ -29,6 +30,7 @@ interface BedsProps {
 }
 
 const Beds: React.FC<BedsProps> = ({ selectedBranch }) => {
+  const { user, canAccessBranch } = useAuth();
   const [selectedRoom, setSelectedRoom] = useState<string>('all');
 
   // Reset room selection when branch changes and current room is not available
@@ -46,13 +48,15 @@ const Beds: React.FC<BedsProps> = ({ selectedBranch }) => {
     name: '',
     room: 'Phòng Massage',
     type: 'massage' as TreatmentBed['type'],
-    equipment: [] as string[]
+    equipment: [] as string[],
+    branch: selectedBranch !== 'all-branches' ? selectedBranch : (user?.accessibleBranches[0] || 'branch-1')
   });
   const [editBedForm, setEditBedForm] = useState({
     name: '',
     room: 'Phòng Massage',
     type: 'massage' as TreatmentBed['type'],
-    equipment: [] as string[]
+    equipment: [] as string[],
+    branch: 'branch-1'
   });
 
   // Appointment Dialog State
