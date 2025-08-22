@@ -18,6 +18,17 @@ interface Treatment {
   progress: number;
   services: string[];
   totalValue: string;
+  totalAmount: number; // Total package amount in VND
+  paidAmount: number; // Amount already paid
+  remainingAmount: number; // Amount remaining to pay
+  paymentStatus: 'pending' | 'partial' | 'completed';
+  paymentHistory: Array<{
+    id: number;
+    date: string;
+    amount: number;
+    method: 'cash' | 'transfer' | 'card';
+    note?: string;
+  }>;
   appointments: Appointment[];
 }
 
