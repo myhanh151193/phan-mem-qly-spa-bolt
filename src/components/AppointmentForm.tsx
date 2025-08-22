@@ -483,7 +483,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
             >
               <option value="">Chọn nhân viên (không bắt buộc)</option>
               {staffMembers.map(staff => (
-                <option key={staff} value={staff}>{staff}</option>
+                <option key={staff.name} value={staff.name}>{staff.name}</option>
               ))}
             </select>
           </div>
