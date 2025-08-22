@@ -24,7 +24,11 @@ interface TreatmentBed {
   lastCleaned: string;
 }
 
-const Beds: React.FC = () => {
+interface BedsProps {
+  selectedBranch: string;
+}
+
+const Beds: React.FC<BedsProps> = ({ selectedBranch }) => {
   const [selectedRoom, setSelectedRoom] = useState<string>('all');
   const [viewMode, setViewMode] = useState<'grid' | 'timeline'>('grid');
   const [showAddDialog, setShowAddDialog] = useState<boolean>(false);
@@ -41,6 +45,28 @@ const Beds: React.FC = () => {
   const [selectedTimeSlot, setSelectedTimeSlot] = useState<string>('');
   const [editingAssignment, setEditingAssignment] = useState<BedAssignment | null>(null);
   const [isEditingAppointment, setIsEditingAppointment] = useState<boolean>(false);
+
+  // Helper function to map rooms to branches
+  const getRoomBranch = (room: string): string => {
+    const roomToBranch: { [key: string]: string } = {
+      'Phòng VIP A': 'branch-1',
+      'Phòng Chăm sóc da': 'branch-1',
+      'Phòng Tắm trắng': 'branch-2',
+      'Phòng Massage': 'branch-3'
+    };
+    return roomToBranch[room] || 'branch-1';
+  };
+
+  // Helper function to get branch name from ID
+  const getBranchNameFromId = (branchId: string): string => {
+    const branchMap: { [key: string]: string } = {
+      'branch-1': 'Chi nhánh Quận 1',
+      'branch-2': 'Chi nhánh Quận 3',
+      'branch-3': 'Chi nhánh Thủ Đức',
+      'branch-4': 'Chi nhánh Gò Vấp'
+    };
+    return branchMap[branchId] || '';
+  };
 
   const [beds, setBeds] = useState<TreatmentBed[]>([
     {
@@ -147,7 +173,18 @@ const Beds: React.FC = () => {
     }
   ]);
 
-  const rooms = ['all', 'Phòng VIP A', 'Phòng Chăm sóc da', 'Phòng Tắm trắng', 'Phòng Massage'];
+  // Filter rooms based on selected branch
+  const getAllRooms = () => ['Phòng VIP A', 'Phòng Chăm sóc da', 'Phòng Tắm trắng', 'Phòng Massage'];
+
+  const getAvailableRooms = () => {
+    if (selectedBranch === 'all-branches') {
+      return ['all', ...getAllRooms()];
+    }
+    const availableRooms = getAllRooms().filter(room => getRoomBranch(room) === selectedBranch);
+    return ['all', ...availableRooms];
+  };
+
+  const rooms = getAvailableRooms();
 
   const getBedTypeColor = (type: string) => {
     switch (type) {
@@ -197,9 +234,16 @@ const Beds: React.FC = () => {
     }
   };
 
-  const filteredBeds = beds.filter(bed => 
-    selectedRoom === 'all' || bed.room === selectedRoom
-  );
+  const filteredBeds = beds.filter(bed => {
+    // Room filtering
+    const roomMatch = selectedRoom === 'all' || bed.room === selectedRoom;
+
+    // Branch filtering
+    const bedBranch = getRoomBranch(bed.room);
+    const branchMatch = selectedBranch === 'all-branches' || bedBranch === selectedBranch;
+
+    return roomMatch && branchMatch;
+  });
 
   const getCurrentTime = () => {
     return new Date().toLocaleTimeString('vi-VN', { 
