@@ -44,7 +44,11 @@ interface StaffFormData {
   permissions: string[];
 }
 
-const Staff: React.FC = () => {
+interface StaffProps {
+  selectedBranch: string;
+}
+
+const Staff: React.FC<StaffProps> = ({ selectedBranch }) => {
   const [staff, setStaff] = useState<Staff[]>([
     {
       id: 1,
@@ -451,18 +455,38 @@ const Staff: React.FC = () => {
     ));
   };
 
+  // Helper function to get branch name from ID
+  const getBranchNameFromId = (branchId: string): string => {
+    const branchMap: { [key: string]: string } = {
+      'branch-1': 'Chi nhánh Quận 1',
+      'branch-2': 'Chi nhánh Quận 3',
+      'branch-3': 'Chi nhánh Thủ Đức',
+      'branch-4': 'Chi nhánh Gò Vấp'
+    };
+    return branchMap[branchId] || '';
+  };
+
   // Filter staff
   const filteredStaff = staff.filter(member => {
-    const matchesSearch = 
+    const matchesSearch =
       member.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       member.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
       member.position.toLowerCase().includes(searchTerm.toLowerCase()) ||
       member.department.toLowerCase().includes(searchTerm.toLowerCase());
-    
+
     const matchesStatus = filterStatus === 'all' || member.status === filterStatus;
     const matchesRole = filterRole === 'all' || member.role === filterRole;
-    
-    return matchesSearch && matchesStatus && matchesRole;
+
+    // Branch filtering
+    let matchesBranch = true;
+    if (selectedBranch !== 'all-branches') {
+      const selectedBranchName = getBranchNameFromId(selectedBranch);
+      if (selectedBranchName) {
+        matchesBranch = member.branch === selectedBranchName;
+      }
+    }
+
+    return matchesSearch && matchesStatus && matchesRole && matchesBranch;
   });
 
   // Calculate stats
@@ -789,7 +813,7 @@ const Staff: React.FC = () => {
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Chức vụ *
+                      Ch��c vụ *
                     </label>
                     <input
                       type="text"
@@ -1102,7 +1126,7 @@ const Staff: React.FC = () => {
                       }))}
                       className="px-3 py-1 text-sm bg-blue-100 text-blue-700 rounded-md hover:bg-blue-200 transition-colors"
                     >
-                      Chọn tất cả
+                      Chọn tất c��
                     </button>
                     <button
                       type="button"
@@ -1269,7 +1293,7 @@ const Staff: React.FC = () => {
                   </div>
                   <div>
                     <label className="text-sm font-medium text-gray-500">Địa chỉ</label>
-                    <p className="text-gray-900">{selectedStaff.address || 'Chưa cập nhật'}</p>
+                    <p className="text-gray-900">{selectedStaff.address || 'Chưa c��p nhật'}</p>
                   </div>
                   <div>
                     <label className="text-sm font-medium text-gray-500">Liên hệ khẩn cấp</label>
