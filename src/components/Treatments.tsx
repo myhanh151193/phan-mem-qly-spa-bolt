@@ -877,6 +877,12 @@ const Treatments: React.FC<TreatmentsProps> = ({ selectedBranch }) => {
                         <Calendar className="w-4 h-4" />
                         <span>{treatment.startDate} - {treatment.endDate}</span>
                       </div>
+                      {selectedBranch === 'all-branches' && (
+                        <div className="flex items-center space-x-1">
+                          <ClipboardCheck className="w-4 h-4" />
+                          <span>{branchMap[treatment.branch]}</span>
+                        </div>
+                      )}
                     </div>
                   </div>
                   <span className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(treatment.status)}`}>
@@ -1485,7 +1491,7 @@ const Treatments: React.FC<TreatmentsProps> = ({ selectedBranch }) => {
                 Xác nhận xóa liệu trình
               </h3>
               <p className="text-gray-600 mb-6">
-                Bạn có chắc chắn muốn x��a liệu trình này? Hành động này không thể hoàn tác.
+                Bạn có chắc ch��n muốn x��a liệu trình này? Hành động này không thể hoàn tác.
               </p>
               <div className="flex justify-end space-x-3">
                 <button
@@ -1538,7 +1544,7 @@ const Treatments: React.FC<TreatmentsProps> = ({ selectedBranch }) => {
                 <div>
                   <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center space-x-2">
                     <Calendar className="w-5 h-5 text-blue-600" />
-                    <span>Lịch h���n sắp tới</span>
+                    <span>Lịch hẹn sắp tới</span>
                   </h3>
                   <div className="space-y-3">
                     {selectedTreatment.appointments
@@ -1878,7 +1884,7 @@ const Treatments: React.FC<TreatmentsProps> = ({ selectedBranch }) => {
                     <div className="grid grid-cols-2 gap-4">
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
-                          S�� tiền thanh toán *
+                          Số tiền thanh toán *
                         </label>
                         <input
                           type="number"
