@@ -66,61 +66,61 @@ const AppContent: React.FC = () => {
 
   const renderContent = () => {
     switch (activeMenu) {
-      case 'customers': 
+      case 'customers':
         return (
           <ProtectedRoute requiredPermissions={['view_customers']}>
-            <Customers />
+            <Customers selectedBranch={selectedBranch} />
           </ProtectedRoute>
         );
-      case 'schedule': 
+      case 'schedule':
         return (
           <ProtectedRoute requiredPermissions={['view_appointments']}>
-            <Schedule />
+            <Schedule selectedBranch={selectedBranch} />
           </ProtectedRoute>
         );
-      case 'beds': 
+      case 'beds':
         return (
           <ProtectedRoute requiredPermissions={['view_services']}>
-            <Beds />
+            <Beds selectedBranch={selectedBranch} />
           </ProtectedRoute>
         );
-      case 'products': 
+      case 'products':
         return (
           <ProtectedRoute requiredPermissions={['view_services']}>
-            <Products />
+            <Products selectedBranch={selectedBranch} />
           </ProtectedRoute>
         );
-      case 'treatments': 
+      case 'treatments':
         return (
           <ProtectedRoute requiredPermissions={['view_services']}>
-            <Treatments />
+            <Treatments selectedBranch={selectedBranch} />
           </ProtectedRoute>
         );
-      case 'invoices': 
+      case 'invoices':
         return (
           <ProtectedRoute requiredPermissions={['view_finance']}>
-            <Invoices />
+            <Invoices selectedBranch={selectedBranch} />
           </ProtectedRoute>
         );
-      case 'inventory': 
+      case 'inventory':
         return (
           <ProtectedRoute requiredPermissions={['view_inventory']}>
-            <Inventory />
+            <Inventory selectedBranch={selectedBranch} />
           </ProtectedRoute>
         );
-      case 'staff': 
+      case 'staff':
         return (
           <ProtectedRoute requiredPermissions={['view_staff']}>
-            <Staff />
+            <Staff selectedBranch={selectedBranch} />
           </ProtectedRoute>
         );
-      case 'reports': 
+      case 'reports':
         return (
           <ProtectedRoute requiredPermissions={['view_reports']}>
             <Reports selectedBranch={selectedBranch} />
           </ProtectedRoute>
         );
-      default: 
+      default:
         return <Dashboard selectedBranch={selectedBranch} />;
     }
   };
