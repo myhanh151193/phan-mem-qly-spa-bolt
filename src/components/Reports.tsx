@@ -45,6 +45,168 @@ const Reports: React.FC<ReportsProps> = ({ selectedBranch }) => {
     { name: 'Liệu trình giảm béo', revenue: '25.3M', sessions: 28, growth: '+18%' },
   ];
 
+  // Employee revenue data
+  const employeeRevenue = [
+    {
+      id: 1,
+      name: 'Nguyễn Thị Mai',
+      position: 'Chuyên viên chăm sóc da',
+      department: 'Điều trị',
+      avatar: 'https://images.pexels.com/photos/1036623/pexels-photo-1036623.jpeg?w=150',
+      revenue: 42500000,
+      revenueFormatted: '42.5M',
+      sessions: 156,
+      commission: 4250000,
+      commissionFormatted: '4.25M',
+      rating: 4.8,
+      growth: '+12%',
+      specialties: ['Chăm sóc da mặt', 'Điều trị mụn', 'Tái tạo da'],
+      customers: 89,
+      avgSessionValue: 272000,
+      branch: 'Chi nhánh Quận 1',
+      efficiency: 92,
+      monthlyTarget: 45000000,
+      targetAchievement: 94.4
+    },
+    {
+      id: 2,
+      name: 'Lê Thanh Hoa',
+      position: 'Massage Therapist',
+      department: 'Massage',
+      avatar: 'https://images.pexels.com/photos/762020/pexels-photo-762020.jpeg?w=150',
+      revenue: 38200000,
+      revenueFormatted: '38.2M',
+      sessions: 234,
+      commission: 3820000,
+      commissionFormatted: '3.82M',
+      rating: 4.9,
+      growth: '+18%',
+      specialties: ['Massage toàn thân', 'Massage thái', 'Massage đá nóng'],
+      customers: 102,
+      avgSessionValue: 163000,
+      branch: 'Chi nhánh Quận 3',
+      efficiency: 96,
+      monthlyTarget: 35000000,
+      targetAchievement: 109.1
+    },
+    {
+      id: 3,
+      name: 'Trần Minh An',
+      position: 'Kỹ thuật viên',
+      department: 'Làm đẹp',
+      avatar: 'https://images.pexels.com/photos/1037915/pexels-photo-1037915.jpeg?w=150',
+      revenue: 35800000,
+      revenueFormatted: '35.8M',
+      sessions: 187,
+      commission: 3580000,
+      commissionFormatted: '3.58M',
+      rating: 4.7,
+      growth: '+8%',
+      specialties: ['Tắm trắng', 'Triệt lông', 'Căng da'],
+      customers: 76,
+      avgSessionValue: 191000,
+      branch: 'Chi nhánh Quận 1',
+      efficiency: 88,
+      monthlyTarget: 40000000,
+      targetAchievement: 89.5
+    },
+    {
+      id: 4,
+      name: 'Phạm Thị Lan',
+      position: 'Chuyên viên tư vấn',
+      department: 'Tư vấn',
+      avatar: 'https://images.pexels.com/photos/1065084/pexels-photo-1065084.jpeg?w=150',
+      revenue: 28900000,
+      revenueFormatted: '28.9M',
+      sessions: 143,
+      commission: 2890000,
+      commissionFormatted: '2.89M',
+      rating: 4.6,
+      growth: '+5%',
+      specialties: ['Tư vấn làm đẹp', 'Liệu trình cá nhân', 'Chăm sóc sau điều trị'],
+      customers: 67,
+      avgSessionValue: 202000,
+      branch: 'Chi nhánh Quận 3',
+      efficiency: 85,
+      monthlyTarget: 30000000,
+      targetAchievement: 96.3
+    },
+    {
+      id: 5,
+      name: 'Võ Minh Tâm',
+      position: 'Giảm béo',
+      department: 'Giảm béo',
+      avatar: 'https://images.pexels.com/photos/1043471/pexels-photo-1043471.jpeg?w=150',
+      revenue: 33200000,
+      revenueFormatted: '33.2M',
+      sessions: 98,
+      commission: 3320000,
+      commissionFormatted: '3.32M',
+      rating: 4.8,
+      growth: '+22%',
+      specialties: ['Giảm béo RF', 'Massage giảm béo', 'Tư vấn dinh dưỡng'],
+      customers: 45,
+      avgSessionValue: 339000,
+      branch: 'Chi nhánh Quận 1',
+      efficiency: 94,
+      monthlyTarget: 32000000,
+      targetAchievement: 103.8
+    },
+    {
+      id: 6,
+      name: 'Lý Thị Bích',
+      position: 'Nail Artist',
+      department: 'Nail',
+      avatar: 'https://images.pexels.com/photos/1065084/pexels-photo-1065084.jpeg?w=150',
+      revenue: 18500000,
+      revenueFormatted: '18.5M',
+      sessions: 167,
+      commission: 1850000,
+      commissionFormatted: '1.85M',
+      rating: 4.5,
+      growth: '+3%',
+      specialties: ['Nail art', 'Gel nails', 'Manicure/Pedicure'],
+      customers: 98,
+      avgSessionValue: 111000,
+      branch: 'Chi nhánh Quận 3',
+      efficiency: 82,
+      monthlyTarget: 20000000,
+      targetAchievement: 92.5
+    }
+  ];
+
+  // Sort employees based on selected criteria
+  const sortedEmployees = [...employeeRevenue].sort((a, b) => {
+    switch (sortBy) {
+      case 'revenue':
+        return b.revenue - a.revenue;
+      case 'sessions':
+        return b.sessions - a.sessions;
+      case 'rating':
+        return b.rating - a.rating;
+      case 'efficiency':
+        return b.efficiency - a.efficiency;
+      case 'target':
+        return b.targetAchievement - a.targetAchievement;
+      default:
+        return b.revenue - a.revenue;
+    }
+  });
+
+  // Calculate employee stats
+  const employeeStats = {
+    totalRevenue: employeeRevenue.reduce((sum, emp) => sum + emp.revenue, 0),
+    totalSessions: employeeRevenue.reduce((sum, emp) => sum + emp.sessions, 0),
+    totalCommission: employeeRevenue.reduce((sum, emp) => sum + emp.commission, 0),
+    avgRating: employeeRevenue.reduce((sum, emp) => sum + emp.rating, 0) / employeeRevenue.length,
+    avgEfficiency: employeeRevenue.reduce((sum, emp) => sum + emp.efficiency, 0) / employeeRevenue.length,
+    topPerformer: employeeRevenue.sort((a, b) => b.revenue - a.revenue)[0]
+  };
+
+  const formatCurrency = (amount: number) => {
+    return new Intl.NumberFormat('vi-VN').format(amount) + 'đ';
+  };
+
   const monthlyRevenue = [
     { month: 'T7', value: 280 },
     { month: 'T8', value: 295 },
@@ -193,7 +355,7 @@ const Reports: React.FC<ReportsProps> = ({ selectedBranch }) => {
           <h3 className="text-lg font-semibold text-gray-900 mb-4">Hiệu suất dịch vụ</h3>
           <div className="space-y-4">
             <div className="flex justify-between items-center">
-              <span className="text-sm text-gray-600">Hoàn thành</span>
+              <span className="text-sm text-gray-600">Hoàn th��nh</span>
               <span className="font-semibold text-green-600">{reportData.services.completed}</span>
             </div>
             <div className="flex justify-between items-center">
