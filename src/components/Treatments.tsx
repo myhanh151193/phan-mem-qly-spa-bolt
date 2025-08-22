@@ -77,7 +77,7 @@ const Treatments: React.FC<TreatmentsProps> = ({ selectedBranch }) => {
       totalAmount: 15600000,
       branch: 'branch-1',
       appointments: [
-        { id: 1, treatmentId: 1, date: '2025-01-15', time: '09:00', duration: 90, staff: 'Nguyễn Mai', status: 'scheduled', services: ['Đi��u trị mụn'], notes: 'Buổi 9' },
+        { id: 1, treatmentId: 1, date: '2025-01-15', time: '09:00', duration: 90, staff: 'Nguyễn Mai', status: 'scheduled', services: ['Điều trị mụn'], notes: 'Buổi 9' },
         { id: 2, treatmentId: 1, date: '2025-01-22', time: '09:00', duration: 90, staff: 'Nguyễn Mai', status: 'scheduled', services: ['Tái tạo da'], notes: 'Buổi 10' },
         { id: 3, treatmentId: 1, date: '2025-01-08', time: '09:00', duration: 90, staff: 'Nguyễn Mai', status: 'completed', services: ['Điều trị mụn'], notes: 'Buổi 8 - hoàn thành tốt' }
       ]
@@ -370,7 +370,8 @@ const Treatments: React.FC<TreatmentsProps> = ({ selectedBranch }) => {
           customerId: selectedCustomer.id,
           service: apt.services.join(', '),
           totalPrice: formData.totalValue,
-          price: formData.totalValue
+          price: formData.totalValue,
+          branch: formData.branch
         }));
         addTreatmentAppointments(contextAppointments);
       }
@@ -534,7 +535,7 @@ const Treatments: React.FC<TreatmentsProps> = ({ selectedBranch }) => {
     });
 
     closePaymentModal();
-    alert('Thanh toán đã được ghi nhận thành công!');
+    alert('Thanh toán đã được ghi nhận th��nh công!');
   };
 
   const openAppointmentModal = (treatment: Treatment) => {
@@ -1034,7 +1035,7 @@ const Treatments: React.FC<TreatmentsProps> = ({ selectedBranch }) => {
           <div className="bg-white rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between p-6 border-b border-gray-200">
               <h2 className="text-xl font-semibold text-gray-900">
-                {editingTreatment ? 'Sửa liệu trình' : 'Tạo liệu trình mới'}
+                {editingTreatment ? 'Sửa liệu trình' : 'Tạo li���u trình mới'}
               </h2>
               <button 
                 onClick={closeModal}
