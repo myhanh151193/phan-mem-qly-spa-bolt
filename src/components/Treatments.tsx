@@ -236,10 +236,23 @@ const Treatments: React.FC<TreatmentsProps> = ({ selectedBranch }) => {
     }
   };
 
-  const filteredTreatments = treatments.filter(treatment =>
-    treatment.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    treatment.customer.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  // Branch mapping for display
+  const branchMap: { [key: string]: string } = {
+    'branch-1': 'Chi nhánh Quận 1',
+    'branch-2': 'Chi nhánh Quận 3',
+    'branch-3': 'Chi nhánh Thủ Đức',
+    'branch-4': 'Chi nhánh Gò Vấp'
+  };
+
+  const filteredTreatments = treatments.filter(treatment => {
+    const matchesSearch = treatment.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         treatment.customer.toLowerCase().includes(searchTerm.toLowerCase());
+
+    // Branch filtering
+    const matchesBranch = selectedBranch === 'all-branches' || treatment.branch === selectedBranch;
+
+    return matchesSearch && matchesBranch;
+  });
 
   const openCreateModal = () => {
     setEditingTreatment(null);
@@ -1100,7 +1113,7 @@ const Treatments: React.FC<TreatmentsProps> = ({ selectedBranch }) => {
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   >
                     <option value="manual">Thủ công</option>
-                    <option value="weekly">Hàng tuần</option>
+                    <option value="weekly">Hàng tu���n</option>
                     <option value="monthly">Hàng tháng</option>
                   </select>
                 </div>
@@ -1130,7 +1143,7 @@ const Treatments: React.FC<TreatmentsProps> = ({ selectedBranch }) => {
                     <option value="45">45 phút</option>
                     <option value="60">60 phút</option>
                     <option value="90">90 phút</option>
-                    <option value="120">120 phút</option>
+                    <option value="120">120 ph��t</option>
                     <option value="180">180 phút</option>
                   </select>
                 </div>
@@ -1269,7 +1282,7 @@ const Treatments: React.FC<TreatmentsProps> = ({ selectedBranch }) => {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  D���ch vụ
+                  Dịch vụ
                 </label>
                 
                 {/* Service Selection */}
@@ -1363,7 +1376,7 @@ const Treatments: React.FC<TreatmentsProps> = ({ selectedBranch }) => {
                 Xác nhận xóa liệu trình
               </h3>
               <p className="text-gray-600 mb-6">
-                Bạn có chắc chắn muốn x��a liệu trình này? Hành động này không thể hoàn tác.
+                Bạn có ch��c chắn muốn x��a liệu trình này? Hành động này không thể hoàn tác.
               </p>
               <div className="flex justify-end space-x-3">
                 <button
