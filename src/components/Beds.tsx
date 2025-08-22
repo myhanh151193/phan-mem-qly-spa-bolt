@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Bed, Clock, User, Plus, MapPin, Settings, Eye, CheckCircle, XCircle, Play, Pause, Timer } from 'lucide-react';
+import { Bed, Clock, User, Plus, MapPin, Settings, Eye, CheckCircle, XCircle, Play, Pause, Timer, Edit, Trash2, X, Save } from 'lucide-react';
 import AppointmentDialog from './AppointmentDialog';
 
 interface BedAssignment {
@@ -39,7 +39,16 @@ const Beds: React.FC<BedsProps> = ({ selectedBranch }) => {
   }, [selectedBranch, selectedRoom]);
   const [viewMode, setViewMode] = useState<'grid' | 'timeline'>('grid');
   const [showAddDialog, setShowAddDialog] = useState<boolean>(false);
+  const [showEditDialog, setShowEditDialog] = useState<boolean>(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState<number | null>(null);
+  const [editingBed, setEditingBed] = useState<TreatmentBed | null>(null);
   const [newBedForm, setNewBedForm] = useState({
+    name: '',
+    room: 'Phòng Massage',
+    type: 'massage' as TreatmentBed['type'],
+    equipment: [] as string[]
+  });
+  const [editBedForm, setEditBedForm] = useState({
     name: '',
     room: 'Phòng Massage',
     type: 'massage' as TreatmentBed['type'],
