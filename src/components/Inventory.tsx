@@ -126,7 +126,7 @@ const Inventory: React.FC<InventoryProps> = ({ selectedBranch }) => {
     },
     {
       id: 4,
-      name: 'Tinh d��u massage',
+      name: 'Tinh dầu massage',
       category: 'Dầu massage',
       brand: 'Aromatherapy Pro',
       sku: 'SKU004',
@@ -785,15 +785,15 @@ const Inventory: React.FC<InventoryProps> = ({ selectedBranch }) => {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center space-x-2">
-                          <button 
-                            onClick={() => openEditModal(item)}
+                          <button
+                            onClick={() => openEditModal(view)}
                             className="p-2 text-gray-400 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors duration-200"
                             title="Chỉnh sửa"
                           >
                             <Edit2 className="w-4 h-4" />
                           </button>
-                          <button 
-                            onClick={() => setShowDeleteConfirm(item.id)}
+                          <button
+                            onClick={() => setShowDeleteConfirm(view.product.id)}
                             className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors duration-200"
                             title="Xóa"
                           >
@@ -888,7 +888,7 @@ const Inventory: React.FC<InventoryProps> = ({ selectedBranch }) => {
               className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition-colors duration-200"
             >
               <Plus className="w-4 h-4" />
-              <span>Thêm thương hiệu</span>
+              <span>Thêm thương hi��u</span>
             </button>
           </div>
 
