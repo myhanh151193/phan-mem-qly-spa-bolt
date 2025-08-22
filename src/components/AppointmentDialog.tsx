@@ -30,11 +30,12 @@ interface AppointmentDialogProps {
   isOpen: boolean;
   onClose: () => void;
   onSave: (appointmentData: AppointmentData) => void;
-  bedName: string;
+  bedName?: string;
   timeSlot: string;
   date: string;
   existingAppointment?: AppointmentData | null;
   isEditing?: boolean;
+  selectedBranch?: string;
 }
 
 const AppointmentDialog: React.FC<AppointmentDialogProps> = ({
