@@ -80,7 +80,8 @@ interface BrandFormData {
 const Inventory: React.FC<InventoryProps> = ({ selectedBranch }) => {
   const [activeTab, setActiveTab] = useState<'inventory' | 'categories' | 'brands'>('inventory');
   
-  const [inventory, setInventory] = useState<InventoryItem[]>([
+  // Product master data (shared across branches)
+  const [products, setProducts] = useState<Product[]>([
     {
       id: 1,
       name: 'Serum Vitamin C',
@@ -402,7 +403,7 @@ const Inventory: React.FC<InventoryProps> = ({ selectedBranch }) => {
     e.preventDefault();
     
     if (!brandFormData.name) {
-      alert('Vui lòng nhập tên thương hiệu');
+      alert('Vui lòng nh��p tên thương hiệu');
       return;
     }
 
@@ -842,7 +843,7 @@ const Inventory: React.FC<InventoryProps> = ({ selectedBranch }) => {
           <div className="bg-white rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between p-6 border-b border-gray-200">
               <h2 className="text-xl font-semibold text-gray-900">
-                {editingItem ? 'Chỉnh sửa sản phẩm' : 'Thêm sản phẩm mới'}
+                {editingItem ? 'Ch���nh sửa sản phẩm' : 'Thêm sản phẩm mới'}
               </h2>
               <button onClick={() => setShowModal(false)} className="text-gray-400 hover:text-gray-600 transition-colors">
                 <X className="w-6 h-6" />
