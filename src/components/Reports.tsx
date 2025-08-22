@@ -389,8 +389,32 @@ const Reports: React.FC<ReportsProps> = ({ selectedBranch }) => {
     { month: 'T1', value: 365 },
   ];
 
+  // Helper function to get branch name
+  const getBranchName = (branchId: string) => {
+    const branchNames = {
+      'branch-1': 'Chi nhánh Quận 1',
+      'branch-2': 'Chi nhánh Quận 3',
+      'branch-3': 'Chi nhánh Thủ Đức',
+      'branch-4': 'Chi nhánh Gò Vấp',
+      'all-branches': 'Tất cả chi nhánh'
+    };
+    return branchNames[branchId as keyof typeof branchNames] || 'Không xác định';
+  };
+
   return (
     <div className="space-y-6">
+      {/* Branch Info */}
+      {selectedBranch !== 'all-branches' && (
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+          <div className="flex items-center space-x-2">
+            <div className="w-2 h-2 bg-blue-600 rounded-full"></div>
+            <p className="text-blue-800 font-medium">
+              Báo cáo cho: {getBranchName(selectedBranch)}
+            </p>
+          </div>
+        </div>
+      )}
+
       {/* Tab Navigation */}
       <div className="bg-white rounded-lg border border-gray-200 p-1">
         <div className="flex space-x-1">
