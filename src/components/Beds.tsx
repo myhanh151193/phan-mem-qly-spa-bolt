@@ -515,8 +515,7 @@ const Beds: React.FC<BedsProps> = ({ selectedBranch }) => {
 
   // Calculate stats based on branch filtering
   const branchFilteredBeds = beds.filter(bed => {
-    const bedBranch = getRoomBranch(bed.room);
-    return selectedBranch === 'all-branches' || bedBranch === selectedBranch;
+    return selectedBranch === 'all-branches' || bed.branch === selectedBranch;
   });
 
   const stats = {
