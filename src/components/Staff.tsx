@@ -192,7 +192,7 @@ const Staff: React.FC = () => {
     { id: 'manage_inventory', name: 'Quản lý kho', category: 'Kho hàng' },
     { id: 'view_reports', name: 'Xem báo cáo', category: 'Báo cáo' },
     { id: 'manage_reports', name: 'Quản lý báo cáo', category: 'Báo cáo' },
-    { id: 'view_finance', name: 'Xem tài chính', category: 'Tài chính' },
+    { id: 'view_finance', name: 'Xem tài ch��nh', category: 'Tài chính' },
     { id: 'manage_finance', name: 'Quản lý tài chính', category: 'Tài chính' },
     { id: 'system_admin', name: 'Quản trị hệ thống', category: 'Hệ thống' }
   ];
@@ -267,6 +267,7 @@ const Staff: React.FC = () => {
       status: 'active',
       specialties: [],
       branch: '',
+      accessibleBranches: [],
       address: '',
       emergencyContact: '',
       idNumber: '',
@@ -291,6 +292,7 @@ const Staff: React.FC = () => {
       status: staffMember.status,
       specialties: [...staffMember.specialties],
       branch: staffMember.branch,
+      accessibleBranches: [...staffMember.accessibleBranches],
       address: staffMember.address || '',
       emergencyContact: staffMember.emergencyContact || '',
       idNumber: staffMember.idNumber || '',
