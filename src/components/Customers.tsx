@@ -184,7 +184,7 @@ const Customers: React.FC<CustomersProps> = ({ selectedBranch }) => {
       ],
       notes: {
         allergies: 'Không dị ứng',
-        skinType: 'Da mụn, dầu',
+        skinType: 'Da mụn, d���u',
         favoriteServices: ['Điều trị mụn']
       },
       branch: 'branch-3'
@@ -375,7 +375,7 @@ const Customers: React.FC<CustomersProps> = ({ selectedBranch }) => {
       setEditCustomer(null);
       
     } catch (error) {
-      alert('Có lỗi xảy ra khi c��p nhật khách hàng');
+      alert('Có lỗi xảy ra khi cập nhật khách hàng');
     } finally {
       setIsEditSubmitting(false);
     }
@@ -427,6 +427,59 @@ const Customers: React.FC<CustomersProps> = ({ selectedBranch }) => {
 
   return (
     <div className="space-y-6">
+      {/* Branch Indicator */}
+      <div className="bg-gradient-to-r from-green-50 to-blue-50 border border-green-200 rounded-lg p-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-3">
+            <div className="flex items-center space-x-2">
+              <Award className="w-5 h-5 text-green-600" />
+              <span className="text-sm font-medium text-green-900">
+                {selectedBranch === 'all-branches' ? (
+                  'Tất cả khách hàng'
+                ) : (
+                  `Khách hàng ${branchMap[selectedBranch] || selectedBranch}`
+                )}
+              </span>
+            </div>
+            <div className="flex items-center space-x-4">
+              <div className="flex items-center space-x-1">
+                <span className="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full font-medium">
+                  {filteredCustomers.length} khách hàng
+                </span>
+              </div>
+              {selectedBranch !== 'all-branches' && (
+                <div className="flex items-center space-x-2 text-xs text-green-700">
+                  <span className="flex items-center space-x-1">
+                    <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
+                    <span>{filteredCustomers.filter(c => c.membershipLevel === 'VVIP').length} VVIP</span>
+                  </span>
+                  <span className="flex items-center space-x-1">
+                    <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
+                    <span>{filteredCustomers.filter(c => c.membershipLevel === 'VIP').length} VIP</span>
+                  </span>
+                  <span className="flex items-center space-x-1">
+                    <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                    <span>{filteredCustomers.filter(c => c.membershipLevel === 'Member').length} Member</span>
+                  </span>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {selectedBranch !== 'all-branches' && (
+            <div className="text-right text-xs text-green-700">
+              <div className="font-medium">
+                {(() => {
+                  const totalRevenue = filteredCustomers.reduce((sum, customer) => sum + customer.totalSpent, 0);
+                  return new Intl.NumberFormat('vi-VN').format(totalRevenue) + 'đ';
+                })()}
+              </div>
+              <div className="text-green-600">Tổng doanh thu</div>
+            </div>
+          )}
+        </div>
+      </div>
+
       {/* Header */}
       <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
         <div className="flex items-center space-x-4">
@@ -445,7 +498,7 @@ const Customers: React.FC<CustomersProps> = ({ selectedBranch }) => {
             onChange={(e) => setFilterLevel(e.target.value)}
             className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           >
-            <option value="all">Tất c��� hạng</option>
+            <option value="all">Tất cả hạng</option>
             <option value="Member">Member</option>
             <option value="VIP">VIP</option>
             <option value="VVIP">VVIP</option>
@@ -925,7 +978,7 @@ const Customers: React.FC<CustomersProps> = ({ selectedBranch }) => {
                     <option value="Da khô">Da khô</option>
                     <option value="Da dầu">Da dầu</option>
                     <option value="Da hỗn hợp">Da hỗn hợp</option>
-                    <option value="Da nhạy c��m">Da nhạy cảm</option>
+                    <option value="Da nhạy cảm">Da nhạy cảm</option>
                     <option value="Da thường">Da thường</option>
                   </select>
                 </div>
