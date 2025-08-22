@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Search, Plus, Calendar, User, ClipboardCheck, Edit2, Trash2, X, Save, ChevronDown, Clock, CalendarDays, UserCheck, FileText } from 'lucide-react';
+import { Search, Plus, Calendar, User, ClipboardCheck, Edit2, Trash2, X, Save, ChevronDown, Clock, CalendarDays, UserCheck, FileText, CreditCard, DollarSign } from 'lucide-react';
 import { useAppointments, Appointment as ContextAppointment } from '../contexts/AppointmentContext';
 
 // Using Appointment from context
@@ -107,10 +107,10 @@ const Treatments: React.FC = () => {
       remainingAmount: 0,
       paymentStatus: 'completed',
       paymentHistory: [
-        { id: 3, date: '2024-12-01', amount: 12800000, method: 'card', note: 'Thanh toán đầy đủ' }
+        { id: 3, date: '2024-12-01', amount: 12800000, method: 'card', note: 'Thanh toán đ���y đủ' }
       ],
       appointments: [
-        { id: 4, treatmentId: 2, date: '2025-01-20', time: '14:00', duration: 120, staff: 'Lê Hoa', status: 'scheduled', services: ['Chăm s��c da mặt', 'Massage'], notes: 'Buổi 7' },
+        { id: 4, treatmentId: 2, date: '2025-01-20', time: '14:00', duration: 120, staff: 'Lê Hoa', status: 'scheduled', services: ['Chăm sóc da mặt', 'Massage'], notes: 'Buổi 7' },
         { id: 5, treatmentId: 2, date: '2025-02-03', time: '14:00', duration: 120, staff: 'Lê Hoa', status: 'scheduled', services: ['Tắm trắng'], notes: 'Buổi cuối' }
       ]
     },
@@ -142,7 +142,7 @@ const Treatments: React.FC = () => {
   const [customers] = useState<Customer[]>([
     {
       id: 1,
-      name: 'Nguyễn Thu Hà',
+      name: 'Nguy���n Thu Hà',
       phone: '0901234567',
       email: 'thuha@email.com',
       membershipLevel: 'VVIP',
