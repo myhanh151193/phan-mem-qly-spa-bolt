@@ -106,7 +106,8 @@ const Customers: React.FC = () => {
         favoriteServices: ['Chăm sóc da mặt Premium', 'Massage đá nóng'],
         skinType: 'Da khô, nhạy cảm',
         specialRequests: 'Luôn yêu cầu cùng một nhân viên'
-      }
+      },
+      branch: 'branch-1'
     },
     {
       id: 2,
@@ -139,7 +140,8 @@ const Customers: React.FC = () => {
         preferences: 'Thích dịch vụ vào buổi sáng',
         favoriteServices: ['Tắm trắng', 'Massage thái'],
         skinType: 'Da dầu'
-      }
+      },
+      branch: 'branch-2'
     },
     {
       id: 3,
@@ -172,7 +174,8 @@ const Customers: React.FC = () => {
         allergies: 'Không dị ứng',
         skinType: 'Da mụn, dầu',
         favoriteServices: ['Điều trị mụn']
-      }
+      },
+      branch: 'branch-3'
     }
   ]);
   
@@ -237,9 +240,9 @@ const Customers: React.FC = () => {
     
     if (!editCustomer.name.trim()) newErrors.name = 'Họ tên là bắt buộc';
     if (!editCustomer.phone.trim()) {
-      newErrors.phone = 'Số điện thoại là bắt bu���c';
+      newErrors.phone = 'Số điện thoại là bắt buộc';
     } else if (!/^[0-9]{10,11}$/.test(editCustomer.phone.replace(/\s/g, ''))) {
-      newErrors.phone = 'Số điện thoại không hợp lệ';
+      newErrors.phone = 'Số ��iện thoại không hợp lệ';
     }
     if (editCustomer.email.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(editCustomer.email)) {
       newErrors.email = 'Email không hợp lệ';
