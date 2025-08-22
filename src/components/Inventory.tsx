@@ -288,26 +288,43 @@ const Inventory: React.FC<InventoryProps> = ({ selectedBranch }) => {
   const createInventoryViews = (): InventoryView[] => {
     const views: InventoryView[] = [];
 
-    // Filter branch stocks by selected branch
-    const relevantStocks = branchStocks.filter(stock =>
-      selectedBranch === 'all-branches' || stock.branch === selectedBranch
-    );
-
     // For each product, find its stock in the relevant branches
     products.filter(product => product.status === 'active').forEach(product => {
       if (selectedBranch === 'all-branches') {
-        // Show all branches for this product
+        // Aggregate stock across all branches for this product
         const productStocks = branchStocks.filter(stock => stock.productId === product.id);
-        productStocks.forEach(branchStock => {
-          const status = calculateStatus(branchStock.stock, branchStock.minStock);
-          const totalValue = branchStock.stock * product.unitPrice;
+
+        if (productStocks.length > 0) {
+          // Calculate total stock across all branches
+          const totalStock = productStocks.reduce((sum, stock) => sum + stock.stock, 0);
+          const totalMinStock = productStocks.reduce((sum, stock) => sum + stock.minStock, 0);
+          const totalMaxStock = productStocks.reduce((sum, stock) => sum + stock.maxStock, 0);
+
+          // Create aggregated view with total values
+          const aggregatedBranchStock: BranchStock = {
+            id: 0, // Dummy ID for aggregated view
+            productId: product.id,
+            branch: 'all-branches',
+            stock: totalStock,
+            minStock: totalMinStock,
+            maxStock: totalMaxStock,
+            location: 'Tổng hợp tất cả chi nhánh',
+            lastRestocked: productStocks.reduce((latest, stock) =>
+              stock.lastRestocked > latest ? stock.lastRestocked : latest,
+              productStocks[0].lastRestocked
+            )
+          };
+
+          const status = calculateStatus(totalStock, totalMinStock);
+          const totalValue = totalStock * product.unitPrice;
+
           views.push({
             product,
-            branchStock,
+            branchStock: aggregatedBranchStock,
             status,
             totalValue
           });
-        });
+        }
       } else {
         // Show only selected branch stock
         const branchStock = branchStocks.find(stock =>
@@ -524,7 +541,7 @@ const Inventory: React.FC<InventoryProps> = ({ selectedBranch }) => {
   const deleteBrandHandler = (id: number) => {
     const brand = brands.find(b => b.id === id);
     if (brand && brand.productCount > 0) {
-      alert('Không thể xóa thương hiệu đang có sản phẩm');
+      alert('Không thể xóa thương hiệu đang có s���n phẩm');
       return;
     }
     setBrands(prev => prev.filter(brand => brand.id !== id));
