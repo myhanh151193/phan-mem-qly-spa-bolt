@@ -333,41 +333,49 @@ const Inventory: React.FC<InventoryProps> = ({ selectedBranch }) => {
 
   // Product CRUD Operations
   const openCreateModal = () => {
-    setEditingItem(null);
-    setFormData({
+    setEditingProduct(null);
+    setEditingStock(null);
+    setProductFormData({
       name: '',
       category: '',
       brand: '',
       sku: '',
-      stock: 0,
-      minStock: 0,
-      maxStock: 0,
       unitPrice: 0,
       supplier: '',
       image: '',
       description: '',
       expiryDate: '',
+      status: 'active'
+    });
+    setStockFormData({
+      stock: 0,
+      minStock: 0,
+      maxStock: 0,
       location: ''
     });
     setShowModal(true);
   };
 
-  const openEditModal = (item: InventoryItem) => {
-    setEditingItem(item);
-    setFormData({
-      name: item.name,
-      category: item.category,
-      brand: item.brand,
-      sku: item.sku,
-      stock: item.stock,
-      minStock: item.minStock,
-      maxStock: item.maxStock,
-      unitPrice: item.unitPrice,
-      supplier: item.supplier,
-      image: item.image,
-      description: item.description || '',
-      expiryDate: item.expiryDate || '',
-      location: item.location || ''
+  const openEditModal = (view: InventoryView) => {
+    setEditingProduct(view.product);
+    setEditingStock(view.branchStock);
+    setProductFormData({
+      name: view.product.name,
+      category: view.product.category,
+      brand: view.product.brand,
+      sku: view.product.sku,
+      unitPrice: view.product.unitPrice,
+      supplier: view.product.supplier,
+      image: view.product.image,
+      description: view.product.description || '',
+      expiryDate: view.product.expiryDate || '',
+      status: view.product.status
+    });
+    setStockFormData({
+      stock: view.branchStock.stock,
+      minStock: view.branchStock.minStock,
+      maxStock: view.branchStock.maxStock,
+      location: view.branchStock.location || ''
     });
     setShowModal(true);
   };
@@ -1055,7 +1063,7 @@ const Inventory: React.FC<InventoryProps> = ({ selectedBranch }) => {
           <div className="bg-white rounded-xl shadow-xl max-w-md w-full">
             <div className="flex items-center justify-between p-6 border-b border-gray-200">
               <h2 className="text-xl font-semibold text-gray-900">
-                {editingCategory ? 'Chỉnh sửa danh mục' : 'Th��m danh mục mới'}
+                {editingCategory ? 'Chỉnh sửa danh mục' : 'Thêm danh mục mới'}
               </h2>
               <button onClick={() => setShowCategoryModal(false)} className="text-gray-400 hover:text-gray-600 transition-colors">
                 <X className="w-6 h-6" />
