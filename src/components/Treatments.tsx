@@ -90,7 +90,7 @@ const Treatments: React.FC = () => {
       totalAmount: 12800000,
       appointments: [
         { id: 4, treatmentId: 2, date: '2025-01-20', time: '14:00', duration: 120, staff: 'Lê Hoa', status: 'scheduled', services: ['Chăm sóc da mặt', 'Massage'], notes: 'Buổi 7' },
-        { id: 5, treatmentId: 2, date: '2025-02-03', time: '14:00', duration: 120, staff: 'Lê Hoa', status: 'scheduled', services: ['Tắm trắng'], notes: 'Buổi cuối' }
+        { id: 5, treatmentId: 2, date: '2025-02-03', time: '14:00', duration: 120, staff: 'Lê Hoa', status: 'scheduled', services: ['T���m trắng'], notes: 'Buổi cuối' }
       ]
     },
     {
@@ -211,27 +211,6 @@ const Treatments: React.FC = () => {
     }
   };
 
-  const getPaymentStatusColor = (status: string) => {
-    switch (status) {
-      case 'completed': return 'bg-green-100 text-green-800';
-      case 'partial': return 'bg-yellow-100 text-yellow-800';
-      case 'pending': return 'bg-red-100 text-red-800';
-      default: return 'bg-gray-100 text-gray-800';
-    }
-  };
-
-  const getPaymentStatusText = (status: string) => {
-    switch (status) {
-      case 'completed': return 'Đã thanh toán';
-      case 'partial': return 'Thanh toán một phần';
-      case 'pending': return 'Chưa thanh toán';
-      default: return 'Không xác định';
-    }
-  };
-
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('vi-VN').format(amount) + 'đ';
-  };
 
   const getStatusText = (status: string) => {
     switch (status) {
@@ -517,7 +496,7 @@ const Treatments: React.FC = () => {
     });
 
     closePaymentModal();
-    alert('Thanh toán đã đ��ợc ghi nhận thành công!');
+    alert('Thanh toán đã được ghi nhận thành công!');
   };
 
   const openAppointmentModal = (treatment: Treatment) => {
