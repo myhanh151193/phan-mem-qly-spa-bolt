@@ -23,13 +23,10 @@ const AppContent: React.FC = () => {
   const [selectedBranch, setSelectedBranch] = useState('branch-1');
   const { user, logout, isAuthenticated, canAccessBranch } = useAuth();
 
-  // If not authenticated, show login
-  if (!isAuthenticated) {
-    return <Login />;
-  }
-
   // Filter accessible branches for the user
   const getAccessibleBranches = () => {
+    if (!isAuthenticated || !canAccessBranch) return [];
+
     const allBranches = [
       { id: 'branch-1', name: 'Chi nhánh Quận 1' },
       { id: 'branch-2', name: 'Chi nhánh Quận 3' },
@@ -40,13 +37,19 @@ const AppContent: React.FC = () => {
   };
 
   const accessibleBranches = getAccessibleBranches();
-  
+
   // Set default branch to first accessible branch if current selection is not accessible
+  // This hook must be called every render, regardless of authentication status
   React.useEffect(() => {
-    if (accessibleBranches.length > 0 && !canAccessBranch(selectedBranch)) {
+    if (isAuthenticated && accessibleBranches.length > 0 && !canAccessBranch(selectedBranch)) {
       setSelectedBranch(accessibleBranches[0].id);
     }
-  }, [accessibleBranches, selectedBranch, canAccessBranch]);
+  }, [isAuthenticated, accessibleBranches, selectedBranch, canAccessBranch]);
+
+  // If not authenticated, show login (after all hooks have been called)
+  if (!isAuthenticated) {
+    return <Login />;
+  }
 
   const renderContent = () => {
     switch (activeMenu) {
