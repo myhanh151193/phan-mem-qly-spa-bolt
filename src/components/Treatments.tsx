@@ -1012,7 +1012,7 @@ const Treatments: React.FC<TreatmentsProps> = ({ selectedBranch }) => {
                   <span>Thanh toán</span>
                 </button>
                 <button
-                  onClick={() => window.location.href = `#invoices?treatmentId=${treatment.id}&customerId=${customers.find(c => c.name === treatment.customer)?.id}`}
+                  onClick={() => window.location.href = `#invoices?treatmentId=${treatment.id}&customerId=${allCustomers.find(c => c.name === treatment.customer)?.id}`}
                   className="px-4 py-2 bg-purple-600 text-white text-sm rounded-lg hover:bg-purple-700 transition-colors duration-200 flex items-center justify-center space-x-1"
                 >
                   <FileText className="w-4 h-4" />
@@ -1235,7 +1235,7 @@ const Treatments: React.FC<TreatmentsProps> = ({ selectedBranch }) => {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Kiểu lịch h��n
+                    Kiểu lịch hẹn
                   </label>
                   <select
                     value={formData.scheduleType}
@@ -1886,7 +1886,7 @@ const Treatments: React.FC<TreatmentsProps> = ({ selectedBranch }) => {
                       </div>
                     ))}
                     {paymentData.paymentHistory.length === 0 && (
-                      <p className="text-gray-500 text-sm text-center py-4">Chưa có giao dịch nào</p>
+                      <p className="text-gray-500 text-sm text-center py-4">Chưa có giao dịch n��o</p>
                     )}
                   </div>
                 </div>
