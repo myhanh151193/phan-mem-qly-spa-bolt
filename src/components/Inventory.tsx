@@ -1043,8 +1043,8 @@ const Inventory: React.FC<InventoryProps> = ({ selectedBranch }) => {
                   <input
                     type="number"
                     min="0"
-                    value={formData.unitPrice}
-                    onChange={(e) => setFormData(prev => ({ ...prev, unitPrice: parseInt(e.target.value) || 0 }))}
+                    value={productFormData.unitPrice}
+                    onChange={(e) => setProductFormData(prev => ({ ...prev, unitPrice: parseInt(e.target.value) || 0 }))}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
                 </div>
@@ -1235,7 +1235,7 @@ const Inventory: React.FC<InventoryProps> = ({ selectedBranch }) => {
                   className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2"
                 >
                   <Save className="w-4 h-4" />
-                  <span>{editingBrand ? 'Cập nh���t' : 'Thêm mới'}</span>
+                  <span>{editingBrand ? 'Cập nhật' : 'Thêm mới'}</span>
                 </button>
               </div>
             </form>
