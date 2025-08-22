@@ -85,7 +85,7 @@ const Treatments: React.FC = () => {
       ],
       appointments: [
         { id: 1, treatmentId: 1, date: '2025-01-15', time: '09:00', duration: 90, staff: 'Nguyễn Mai', status: 'scheduled', services: ['Điều trị mụn'], notes: 'Buổi 9' },
-        { id: 2, treatmentId: 1, date: '2025-01-22', time: '09:00', duration: 90, staff: 'Nguyễn Mai', status: 'scheduled', services: ['Tái tạo da'], notes: 'Buổi 10' },
+        { id: 2, treatmentId: 1, date: '2025-01-22', time: '09:00', duration: 90, staff: 'Nguyễn Mai', status: 'scheduled', services: ['Tái t��o da'], notes: 'Buổi 10' },
         { id: 3, treatmentId: 1, date: '2025-01-08', time: '09:00', duration: 90, staff: 'Nguyễn Mai', status: 'completed', services: ['Điều trị mụn'], notes: 'Buổi 8 - hoàn thành tốt' }
       ]
     },
@@ -828,6 +828,13 @@ const Treatments: React.FC = () => {
                   <span>Lịch hẹn</span>
                 </button>
                 <button
+                  onClick={() => openPaymentModal(treatment)}
+                  className="px-4 py-2 bg-green-600 text-white text-sm rounded-lg hover:bg-green-700 transition-colors duration-200 flex items-center justify-center space-x-1"
+                >
+                  <DollarSign className="w-4 h-4" />
+                  <span>Thanh toán</span>
+                </button>
+                <button
                   onClick={() => window.location.href = `#invoices?treatmentId=${treatment.id}&customerId=${customers.find(c => c.name === treatment.customer)?.id}`}
                   className="px-4 py-2 bg-purple-600 text-white text-sm rounded-lg hover:bg-purple-700 transition-colors duration-200 flex items-center justify-center space-x-1"
                 >
@@ -854,7 +861,7 @@ const Treatments: React.FC = () => {
                       setSelectedTreatment(treatment);
                       openAppointmentForm();
                     }}
-                    className="px-4 py-2 bg-green-600 text-white text-sm rounded-lg hover:bg-green-700 transition-colors duration-200 flex items-center justify-center space-x-1"
+                    className="px-4 py-2 bg-indigo-600 text-white text-sm rounded-lg hover:bg-indigo-700 transition-colors duration-200 flex items-center justify-center space-x-1"
                   >
                     <Plus className="w-3 h-3" />
                     <span>Đặt lịch</span>
