@@ -12,6 +12,7 @@ import Staff from './components/Staff';
 import Reports from './components/Reports';
 import BranchSelector from './components/BranchSelector';
 import { AppointmentProvider } from './contexts/AppointmentContext';
+import { TreatmentPaymentProvider } from './contexts/TreatmentPaymentContext';
 
 function App() {
   const [activeMenu, setActiveMenu] = useState('dashboard');
