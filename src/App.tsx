@@ -38,13 +38,26 @@ const AppContent: React.FC = () => {
 
   const accessibleBranches = getAccessibleBranches();
 
+  // Check if user can view all branches (admin or has access to all branches)
+  const canViewAllBranches = isAuthenticated && user && (
+    user.role === 'admin' ||
+    user.accessibleBranches.length >= 4 // Has access to all branches
+  );
+
   // Set default branch to first accessible branch if current selection is not accessible
   // This hook must be called every render, regardless of authentication status
   React.useEffect(() => {
-    if (isAuthenticated && accessibleBranches.length > 0 && !canAccessBranch(selectedBranch)) {
-      setSelectedBranch(accessibleBranches[0].id);
+    if (isAuthenticated && accessibleBranches.length > 0) {
+      // For admin, default to "all-branches" if not already set to a valid option
+      if (canViewAllBranches && selectedBranch === 'branch-1' && accessibleBranches.length > 1) {
+        setSelectedBranch('all-branches');
+      }
+      // For other users, set to first accessible branch if current selection is not accessible
+      else if (selectedBranch !== 'all-branches' && !canAccessBranch(selectedBranch)) {
+        setSelectedBranch(accessibleBranches[0].id);
+      }
     }
-  }, [isAuthenticated, accessibleBranches, selectedBranch, canAccessBranch]);
+  }, [isAuthenticated, accessibleBranches, selectedBranch, canAccessBranch, canViewAllBranches]);
 
   // If not authenticated, show login (after all hooks have been called)
   if (!isAuthenticated) {
