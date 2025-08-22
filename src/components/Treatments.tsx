@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Search, Plus, Calendar, User, ClipboardCheck, Edit2, Trash2, X, Save, ChevronDown, Clock, CalendarDays, UserCheck, FileText, CreditCard, DollarSign } from 'lucide-react';
 import { useAppointments, Appointment as ContextAppointment } from '../contexts/AppointmentContext';
+import { useTreatmentPayment } from '../contexts/TreatmentPaymentContext';
 
 // Using Appointment from context
 type Appointment = ContextAppointment;
