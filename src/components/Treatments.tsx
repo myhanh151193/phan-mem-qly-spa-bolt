@@ -49,6 +49,7 @@ interface TreatmentFormData {
   monthDay?: number; // 1-31
   sessionDuration: number;
   preferredStaff: string;
+  branch: string;
 }
 
 interface TreatmentsProps {
@@ -63,7 +64,7 @@ const Treatments: React.FC<TreatmentsProps> = ({ selectedBranch }) => {
     {
       id: 1,
       name: 'Liệu trình trị mụn 3 tháng',
-      customer: 'Nguyễn Thu Hà',
+      customer: 'Nguy��n Thu Hà',
       startDate: '2025-01-01',
       endDate: '2025-04-01',
       totalSessions: 12,
@@ -210,8 +211,8 @@ const Treatments: React.FC<TreatmentsProps> = ({ selectedBranch }) => {
   });
 
   const availableServices = [
-    'Điều trị mụn', 'Tái tạo da', 'Chăm sóc da', 'Chăm sóc da mặt', 
-    'Massage', 'T��m trắng', 'Giảm béo RF', 'Massage giảm béo', 
+    'Điều trị mụn', 'T��i tạo da', 'Chăm sóc da', 'Chăm sóc da mặt', 
+    'Massage', 'Tắm trắng', 'Giảm béo RF', 'Massage giảm béo', 
     'Tư vấn dinh dưỡng', 'Triệt lông', 'Trị thâm', 'Căng da mặt'
   ];
 
@@ -1167,7 +1168,7 @@ const Treatments: React.FC<TreatmentsProps> = ({ selectedBranch }) => {
                   >
                     <option value="manual">Thủ công</option>
                     <option value="weekly">Hàng tuần</option>
-                    <option value="monthly">Hàng tháng</option>
+                    <option value="monthly">Hàng th��ng</option>
                   </select>
                 </div>
 
