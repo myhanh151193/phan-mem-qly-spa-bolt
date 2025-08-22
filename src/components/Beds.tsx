@@ -680,34 +680,55 @@ const Beds: React.FC<BedsProps> = ({ selectedBranch }) => {
               </div>
 
               {/* Actions */}
-              <div className="flex space-x-2">
-                {bed.status === 'available' && (
-                  <button
-                    onClick={() => updateBedStatus(bed.id, 'occupied')}
-                    className="flex-1 bg-green-600 text-white text-sm py-2 rounded-lg hover:bg-green-700 transition-colors"
-                  >
-                    Bắt đầu sử dụng
+              <div className="space-y-2">
+                {/* Status actions */}
+                <div className="flex space-x-2">
+                  {bed.status === 'available' && (
+                    <button
+                      onClick={() => updateBedStatus(bed.id, 'occupied')}
+                      className="flex-1 bg-green-600 text-white text-sm py-2 rounded-lg hover:bg-green-700 transition-colors"
+                    >
+                      Bắt đầu sử dụng
+                    </button>
+                  )}
+                  {bed.status === 'cleaning' && (
+                    <button
+                      onClick={() => updateBedStatus(bed.id, 'available')}
+                      className="flex-1 bg-blue-600 text-white text-sm py-2 rounded-lg hover:bg-blue-700 transition-colors"
+                    >
+                      Hoàn tất dọn dẹp
+                    </button>
+                  )}
+                  {bed.status === 'maintenance' && (
+                    <button
+                      onClick={() => updateBedStatus(bed.id, 'available')}
+                      className="flex-1 bg-gray-600 text-white text-sm py-2 rounded-lg hover:bg-gray-700 transition-colors"
+                    >
+                      Hoàn tất bảo trì
+                    </button>
+                  )}
+                  <button className="px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+                    <Eye className="w-4 h-4 text-gray-600" />
                   </button>
-                )}
-                {bed.status === 'cleaning' && (
+                </div>
+
+                {/* Management actions */}
+                <div className="flex space-x-2">
                   <button
-                    onClick={() => updateBedStatus(bed.id, 'available')}
-                    className="flex-1 bg-blue-600 text-white text-sm py-2 rounded-lg hover:bg-blue-700 transition-colors"
+                    onClick={() => openEditDialog(bed)}
+                    className="flex-1 bg-orange-100 text-orange-700 text-sm py-2 rounded-lg hover:bg-orange-200 transition-colors flex items-center justify-center space-x-1"
                   >
-                    Hoàn tất dọn dẹp
+                    <Edit className="w-4 h-4" />
+                    <span>Chỉnh sửa</span>
                   </button>
-                )}
-                {bed.status === 'maintenance' && (
                   <button
-                    onClick={() => updateBedStatus(bed.id, 'available')}
-                    className="flex-1 bg-gray-600 text-white text-sm py-2 rounded-lg hover:bg-gray-700 transition-colors"
+                    onClick={() => openDeleteConfirm(bed.id)}
+                    className="flex-1 bg-red-100 text-red-700 text-sm py-2 rounded-lg hover:bg-red-200 transition-colors flex items-center justify-center space-x-1"
                   >
-                    Hoàn tất bảo trì
+                    <Trash2 className="w-4 h-4" />
+                    <span>Xóa</span>
                   </button>
-                )}
-                <button className="px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
-                  <Eye className="w-4 h-4 text-gray-600" />
-                </button>
+                </div>
               </div>
             </div>
           ))}
