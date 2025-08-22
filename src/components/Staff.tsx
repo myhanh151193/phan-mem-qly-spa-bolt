@@ -61,6 +61,7 @@ const Staff: React.FC = () => {
       rating: 4.8,
       totalServices: 156,
       branch: 'Chi nhánh Quận 1',
+      accessibleBranches: ['branch-1'], // Can only access their primary branch
       address: '123 Nguyễn Huệ, Q1, TP.HCM',
       emergencyContact: '0909888777',
       idNumber: '001234567890',
@@ -83,6 +84,7 @@ const Staff: React.FC = () => {
       rating: 4.9,
       totalServices: 234,
       branch: 'Chi nhánh Quận 3',
+      accessibleBranches: ['branch-2'], // Can only access their primary branch
       address: '456 Lê Lợi, Q3, TP.HCM',
       emergencyContact: '0909777666',
       idNumber: '001234567891',
@@ -105,6 +107,7 @@ const Staff: React.FC = () => {
       rating: 4.6,
       totalServices: 98,
       branch: 'Chi nhánh Thủ Đức',
+      accessibleBranches: ['branch-3'], // Can only access their primary branch
       address: '789 Võ Văn Ngân, Thủ Đức, TP.HCM',
       emergencyContact: '0909666555',
       idNumber: '001234567892',
@@ -127,6 +130,7 @@ const Staff: React.FC = () => {
       rating: 4.7,
       totalServices: 0,
       branch: 'Chi nhánh Quận 1',
+      accessibleBranches: ['branch-1', 'branch-2', 'branch-3'], // Manager can access multiple branches
       address: '321 Đống Đa, Q1, TP.HCM',
       emergencyContact: '0909555444',
       idNumber: '001234567893',
@@ -170,7 +174,13 @@ const Staff: React.FC = () => {
 
   // Available options
   const departments = ['Điều trị', 'Massage', 'Làm đẹp', 'Quản lý', 'Lễ tân', 'Kỹ thuật'];
-  const branches = ['Chi nhánh Quận 1', 'Chi nhánh Quận 3', 'Chi nhánh Thủ Đức', 'Chi nhánh Gò Vấp'];
+  const allBranches: Branch[] = [
+    { id: 'branch-1', name: 'Chi nhánh Quận 1', address: '123 Nguyễn Huệ, Q1' },
+    { id: 'branch-2', name: 'Chi nhánh Quận 3', address: '456 Võ Văn Tần, Q3' },
+    { id: 'branch-3', name: 'Chi nhánh Thủ Đức', address: '789 Phạm Văn Đồng, Thủ Đức' },
+    { id: 'branch-4', name: 'Chi nhánh Gò Vấp', address: '321 Quang Trung, Gò Vấp' }
+  ];
+  const branches = allBranches.map(b => b.name);
   const availableSpecialties = [
     'Chăm sóc da mặt', 'Điều trị mụn', 'Tái tạo da', 'Massage toàn thân', 
     'Massage thái', 'Massage đá nóng', 'Tắm trắng', 'Triệt lông', 'RF giảm béo',
@@ -267,6 +277,7 @@ const Staff: React.FC = () => {
       status: 'active',
       specialties: [],
       branch: '',
+      accessibleBranches: [],
       address: '',
       emergencyContact: '',
       idNumber: '',
@@ -291,6 +302,7 @@ const Staff: React.FC = () => {
       status: staffMember.status,
       specialties: [...staffMember.specialties],
       branch: staffMember.branch,
+      accessibleBranches: [...staffMember.accessibleBranches],
       address: staffMember.address || '',
       emergencyContact: staffMember.emergencyContact || '',
       idNumber: staffMember.idNumber || '',
@@ -363,10 +375,58 @@ const Staff: React.FC = () => {
   };
 
   const handleRoleChange = (newRole: string) => {
+    // Set default branch access based on role
+    let defaultAccessibleBranches: string[] = [];
+    switch (newRole) {
+      case 'admin':
+        defaultAccessibleBranches = allBranches.map(b => b.id); // Admin can access all branches
+        break;
+      case 'manager':
+        defaultAccessibleBranches = allBranches.slice(0, 3).map(b => b.id); // Manager can access multiple branches
+        break;
+      case 'staff':
+      case 'trainee':
+        defaultAccessibleBranches = formData.branch ? [getBranchIdByName(formData.branch)] : []; // Staff/trainee access their primary branch only
+        break;
+    }
+
     setFormData(prev => ({
       ...prev,
       role: newRole as any,
-      permissions: rolePermissions[newRole as keyof typeof rolePermissions] || []
+      permissions: rolePermissions[newRole as keyof typeof rolePermissions] || [],
+      accessibleBranches: defaultAccessibleBranches.filter(Boolean)
+    }));
+  };
+
+  // Helper functions for branch management
+  const getBranchNameById = (branchId: string): string => {
+    const branch = allBranches.find(b => b.id === branchId);
+    return branch ? branch.name : branchId;
+  };
+
+  const getBranchIdByName = (branchName: string): string => {
+    const branch = allBranches.find(b => b.name === branchName);
+    return branch ? branch.id : '';
+  };
+
+  const toggleBranchAccess = (branchId: string) => {
+    setFormData(prev => ({
+      ...prev,
+      accessibleBranches: prev.accessibleBranches.includes(branchId)
+        ? prev.accessibleBranches.filter(id => id !== branchId)
+        : [...prev.accessibleBranches, branchId]
+    }));
+  };
+
+  const handlePrimaryBranchChange = (branchName: string) => {
+    const branchId = getBranchIdByName(branchName);
+    setFormData(prev => ({
+      ...prev,
+      branch: branchName,
+      // Automatically add primary branch to accessible branches if not already included
+      accessibleBranches: branchId && !prev.accessibleBranches.includes(branchId)
+        ? [...prev.accessibleBranches, branchId]
+        : prev.accessibleBranches
     }));
   };
 
@@ -438,7 +498,7 @@ const Staff: React.FC = () => {
             <option value="all">Tất cả trạng thái</option>
             <option value="active">Đang làm việc</option>
             <option value="on-leave">Nghỉ phép</option>
-            <option value="inactive">Không hoạt động</option>
+            <option value="inactive">Không hoạt đ��ng</option>
           </select>
 
           <select
@@ -618,6 +678,41 @@ const Staff: React.FC = () => {
               </div>
             </div>
 
+            {/* Branch Access */}
+            <div className="mb-4">
+              <p className="text-sm text-gray-500 mb-2">Quyền truy cập chi nhánh ({member.accessibleBranches?.length || 0}):</p>
+              <div className="flex flex-wrap gap-2">
+                {member.accessibleBranches?.slice(0, 2).map((branchId) => {
+                  const branchName = getBranchNameById(branchId);
+                  const isPrimary = member.branch === branchName;
+                  return (
+                    <span
+                      key={branchId}
+                      className={`px-2 py-1 text-xs rounded-md flex items-center space-x-1 ${
+                        isPrimary
+                          ? 'bg-green-50 text-green-700 border border-green-200'
+                          : 'bg-orange-50 text-orange-700'
+                      }`}
+                    >
+                      <MapPin className="w-3 h-3" />
+                      <span>{branchName.replace('Chi nhánh ', '')}</span>
+                      {isPrimary && <span className="text-green-600">★</span>}
+                    </span>
+                  );
+                }) || []}
+                {(member.accessibleBranches?.length || 0) > 2 && (
+                  <span className="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded-md">
+                    +{(member.accessibleBranches?.length || 0) - 2} khác
+                  </span>
+                )}
+                {(!member.accessibleBranches || member.accessibleBranches.length === 0) && (
+                  <span className="px-2 py-1 bg-red-50 text-red-700 text-xs rounded-md">
+                    Chưa có quyền truy cập
+                  </span>
+                )}
+              </div>
+            </div>
+
             {/* Performance Metrics */}
             <div className="grid grid-cols-3 gap-4 pt-4 border-t border-gray-100">
               <div className="text-center">
@@ -636,7 +731,7 @@ const Staff: React.FC = () => {
 
             {/* Permissions Preview */}
             <div className="mt-4 pt-4 border-t border-gray-100">
-              <p className="text-xs text-gray-500 mb-2">Quyền hạn ({member.permissions.length}):</p>
+              <p className="text-xs text-gray-500 mb-2">Quy���n hạn ({member.permissions.length}):</p>
               <div className="flex flex-wrap gap-1">
                 {member.permissions.slice(0, 4).map((permission) => {
                   const perm = allPermissions.find(p => p.id === permission);
@@ -730,7 +825,7 @@ const Staff: React.FC = () => {
                     <select
                       required
                       value={formData.branch}
-                      onChange={(e) => setFormData(prev => ({ ...prev, branch: e.target.value }))}
+                      onChange={(e) => handlePrimaryBranchChange(e.target.value)}
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     >
                       <option value="">Chọn chi nhánh</option>
@@ -933,6 +1028,109 @@ const Staff: React.FC = () => {
                 </div>
               </div>
 
+              {/* Branch Access Management */}
+              <div>
+                <h3 className="text-lg font-medium text-gray-900 mb-4">Quyền truy cập chi nhánh</h3>
+                <div className="space-y-4">
+                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                    <div className="flex items-start space-x-2">
+                      <MapPin className="w-5 h-5 text-blue-600 mt-0.5" />
+                      <div>
+                        <h4 className="text-sm font-medium text-blue-900">Cài đặt quyền truy cập</h4>
+                        <p className="text-sm text-blue-700 mt-1">
+                          Chọn những chi nhánh mà nhân viên này có thể xem và làm việc. Chi nhánh chính sẽ được tự động thêm vào danh sách.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-3">
+                      Chi nhánh có thể truy cập ({formData.accessibleBranches.length}/{allBranches.length})
+                    </label>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      {allBranches.map((branch) => {
+                        const isAccessible = formData.accessibleBranches.includes(branch.id);
+                        const isPrimary = formData.branch === branch.name;
+                        return (
+                          <div
+                            key={branch.id}
+                            className={`border rounded-lg p-4 transition-all ${
+                              isAccessible
+                                ? 'border-blue-500 bg-blue-50'
+                                : 'border-gray-200 bg-white hover:border-gray-300'
+                            }`}
+                          >
+                            <label className="flex items-start space-x-3 cursor-pointer">
+                              <input
+                                type="checkbox"
+                                checked={isAccessible}
+                                onChange={() => toggleBranchAccess(branch.id)}
+                                className="mt-1 rounded text-blue-600 focus:ring-blue-500"
+                              />
+                              <div className="flex-1">
+                                <div className="flex items-center space-x-2">
+                                  <h4 className="text-sm font-medium text-gray-900">{branch.name}</h4>
+                                  {isPrimary && (
+                                    <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                      Chi nh��nh chính
+                                    </span>
+                                  )}
+                                </div>
+                                <p className="text-xs text-gray-500 mt-1">{branch.address}</p>
+                                {isAccessible && (
+                                  <div className="flex items-center space-x-1 mt-2">
+                                    <Check className="w-3 h-3 text-green-600" />
+                                    <span className="text-xs text-green-600">Có quyền truy cập</span>
+                                  </div>
+                                )}
+                              </div>
+                            </label>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Quick access buttons */}
+                  <div className="flex flex-wrap gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setFormData(prev => ({
+                        ...prev,
+                        accessibleBranches: allBranches.map(b => b.id)
+                      }))}
+                      className="px-3 py-1 text-sm bg-blue-100 text-blue-700 rounded-md hover:bg-blue-200 transition-colors"
+                    >
+                      Chọn tất cả
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const primaryBranchId = getBranchIdByName(formData.branch);
+                        setFormData(prev => ({
+                          ...prev,
+                          accessibleBranches: primaryBranchId ? [primaryBranchId] : []
+                        }));
+                      }}
+                      className="px-3 py-1 text-sm bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors"
+                    >
+                      Chỉ chi nhánh chính
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setFormData(prev => ({
+                        ...prev,
+                        accessibleBranches: []
+                      }))}
+                      className="px-3 py-1 text-sm bg-red-100 text-red-700 rounded-md hover:bg-red-200 transition-colors"
+                    >
+                      Bỏ chọn tất cả
+                    </button>
+                  </div>
+                </div>
+              </div>
+
               {/* Specialties */}
               <div>
                 <h3 className="text-lg font-medium text-gray-900 mb-4">Chuyên môn</h3>
@@ -1111,6 +1309,53 @@ const Staff: React.FC = () => {
               </div>
 
               <div className="mt-6">
+                <label className="text-sm font-medium text-gray-500">Quyền truy cập chi nhánh</label>
+                <div className="mt-2">
+                  {selectedStaff.accessibleBranches && selectedStaff.accessibleBranches.length > 0 ? (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      {selectedStaff.accessibleBranches.map((branchId) => {
+                        const branch = allBranches.find(b => b.id === branchId);
+                        const isPrimary = selectedStaff.branch === branch?.name;
+                        return branch ? (
+                          <div
+                            key={branchId}
+                            className={`border rounded-lg p-3 ${
+                              isPrimary
+                                ? 'border-green-200 bg-green-50'
+                                : 'border-blue-200 bg-blue-50'
+                            }`}
+                          >
+                            <div className="flex items-center space-x-2">
+                              <MapPin className={`w-4 h-4 ${isPrimary ? 'text-green-600' : 'text-blue-600'}`} />
+                              <h4 className={`text-sm font-medium ${isPrimary ? 'text-green-900' : 'text-blue-900'}`}>
+                                {branch.name}
+                                {isPrimary && <span className="ml-1 text-green-600">★</span>}
+                              </h4>
+                            </div>
+                            <p className={`text-xs mt-1 ${isPrimary ? 'text-green-700' : 'text-blue-700'}`}>
+                              {branch.address}
+                            </p>
+                            {isPrimary && (
+                              <p className="text-xs text-green-600 mt-1 font-medium">Chi nhánh chính</p>
+                            )}
+                          </div>
+                        ) : null;
+                      })}
+                    </div>
+                  ) : (
+                    <div className="border border-red-200 bg-red-50 rounded-lg p-3">
+                      <div className="flex items-center space-x-2">
+                        <AlertCircle className="w-4 h-4 text-red-600" />
+                        <p className="text-sm text-red-700">
+                          Nhân viên này chưa được cấp quyền truy cập chi nhánh nào
+                        </p>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              <div className="mt-6">
                 <label className="text-sm font-medium text-gray-500">Quyền hạn</label>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
                   {Object.entries(
@@ -1146,11 +1391,11 @@ const Staff: React.FC = () => {
                 </div>
                 <div className="text-center">
                   <p className="text-2xl font-bold text-gray-900">{selectedStaff.totalServices}</p>
-                  <p className="text-sm text-gray-500">Dịch vụ đã thực hiện</p>
+                  <p className="text-sm text-gray-500">Dịch vụ đã th��c hiện</p>
                 </div>
                 <div className="text-center">
                   <p className="text-2xl font-bold text-gray-900">{selectedStaff.permissions.length}</p>
-                  <p className="text-sm text-gray-500">Quyền hạn</p>
+                  <p className="text-sm text-gray-500">Quyền h���n</p>
                 </div>
               </div>
             </div>
