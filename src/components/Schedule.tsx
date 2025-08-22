@@ -23,6 +23,16 @@ const Schedule: React.FC<ScheduleProps> = ({ selectedBranch }) => {
     return `${hour.toString().padStart(2, '0')}:00`;
   });
 
+  // Staff members with their branches (same as in AppointmentForm)
+  const staffMembers = [
+    { name: 'Nguyễn Mai', branch: 'branch-1' },
+    { name: 'Lê Hoa', branch: 'branch-2' },
+    { name: 'Trần An', branch: 'branch-3' },
+    { name: 'Phạm Thùy', branch: 'branch-1' },
+    { name: 'Lý Thu', branch: 'branch-2' },
+    { name: 'Vũ Lan', branch: 'branch-3' }
+  ];
+
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'confirmed': 
