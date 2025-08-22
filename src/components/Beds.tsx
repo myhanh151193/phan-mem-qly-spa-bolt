@@ -919,7 +919,7 @@ const Beds: React.FC<BedsProps> = ({ selectedBranch }) => {
                 />
               </div>
 
-              {/* Room */}
+              {/* Room - Shows rooms for selected branch */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Phòng
@@ -929,10 +929,13 @@ const Beds: React.FC<BedsProps> = ({ selectedBranch }) => {
                   onChange={(e) => setNewBedForm(prev => ({ ...prev, room: e.target.value }))}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 >
-                  {rooms.filter(room => room !== 'all').map(room => (
+                  {getRoomsForBranch(newBedForm.branch).map(room => (
                     <option key={room} value={room}>{room}</option>
                   ))}
                 </select>
+                <p className="text-xs text-gray-500 mt-1">
+                  Phòng thuộc {getBranchNameFromId(newBedForm.branch)}
+                </p>
               </div>
 
               {/* Type */}
