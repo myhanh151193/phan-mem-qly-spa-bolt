@@ -21,6 +21,7 @@ interface Treatment {
   totalValue: string;
   totalAmount: number; // Total package amount in VND
   appointments: Appointment[];
+  branch: string; // Branch where the treatment is managed
 }
 
 interface Customer {
@@ -30,6 +31,7 @@ interface Customer {
   email: string;
   membershipLevel: 'Member' | 'VIP' | 'VVIP';
   avatar: string;
+  branch: string;
 }
 
 interface TreatmentFormData {
@@ -47,9 +49,14 @@ interface TreatmentFormData {
   monthDay?: number; // 1-31
   sessionDuration: number;
   preferredStaff: string;
+  branch: string;
 }
 
-const Treatments: React.FC = () => {
+interface TreatmentsProps {
+  selectedBranch: string;
+}
+
+const Treatments: React.FC<TreatmentsProps> = ({ selectedBranch }) => {
   const { addTreatmentAppointments, getAppointmentsForTreatment, updateAppointment, deleteAppointment: deleteAppointmentFromContext } = useAppointments();
   const { getTreatmentPayment, updateTreatmentPayment, initializeTreatmentPayment, getPaymentStatusColor, getPaymentStatusText, formatCurrency } = useTreatmentPayment();
 
@@ -68,6 +75,7 @@ const Treatments: React.FC = () => {
       services: ['Điều trị mụn', 'Tái tạo da', 'Chăm sóc da'],
       totalValue: '15,600,000',
       totalAmount: 15600000,
+      branch: 'branch-1',
       appointments: [
         { id: 1, treatmentId: 1, date: '2025-01-15', time: '09:00', duration: 90, staff: 'Nguyễn Mai', status: 'scheduled', services: ['Điều trị mụn'], notes: 'Buổi 9' },
         { id: 2, treatmentId: 1, date: '2025-01-22', time: '09:00', duration: 90, staff: 'Nguyễn Mai', status: 'scheduled', services: ['Tái tạo da'], notes: 'Buổi 10' },
@@ -88,6 +96,7 @@ const Treatments: React.FC = () => {
       services: ['Chăm sóc da mặt', 'Massage', 'Tắm trắng'],
       totalValue: '12,800,000',
       totalAmount: 12800000,
+      branch: 'branch-2',
       appointments: [
         { id: 4, treatmentId: 2, date: '2025-01-20', time: '14:00', duration: 120, staff: 'Lê Hoa', status: 'scheduled', services: ['Chăm sóc da mặt', 'Massage'], notes: 'Buổi 7' },
         { id: 5, treatmentId: 2, date: '2025-02-03', time: '14:00', duration: 120, staff: 'Lê Hoa', status: 'scheduled', services: ['T���m trắng'], notes: 'Buổi cuối' }
@@ -107,18 +116,20 @@ const Treatments: React.FC = () => {
       services: ['Giảm béo RF', 'Massage giảm béo', 'Tư vấn dinh dưỡng'],
       totalValue: '28,800,000',
       totalAmount: 28800000,
+      branch: 'branch-3',
       appointments: []
     },
   ]);
 
-  const [customers] = useState<Customer[]>([
+  const [allCustomers] = useState<Customer[]>([
     {
       id: 1,
       name: 'Nguyễn Thu Hà',
       phone: '0901234567',
       email: 'thuha@email.com',
       membershipLevel: 'VVIP',
-      avatar: 'https://images.pexels.com/photos/1036623/pexels-photo-1036623.jpeg?w=150'
+      avatar: 'https://images.pexels.com/photos/1036623/pexels-photo-1036623.jpeg?w=150',
+      branch: 'branch-1'
     },
     {
       id: 2,
@@ -126,7 +137,8 @@ const Treatments: React.FC = () => {
       phone: '0907654321',
       email: 'mailinh@email.com',
       membershipLevel: 'VIP',
-      avatar: 'https://images.pexels.com/photos/762020/pexels-photo-762020.jpeg?w=150'
+      avatar: 'https://images.pexels.com/photos/762020/pexels-photo-762020.jpeg?w=150',
+      branch: 'branch-2'
     },
     {
       id: 3,
@@ -134,7 +146,8 @@ const Treatments: React.FC = () => {
       phone: '0912345678',
       email: 'minhchau@email.com',
       membershipLevel: 'Member',
-      avatar: 'https://images.pexels.com/photos/1037915/pexels-photo-1037915.jpeg?w=150'
+      avatar: 'https://images.pexels.com/photos/1037915/pexels-photo-1037915.jpeg?w=150',
+      branch: 'branch-3'
     },
     {
       id: 4,
@@ -142,7 +155,8 @@ const Treatments: React.FC = () => {
       phone: '0938567890',
       email: 'thilan@email.com',
       membershipLevel: 'VIP',
-      avatar: 'https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?w=150'
+      avatar: 'https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?w=150',
+      branch: 'branch-1'
     },
     {
       id: 5,
@@ -150,7 +164,8 @@ const Treatments: React.FC = () => {
       phone: '0976543210',
       email: 'vannam@email.com',
       membershipLevel: 'Member',
-      avatar: 'https://images.pexels.com/photos/1043471/pexels-photo-1043471.jpeg?w=150'
+      avatar: 'https://images.pexels.com/photos/1043471/pexels-photo-1043471.jpeg?w=150',
+      branch: 'branch-2'
     }
   ]);
 
@@ -171,7 +186,8 @@ const Treatments: React.FC = () => {
     weekDay: 1, // Monday
     monthDay: 1,
     sessionDuration: 90,
-    preferredStaff: ''
+    preferredStaff: '',
+    branch: selectedBranch === 'all-branches' ? 'branch-1' : selectedBranch
   });
   const [serviceInput, setServiceInput] = useState('');
   const [deleteConfirm, setDeleteConfirm] = useState<number | null>(null);
@@ -194,6 +210,11 @@ const Treatments: React.FC = () => {
     method: 'cash' as 'cash' | 'transfer' | 'card',
     note: ''
   });
+
+  // Filter customers by selected branch
+  const customers = selectedBranch === 'all-branches'
+    ? allCustomers
+    : allCustomers.filter(customer => customer.branch === selectedBranch);
 
   const availableServices = [
     'Điều trị mụn', 'Tái tạo da', 'Chăm sóc da', 'Chăm sóc da mặt', 
@@ -222,10 +243,23 @@ const Treatments: React.FC = () => {
     }
   };
 
-  const filteredTreatments = treatments.filter(treatment =>
-    treatment.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    treatment.customer.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  // Branch mapping for display
+  const branchMap: { [key: string]: string } = {
+    'branch-1': 'Chi nhánh Quận 1',
+    'branch-2': 'Chi nhánh Quận 3',
+    'branch-3': 'Chi nhánh Thủ Đức',
+    'branch-4': 'Chi nhánh Gò Vấp'
+  };
+
+  const filteredTreatments = treatments.filter(treatment => {
+    const matchesSearch = treatment.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         treatment.customer.toLowerCase().includes(searchTerm.toLowerCase());
+
+    // Branch filtering
+    const matchesBranch = selectedBranch === 'all-branches' || treatment.branch === selectedBranch;
+
+    return matchesSearch && matchesBranch;
+  });
 
   const openCreateModal = () => {
     setEditingTreatment(null);
@@ -243,14 +277,15 @@ const Treatments: React.FC = () => {
       weekDay: 1,
       monthDay: 1,
       sessionDuration: 90,
-      preferredStaff: ''
+      preferredStaff: '',
+      branch: selectedBranch === 'all-branches' ? 'branch-1' : selectedBranch
     });
     setShowModal(true);
   };
 
   const openEditModal = (treatment: Treatment) => {
     setEditingTreatment(treatment);
-    const selectedCustomer = customers.find(c => c.name === treatment.customer);
+    const selectedCustomer = allCustomers.find(c => c.name === treatment.customer);
     setFormData({
       name: treatment.name,
       customerId: selectedCustomer?.id || null,
@@ -265,7 +300,8 @@ const Treatments: React.FC = () => {
       weekDay: 1,
       monthDay: 1,
       sessionDuration: 90,
-      preferredStaff: ''
+      preferredStaff: '',
+      branch: treatment.branch
     });
     setShowModal(true);
   };
@@ -284,7 +320,7 @@ const Treatments: React.FC = () => {
       return;
     }
 
-    const selectedCustomer = customers.find(c => c.id === formData.customerId);
+    const selectedCustomer = allCustomers.find(c => c.id === formData.customerId);
     if (!selectedCustomer) {
       alert('Vui lòng chọn khách hàng');
       return;
@@ -316,7 +352,9 @@ const Treatments: React.FC = () => {
       progress: editingTreatment
         ? Math.round((editingTreatment.completedSessions / formData.totalSessions) * 100)
         : 0,
-      appointments: generatedAppointments
+      appointments: generatedAppointments,
+      branch: formData.branch,
+      totalAmount: parseFloat(formData.totalValue.replace(/,/g, '')) || 0
     };
 
     if (editingTreatment) {
@@ -332,7 +370,8 @@ const Treatments: React.FC = () => {
           customerId: selectedCustomer.id,
           service: apt.services.join(', '),
           totalPrice: formData.totalValue,
-          price: formData.totalValue
+          price: formData.totalValue,
+          branch: formData.branch
         }));
         addTreatmentAppointments(contextAppointments);
       }
@@ -373,7 +412,7 @@ const Treatments: React.FC = () => {
   };
 
   const handleCustomerSelect = (customerId: number) => {
-    const selectedCustomer = customers.find(c => c.id === customerId);
+    const selectedCustomer = allCustomers.find(c => c.id === customerId);
     if (selectedCustomer) {
       setFormData(prev => ({
         ...prev,
@@ -381,6 +420,21 @@ const Treatments: React.FC = () => {
         customer: selectedCustomer.name
       }));
     }
+  };
+
+  const handleBranchChange = (newBranch: string) => {
+    setFormData(prev => {
+      // Reset customer selection if current customer is not from new branch
+      const currentCustomer = allCustomers.find(c => c.id === prev.customerId);
+      const shouldResetCustomer = currentCustomer && currentCustomer.branch !== newBranch;
+
+      return {
+        ...prev,
+        branch: newBranch,
+        customerId: shouldResetCustomer ? null : prev.customerId,
+        customer: shouldResetCustomer ? '' : prev.customer
+      };
+    });
   };
 
   const generateRecurringAppointments = (treatmentId: number): Appointment[] => {
@@ -687,16 +741,69 @@ const Treatments: React.FC = () => {
   };
 
   const stats = {
-    active: treatments.filter(t => t.status === 'active').length,
-    completed: treatments.filter(t => t.status === 'completed').length,
-    totalValue: treatments.reduce((sum, t) => sum + parseFloat(t.totalValue.replace(/,/g, '')), 0) / 1000000,
+    active: filteredTreatments.filter(t => t.status === 'active').length,
+    completed: filteredTreatments.filter(t => t.status === 'completed').length,
+    totalValue: filteredTreatments.reduce((sum, t) => sum + parseFloat(t.totalValue.replace(/,/g, '')), 0) / 1000000,
     completionRate: Math.round(
-      (treatments.reduce((sum, t) => sum + t.progress, 0) / treatments.length) || 0
+      (filteredTreatments.reduce((sum, t) => sum + t.progress, 0) / filteredTreatments.length) || 0
     )
   };
 
   return (
     <div className="space-y-6">
+      {/* Branch Indicator */}
+      <div className="bg-gradient-to-r from-purple-50 to-indigo-50 border border-purple-200 rounded-lg p-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-3">
+            <div className="flex items-center space-x-2">
+              <ClipboardCheck className="w-5 h-5 text-purple-600" />
+              <span className="text-sm font-medium text-purple-900">
+                {selectedBranch === 'all-branches' ? (
+                  'Tất cả liệu trình'
+                ) : (
+                  `Liệu trình ${branchMap[selectedBranch] || selectedBranch}`
+                )}
+              </span>
+            </div>
+            <div className="flex items-center space-x-4">
+              <div className="flex items-center space-x-1">
+                <span className="px-2 py-1 bg-purple-100 text-purple-800 text-xs rounded-full font-medium">
+                  {filteredTreatments.length} liệu trình
+                </span>
+              </div>
+              {selectedBranch !== 'all-branches' && (
+                <div className="flex items-center space-x-2 text-xs text-purple-700">
+                  <span className="flex items-center space-x-1">
+                    <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                    <span>{filteredTreatments.filter(t => t.status === 'active').length} đang thực hiện</span>
+                  </span>
+                  <span className="flex items-center space-x-1">
+                    <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                    <span>{filteredTreatments.filter(t => t.status === 'completed').length} hoàn thành</span>
+                  </span>
+                  <span className="flex items-center space-x-1">
+                    <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
+                    <span>{filteredTreatments.filter(t => t.status === 'paused').length} tạm dừng</span>
+                  </span>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {selectedBranch !== 'all-branches' && (
+            <div className="text-right text-xs text-purple-700">
+              <div className="font-medium">
+                {(() => {
+                  const totalValue = filteredTreatments.reduce((sum, treatment) => sum + treatment.totalAmount, 0);
+                  return (totalValue / 1000000).toFixed(1) + 'M';
+                })()}
+              </div>
+              <div className="text-purple-600">Tổng giá trị</div>
+            </div>
+          )}
+        </div>
+      </div>
+
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div className="relative flex-1 max-w-md">
@@ -785,6 +892,12 @@ const Treatments: React.FC = () => {
                         <Calendar className="w-4 h-4" />
                         <span>{treatment.startDate} - {treatment.endDate}</span>
                       </div>
+                      {selectedBranch === 'all-branches' && (
+                        <div className="flex items-center space-x-1">
+                          <ClipboardCheck className="w-4 h-4" />
+                          <span>{branchMap[treatment.branch]}</span>
+                        </div>
+                      )}
                     </div>
                   </div>
                   <span className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(treatment.status)}`}>
@@ -899,7 +1012,7 @@ const Treatments: React.FC = () => {
                   <span>Thanh toán</span>
                 </button>
                 <button
-                  onClick={() => window.location.href = `#invoices?treatmentId=${treatment.id}&customerId=${customers.find(c => c.name === treatment.customer)?.id}`}
+                  onClick={() => window.location.href = `#invoices?treatmentId=${treatment.id}&customerId=${allCustomers.find(c => c.name === treatment.customer)?.id}`}
                   className="px-4 py-2 bg-purple-600 text-white text-sm rounded-lg hover:bg-purple-700 transition-colors duration-200 flex items-center justify-center space-x-1"
                 >
                   <FileText className="w-4 h-4" />
@@ -954,7 +1067,7 @@ const Treatments: React.FC = () => {
             </div>
 
             <form onSubmit={handleSubmit} className="p-6 space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Tên liệu trình *
@@ -971,6 +1084,26 @@ const Treatments: React.FC = () => {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Chi nhánh *
+                  </label>
+                  <select
+                    required
+                    value={formData.branch}
+                    onChange={(e) => handleBranchChange(e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  >
+                    <option value="branch-1">{branchMap['branch-1']}</option>
+                    <option value="branch-2">{branchMap['branch-2']}</option>
+                    <option value="branch-3">{branchMap['branch-3']}</option>
+                    <option value="branch-4">{branchMap['branch-4']}</option>
+                  </select>
+                  <p className="text-xs text-gray-500 mt-1">
+                    Chi nhánh thực hiện liệu trình
+                  </p>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
                     Khách hàng *
                   </label>
                   <div className="relative">
@@ -981,7 +1114,9 @@ const Treatments: React.FC = () => {
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none"
                     >
                       <option value="">Chọn khách hàng</option>
-                      {customers.map((customer) => (
+                      {allCustomers
+                        .filter(customer => customer.branch === formData.branch)
+                        .map((customer) => (
                         <option key={customer.id} value={customer.id}>
                           {customer.name} - {customer.phone} ({customer.membershipLevel})
                         </option>
@@ -994,7 +1129,7 @@ const Treatments: React.FC = () => {
                   {formData.customerId && (
                     <div className="mt-2 p-3 bg-gray-50 rounded-lg">
                       {(() => {
-                        const selectedCustomer = customers.find(c => c.id === formData.customerId);
+                        const selectedCustomer = allCustomers.find(c => c.id === formData.customerId);
                         return selectedCustomer ? (
                           <div className="flex items-center space-x-3">
                             <img
@@ -1009,6 +1144,9 @@ const Treatments: React.FC = () => {
                                 <span className={`px-2 py-1 rounded-full text-xs font-medium ${getMembershipColor(selectedCustomer.membershipLevel)}`}>
                                   {selectedCustomer.membershipLevel}
                                 </span>
+                                <span className="px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                                  {branchMap[selectedCustomer.branch]}
+                                </span>
                               </div>
                             </div>
                           </div>
@@ -1016,6 +1154,25 @@ const Treatments: React.FC = () => {
                       })()}
                     </div>
                   )}
+
+                  {/* Warning when branch changes and customer selected */}
+                  {formData.customerId && (() => {
+                    const selectedCustomer = allCustomers.find(c => c.id === formData.customerId);
+                    return selectedCustomer && selectedCustomer.branch !== formData.branch ? (
+                      <div className="mt-2 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+                        <div className="flex items-start space-x-2">
+                          <div className="w-4 h-4 bg-yellow-400 rounded-full mt-0.5"></div>
+                          <div>
+                            <p className="text-sm font-medium text-yellow-800">Lưu ý</p>
+                            <p className="text-sm text-yellow-700">
+                              Khách hàng thuộc {branchMap[selectedCustomer.branch]} nhưng liệu trình đang được tạo cho {branchMap[formData.branch]}.
+                              Vui lòng chọn khách hàng phù hợp hoặc thay đổi chi nhánh.
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    ) : null;
+                  })()}
                 </div>
 
                 <div>
@@ -1729,7 +1886,7 @@ const Treatments: React.FC = () => {
                       </div>
                     ))}
                     {paymentData.paymentHistory.length === 0 && (
-                      <p className="text-gray-500 text-sm text-center py-4">Chưa có giao dịch nào</p>
+                      <p className="text-gray-500 text-sm text-center py-4">Chưa có giao dịch n��o</p>
                     )}
                   </div>
                 </div>

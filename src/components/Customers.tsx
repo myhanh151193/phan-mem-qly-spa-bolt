@@ -39,6 +39,7 @@ interface Customer {
   loyaltyPoints: number;
   nextBirthday: string;
   personalOffers: string[];
+  branch: string; // Branch where customer is primarily managed
 }
 
 interface NewCustomer {
@@ -50,9 +51,14 @@ interface NewCustomer {
   allergies?: string;
   preferences?: string;
   skinType?: string;
+  branch?: string;
 }
 
-const Customers: React.FC = () => {
+interface CustomersProps {
+  selectedBranch: string;
+}
+
+const Customers: React.FC<CustomersProps> = ({ selectedBranch }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [showDetailModal, setShowDetailModal] = useState(false);
@@ -60,6 +66,14 @@ const Customers: React.FC = () => {
   const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
   const [activeTab, setActiveTab] = useState<'info' | 'history' | 'notes' | 'offers'>('info');
   const [filterLevel, setFilterLevel] = useState<string>('all');
+
+  // Branch mapping for display
+  const branchMap: { [key: string]: string } = {
+    'branch-1': 'Chi nhánh Quận 1',
+    'branch-2': 'Chi nhánh Quận 3',
+    'branch-3': 'Chi nhánh Thủ Đức',
+    'branch-4': 'Chi nhánh Gò Vấp'
+  };
   
   const [customers, setCustomers] = useState<Customer[]>([
     {
@@ -104,7 +118,8 @@ const Customers: React.FC = () => {
         favoriteServices: ['Chăm sóc da mặt Premium', 'Massage đá nóng'],
         skinType: 'Da khô, nhạy cảm',
         specialRequests: 'Luôn yêu cầu cùng một nhân viên'
-      }
+      },
+      branch: 'branch-1'
     },
     {
       id: 2,
@@ -137,7 +152,8 @@ const Customers: React.FC = () => {
         preferences: 'Thích dịch vụ vào buổi sáng',
         favoriteServices: ['Tắm trắng', 'Massage thái'],
         skinType: 'Da dầu'
-      }
+      },
+      branch: 'branch-2'
     },
     {
       id: 3,
@@ -170,7 +186,8 @@ const Customers: React.FC = () => {
         allergies: 'Không dị ứng',
         skinType: 'Da mụn, dầu',
         favoriteServices: ['Điều trị mụn']
-      }
+      },
+      branch: 'branch-3'
     }
   ]);
   
@@ -182,7 +199,8 @@ const Customers: React.FC = () => {
     dateOfBirth: '',
     allergies: '',
     preferences: '',
-    skinType: ''
+    skinType: '',
+    branch: 'branch-1' // Default branch
   });
   
   const [editCustomer, setEditCustomer] = useState<Customer | null>(null);
@@ -196,10 +214,13 @@ const Customers: React.FC = () => {
     const matchesSearch = customer.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          customer.phone.includes(searchTerm) ||
                          customer.email.toLowerCase().includes(searchTerm.toLowerCase());
-    
+
     const matchesFilter = filterLevel === 'all' || customer.membershipLevel === filterLevel;
-    
-    return matchesSearch && matchesFilter;
+
+    // Branch filtering
+    const matchesBranch = selectedBranch === 'all-branches' || customer.branch === selectedBranch;
+
+    return matchesSearch && matchesFilter && matchesBranch;
   });
 
   const validateForm = (): boolean => {
@@ -288,6 +309,7 @@ const Customers: React.FC = () => {
       const newCustomerData: Customer = {
         id: Math.max(...customers.map(c => c.id)) + 1,
         ...newCustomer,
+        branch: newCustomer.branch || (selectedBranch === 'all-branches' ? 'branch-1' : selectedBranch),
         avatar: 'https://images.pexels.com/photos/1181519/pexels-photo-1181519.jpeg?w=150',
         membershipLevel: 'Member',
         totalSpent: 0,
@@ -308,7 +330,7 @@ const Customers: React.FC = () => {
       };
       
       setCustomers(prev => [...prev, newCustomerData]);
-      setNewCustomer({ name: '', phone: '', email: '', address: '', dateOfBirth: '', allergies: '', preferences: '', skinType: '' });
+      setNewCustomer({ name: '', phone: '', email: '', address: '', dateOfBirth: '', allergies: '', preferences: '', skinType: '', branch: 'branch-1' });
       setErrors({});
       setShowModal(false);
       
@@ -405,6 +427,59 @@ const Customers: React.FC = () => {
 
   return (
     <div className="space-y-6">
+      {/* Branch Indicator */}
+      <div className="bg-gradient-to-r from-green-50 to-blue-50 border border-green-200 rounded-lg p-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-3">
+            <div className="flex items-center space-x-2">
+              <Award className="w-5 h-5 text-green-600" />
+              <span className="text-sm font-medium text-green-900">
+                {selectedBranch === 'all-branches' ? (
+                  'Tất cả khách hàng'
+                ) : (
+                  `Khách hàng ${branchMap[selectedBranch] || selectedBranch}`
+                )}
+              </span>
+            </div>
+            <div className="flex items-center space-x-4">
+              <div className="flex items-center space-x-1">
+                <span className="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full font-medium">
+                  {filteredCustomers.length} khách hàng
+                </span>
+              </div>
+              {selectedBranch !== 'all-branches' && (
+                <div className="flex items-center space-x-2 text-xs text-green-700">
+                  <span className="flex items-center space-x-1">
+                    <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
+                    <span>{filteredCustomers.filter(c => c.membershipLevel === 'VVIP').length} VVIP</span>
+                  </span>
+                  <span className="flex items-center space-x-1">
+                    <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
+                    <span>{filteredCustomers.filter(c => c.membershipLevel === 'VIP').length} VIP</span>
+                  </span>
+                  <span className="flex items-center space-x-1">
+                    <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                    <span>{filteredCustomers.filter(c => c.membershipLevel === 'Member').length} Member</span>
+                  </span>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {selectedBranch !== 'all-branches' && (
+            <div className="text-right text-xs text-green-700">
+              <div className="font-medium">
+                {(() => {
+                  const totalRevenue = filteredCustomers.reduce((sum, customer) => sum + customer.totalSpent, 0);
+                  return new Intl.NumberFormat('vi-VN').format(totalRevenue) + 'đ';
+                })()}
+              </div>
+              <div className="text-green-600">Tổng doanh thu</div>
+            </div>
+          )}
+        </div>
+      </div>
+
       {/* Header */}
       <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
         <div className="flex items-center space-x-4">
@@ -443,8 +518,10 @@ const Customers: React.FC = () => {
         <div className="bg-white rounded-lg p-4 border border-gray-200">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600">Tổng khách hàng</p>
-              <p className="text-2xl font-bold text-gray-900">{customers.length}</p>
+              <p className="text-sm text-gray-600">
+                {selectedBranch === 'all-branches' ? 'Tổng khách hàng' : 'Khách hàng chi nhánh'}
+              </p>
+              <p className="text-2xl font-bold text-gray-900">{filteredCustomers.length}</p>
             </div>
             <Award className="w-8 h-8 text-blue-600" />
           </div>
@@ -454,7 +531,7 @@ const Customers: React.FC = () => {
             <div>
               <p className="text-sm text-gray-600">VVIP</p>
               <p className="text-2xl font-bold text-purple-600">
-                {customers.filter(c => c.membershipLevel === 'VVIP').length}
+                {filteredCustomers.filter(c => c.membershipLevel === 'VVIP').length}
               </p>
             </div>
             <Star className="w-8 h-8 text-purple-600" />
@@ -465,7 +542,7 @@ const Customers: React.FC = () => {
             <div>
               <p className="text-sm text-gray-600">Sinh nhật tháng này</p>
               <p className="text-2xl font-bold text-pink-600">
-                {customers.filter(c => isUpcomingBirthday(c.nextBirthday)).length}
+                {filteredCustomers.filter(c => isUpcomingBirthday(c.nextBirthday)).length}
               </p>
             </div>
             <Cake className="w-8 h-8 text-pink-600" />
@@ -476,7 +553,7 @@ const Customers: React.FC = () => {
             <div>
               <p className="text-sm text-gray-600">Tổng chi tiêu</p>
               <p className="text-2xl font-bold text-green-600">
-                {formatCurrency(customers.reduce((sum, c) => sum + c.totalSpent, 0))}
+                {formatCurrency(filteredCustomers.reduce((sum, c) => sum + c.totalSpent, 0))}
               </p>
             </div>
             <Gift className="w-8 h-8 text-green-600" />
@@ -538,6 +615,12 @@ const Customers: React.FC = () => {
                 <Clock className="w-4 h-4" />
                 <span>Lần cuối: {customer.lastVisit}</span>
               </div>
+              {selectedBranch === 'all-branches' && (
+                <div className="flex items-center space-x-2 text-sm text-gray-500">
+                  <MapPin className="w-4 h-4" />
+                  <span>{branchMap[customer.branch]}</span>
+                </div>
+              )}
             </div>
 
             <div className="grid grid-cols-3 gap-4 pt-4 border-t border-gray-100">
@@ -683,6 +766,25 @@ const Customers: React.FC = () => {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Chi nhánh <span className="text-red-500">*</span>
+                  </label>
+                  <select
+                    value={newCustomer.branch || ''}
+                    onChange={(e) => handleInputChange('branch', e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  >
+                    <option value="branch-1">{branchMap['branch-1']}</option>
+                    <option value="branch-2">{branchMap['branch-2']}</option>
+                    <option value="branch-3">{branchMap['branch-3']}</option>
+                    <option value="branch-4">{branchMap['branch-4']}</option>
+                  </select>
+                  <p className="text-xs text-gray-500 mt-1">
+                    Chi nhánh chính để quản lý khách hàng
+                  </p>
+                </div>
+
+                <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Loại da</label>
                   <select
                     value={newCustomer.skinType || ''}
@@ -697,17 +799,17 @@ const Customers: React.FC = () => {
                     <option value="Da thường">Da thường</option>
                   </select>
                 </div>
+              </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Dị ứng</label>
-                  <input
-                    type="text"
-                    value={newCustomer.allergies || ''}
-                    onChange={(e) => handleInputChange('allergies', e.target.value)}
-                    placeholder="Ghi chú về dị ứng (nếu có)"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  />
-                </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Dị ứng</label>
+                <input
+                  type="text"
+                  value={newCustomer.allergies || ''}
+                  onChange={(e) => handleInputChange('allergies', e.target.value)}
+                  placeholder="Ghi chú về dị ứng (nếu có)"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
               </div>
 
               <div>
@@ -873,7 +975,23 @@ const Customers: React.FC = () => {
                 )}
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Chi nhánh <span className="text-red-500">*</span>
+                  </label>
+                  <select
+                    value={editCustomer.branch}
+                    onChange={(e) => handleEditInputChange('branch', e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  >
+                    <option value="branch-1">{branchMap['branch-1']}</option>
+                    <option value="branch-2">{branchMap['branch-2']}</option>
+                    <option value="branch-3">{branchMap['branch-3']}</option>
+                    <option value="branch-4">{branchMap['branch-4']}</option>
+                  </select>
+                </div>
+
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Hạng thành viên</label>
                   <select
@@ -1000,9 +1118,14 @@ const Customers: React.FC = () => {
                 />
                 <div>
                   <h3 className="text-xl font-semibold text-gray-900">{selectedCustomer.name}</h3>
-                  <span className={`inline-block px-3 py-1 rounded-full text-sm font-medium ${getMembershipColor(selectedCustomer.membershipLevel)}`}>
-                    {selectedCustomer.membershipLevel}
-                  </span>
+                  <div className="flex items-center space-x-2 mt-1">
+                    <span className={`inline-block px-3 py-1 rounded-full text-sm font-medium ${getMembershipColor(selectedCustomer.membershipLevel)}`}>
+                      {selectedCustomer.membershipLevel}
+                    </span>
+                    <span className="inline-block px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-800">
+                      {branchMap[selectedCustomer.branch]}
+                    </span>
+                  </div>
                 </div>
               </div>
               <button

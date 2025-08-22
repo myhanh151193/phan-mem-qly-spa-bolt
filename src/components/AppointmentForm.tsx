@@ -7,6 +7,7 @@ interface Customer {
   phone: string;
   email: string;
   membershipLevel: 'Member' | 'VIP' | 'VVIP';
+  branch: string;
   notes: {
     allergies?: string;
     preferences?: string;
@@ -46,6 +47,7 @@ interface AppointmentFormProps {
   onCancel: () => void;
   isEditing: boolean;
   onUpdateStatus?: (id: number, status: Appointment['status']) => void;
+  selectedBranch?: string;
 }
 
 const AppointmentForm: React.FC<AppointmentFormProps> = ({
@@ -53,7 +55,8 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
   onSave,
   onCancel,
   isEditing,
-  onUpdateStatus
+  onUpdateStatus,
+  selectedBranch = 'branch-1'
 }) => {
   const [formData, setFormData] = useState({
     customer: '',
@@ -67,7 +70,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
     totalPrice: '',
     notes: '',
     status: 'pending' as Appointment['status'],
-    branch: 'branch-1' // Default branch
+    branch: selectedBranch // Use selected branch
   });
 
   const [showCustomerSearch, setShowCustomerSearch] = useState(false);
@@ -75,16 +78,17 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
   const [showServiceSearch, setShowServiceSearch] = useState(false);
 
   // Mock customer data (in real app, this would come from props or API)
-  const customers: Customer[] = [
+  const allCustomers: Customer[] = [
     {
       id: 1,
       name: 'Nguyễn Thu Hà',
       phone: '0901234567',
       email: 'thuha@email.com',
       membershipLevel: 'VVIP',
+      branch: 'branch-1',
       notes: {
         allergies: 'Dị ứng với tinh dầu hoa hồng',
-        preferences: 'Thích không gian yên tĩnh, nhạc nhẹ',
+        preferences: 'Thích không gian yên t��nh, nhạc nhẹ',
         favoriteServices: ['Chăm sóc da mặt Premium', 'Massage đá nóng'],
         skinType: 'Da khô, nhạy cảm',
         specialRequests: 'Luôn yêu cầu cùng một nhân viên'
@@ -96,6 +100,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
       phone: '0907654321',
       email: 'mailinh@email.com',
       membershipLevel: 'VIP',
+      branch: 'branch-2',
       notes: {
         preferences: 'Thích dịch vụ vào buổi sáng',
         favoriteServices: ['Tắm trắng', 'Massage thái'],
@@ -108,13 +113,45 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
       phone: '0912345678',
       email: 'minhchau@email.com',
       membershipLevel: 'Member',
+      branch: 'branch-3',
       notes: {
         allergies: 'Không dị ứng',
         skinType: 'Da mụn, dầu',
         favoriteServices: ['Điều trị mụn']
       }
+    },
+    {
+      id: 4,
+      name: 'Phạm Thị Lan',
+      phone: '0934567890',
+      email: 'lan.pham@email.com',
+      membershipLevel: 'VIP',
+      branch: 'branch-1',
+      notes: {
+        preferences: 'Thích dịch vụ buổi chiều',
+        favoriteServices: ['Gói chăm sóc VIP'],
+        skinType: 'Da thường'
+      }
+    },
+    {
+      id: 5,
+      name: 'Nguyễn Thị Bích',
+      phone: '0945678901',
+      email: 'bich.nguyen@email.com',
+      membershipLevel: 'Member',
+      branch: 'branch-2',
+      notes: {
+        allergies: 'Dị ứng với nước hoa',
+        skinType: 'Da nhạy cảm',
+        favoriteServices: ['Chăm sóc da mặt cơ bản']
+      }
     }
   ];
+
+  // Filter customers by selected branch
+  const customers = selectedBranch === 'all-branches'
+    ? allCustomers
+    : allCustomers.filter(customer => customer.branch === selectedBranch);
 
   const services: Service[] = [
     { id: 1, name: 'Chăm sóc da mặt Premium', duration: 90, price: '800K', category: 'Chăm sóc da' },
@@ -166,7 +203,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
         totalPrice: appointment.totalPrice || '',
         notes: appointment.notes || '',
         status: appointment.status || 'pending',
-        branch: appointment.branch || 'branch-1'
+        branch: appointment.branch || selectedBranch
       });
     }
   }, [appointment]);
@@ -175,6 +212,11 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
     customer.name.toLowerCase().includes(customerSearchTerm.toLowerCase()) ||
     customer.phone.includes(customerSearchTerm)
   );
+
+  // Filter staff members by selected branch (unless viewing all branches)
+  const filteredStaffMembers = selectedBranch === 'all-branches'
+    ? staffMembers
+    : staffMembers.filter(staff => staff.branch === selectedBranch);
 
   const selectCustomer = (customer: Customer) => {
     setFormData(prev => ({
@@ -482,8 +524,8 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
               className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             >
               <option value="">Chọn nhân viên (không bắt buộc)</option>
-              {staffMembers.map(staff => (
-                <option key={staff} value={staff}>{staff}</option>
+              {filteredStaffMembers.map(staff => (
+                <option key={staff.name} value={staff.name}>{staff.name}</option>
               ))}
             </select>
           </div>
