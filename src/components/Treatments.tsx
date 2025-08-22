@@ -51,7 +51,11 @@ interface TreatmentFormData {
   preferredStaff: string;
 }
 
-const Treatments: React.FC = () => {
+interface TreatmentsProps {
+  selectedBranch: string;
+}
+
+const Treatments: React.FC<TreatmentsProps> = ({ selectedBranch }) => {
   const { addTreatmentAppointments, getAppointmentsForTreatment, updateAppointment, deleteAppointment: deleteAppointmentFromContext } = useAppointments();
   const { getTreatmentPayment, updateTreatmentPayment, initializeTreatmentPayment, getPaymentStatusColor, getPaymentStatusText, formatCurrency } = useTreatmentPayment();
 
@@ -94,7 +98,7 @@ const Treatments: React.FC = () => {
       branch: 'branch-2',
       appointments: [
         { id: 4, treatmentId: 2, date: '2025-01-20', time: '14:00', duration: 120, staff: 'Lê Hoa', status: 'scheduled', services: ['Chăm sóc da mặt', 'Massage'], notes: 'Buổi 7' },
-        { id: 5, treatmentId: 2, date: '2025-02-03', time: '14:00', duration: 120, staff: 'Lê Hoa', status: 'scheduled', services: ['T����m trắng'], notes: 'Buổi cuối' }
+        { id: 5, treatmentId: 2, date: '2025-02-03', time: '14:00', duration: 120, staff: 'Lê Hoa', status: 'scheduled', services: ['T���m trắng'], notes: 'Buổi cuối' }
       ]
     },
     {
@@ -1143,7 +1147,7 @@ const Treatments: React.FC = () => {
                       onChange={(e) => setFormData(prev => ({ ...prev, weekDay: parseInt(e.target.value) }))}
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     >
-                      <option value="1">Th�� Hai</option>
+                      <option value="1">Thứ Hai</option>
                       <option value="2">Thứ Ba</option>
                       <option value="3">Thứ Tư</option>
                       <option value="4">Thứ Năm</option>
@@ -1265,7 +1269,7 @@ const Treatments: React.FC = () => {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Dịch vụ
+                  D���ch vụ
                 </label>
                 
                 {/* Service Selection */}
@@ -1823,7 +1827,7 @@ const Treatments: React.FC = () => {
                       <DollarSign className="w-8 h-8 text-green-600" />
                     </div>
                     <h3 className="text-lg font-semibold text-green-600 mb-2">Đã thanh toán đầy đủ</h3>
-                    <p className="text-gray-600">Liệu trình này ��ã được thanh toán hoàn tất.</p>
+                    <p className="text-gray-600">Liệu trình này đã được thanh toán hoàn tất.</p>
                   </div>
                 )}
               </div>
