@@ -7,6 +7,7 @@ interface Customer {
   phone: string;
   email: string;
   membershipLevel: 'Member' | 'VIP' | 'VVIP';
+  branch: string;
   notes: {
     allergies?: string;
     preferences?: string;
@@ -87,7 +88,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
       branch: 'branch-1',
       notes: {
         allergies: 'Dị ứng với tinh dầu hoa hồng',
-        preferences: 'Thích không gian yên tĩnh, nhạc nhẹ',
+        preferences: 'Thích không gian yên t��nh, nhạc nhẹ',
         favoriteServices: ['Chăm sóc da mặt Premium', 'Massage đá nóng'],
         skinType: 'Da khô, nhạy cảm',
         specialRequests: 'Luôn yêu cầu cùng một nhân viên'
@@ -563,7 +564,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
               <Clock className="w-4 h-4 inline mr-2" />
-              Giờ h���n *
+              Giờ hẹn *
             </label>
             <select
               value={formData.time}
