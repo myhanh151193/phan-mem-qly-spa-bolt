@@ -192,7 +192,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
     { id: 9, name: 'Phòng đặc biệt 1', room: 'Phòng đặc biệt', branch: 'branch-3', type: 'facial' },
     { id: 10, name: 'Phòng đặc biệt 2', room: 'Phòng đặc biệt', branch: 'branch-3', type: 'massage' },
     { id: 11, name: 'Phòng cơ bản 1', room: 'Phòng cơ bản', branch: 'branch-3', type: 'facial' },
-    { id: 12, name: 'Phòng cơ b��n 2', room: 'Phòng cơ bản', branch: 'branch-3', type: 'massage' },
+    { id: 12, name: 'Phòng cơ bản 2', room: 'Phòng cơ bản', branch: 'branch-3', type: 'massage' },
     { id: 13, name: 'Phòng spa 1', room: 'Phòng spa', branch: 'branch-4', type: 'facial' },
     { id: 14, name: 'Phòng spa 2', room: 'Phòng spa', branch: 'branch-4', type: 'massage' },
     { id: 15, name: 'Phòng massage 1', room: 'Phòng massage', branch: 'branch-4', type: 'massage' },
@@ -239,6 +239,11 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
   const filteredStaffMembers = selectedBranch === 'all-branches'
     ? staffMembers
     : staffMembers.filter(staff => staff.branch === selectedBranch);
+
+  // Filter beds by selected branch (unless viewing all branches)
+  const filteredBeds = selectedBranch === 'all-branches'
+    ? allBeds
+    : allBeds.filter(bed => bed.branch === selectedBranch);
 
   const selectCustomer = (customer: Customer) => {
     setFormData(prev => ({
@@ -345,7 +350,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
       {/* Quick Status Actions for Editing */}
       {isEditing && appointment && (
         <div className="mb-6 p-4 bg-gray-50 rounded-lg">
-          <h4 className="text-sm font-medium text-gray-700 mb-3">Cập nhật tr���ng thái nhanh:</h4>
+          <h4 className="text-sm font-medium text-gray-700 mb-3">Cập nhật trạng thái nhanh:</h4>
           <div className="flex flex-wrap gap-2">
             <button
               onClick={() => quickStatusUpdate('confirmed')}
