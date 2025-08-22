@@ -219,175 +219,534 @@ const Reports: React.FC<ReportsProps> = ({ selectedBranch }) => {
 
   return (
     <div className="space-y-6">
-      {/* Overview Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <div className="p-3 bg-green-50 rounded-lg">
-                <DollarSign className="w-6 h-6 text-green-600" />
+      {/* Tab Navigation */}
+      <div className="bg-white rounded-lg border border-gray-200 p-1">
+        <div className="flex space-x-1">
+          <button
+            onClick={() => setActiveTab('overview')}
+            className={`flex-1 px-4 py-2 rounded-md font-medium text-sm transition-colors duration-200 ${
+              activeTab === 'overview'
+                ? 'bg-blue-600 text-white'
+                : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+            }`}
+          >
+            <div className="flex items-center justify-center space-x-2">
+              <BarChart3 className="w-4 h-4" />
+              <span>Tổng quan</span>
+            </div>
+          </button>
+          <button
+            onClick={() => setActiveTab('employee')}
+            className={`flex-1 px-4 py-2 rounded-md font-medium text-sm transition-colors duration-200 ${
+              activeTab === 'employee'
+                ? 'bg-blue-600 text-white'
+                : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+            }`}
+          >
+            <div className="flex items-center justify-center space-x-2">
+              <Users className="w-4 h-4" />
+              <span>Doanh thu nhân viên</span>
+            </div>
+          </button>
+        </div>
+      </div>
+
+      {activeTab === 'overview' && (
+        <>
+          {/* Overview Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-3">
+                  <div className="p-3 bg-green-50 rounded-lg">
+                    <DollarSign className="w-6 h-6 text-green-600" />
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-600">Doanh thu tháng</p>
+                    <p className="text-2xl font-bold text-gray-900">{reportData.revenue.monthly}</p>
+                  </div>
+                </div>
+                <span className="text-green-600 text-sm font-medium">{reportData.revenue.growth}</span>
               </div>
-              <div>
+            </div>
+
+            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-3">
+                  <div className="p-3 bg-blue-50 rounded-lg">
+                    <Users className="w-6 h-6 text-blue-600" />
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-600">Khách hàng</p>
+                    <p className="text-2xl font-bold text-gray-900">{reportData.customers.total}</p>
+                  </div>
+                </div>
+                <span className="text-blue-600 text-sm font-medium">+{reportData.customers.new} mới</span>
+              </div>
+            </div>
+
+            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-3">
+                  <div className="p-3 bg-purple-50 rounded-lg">
+                    <Calendar className="w-6 h-6 text-purple-600" />
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-600">Dịch vụ hoàn thành</p>
+                    <p className="text-2xl font-bold text-gray-900">{reportData.services.completed}</p>
+                  </div>
+                </div>
+                <span className="text-purple-600 text-sm font-medium">{reportData.services.satisfaction}</span>
+              </div>
+            </div>
+
+            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-3">
+                  <div className="p-3 bg-orange-50 rounded-lg">
+                    <TrendingUp className="w-6 h-6 text-orange-600" />
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-600">Hiệu suất NV</p>
+                    <p className="text-2xl font-bold text-gray-900">{reportData.staff.performance}</p>
+                  </div>
+                </div>
+                <span className="text-orange-600 text-sm font-medium">{reportData.staff.avgRating} ⭐</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Charts */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Revenue Chart */}
+            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-lg font-semibold text-gray-900">Doanh thu 7 tháng qua</h3>
+                <BarChart3 className="w-5 h-5 text-gray-400" />
+              </div>
+              <div className="space-y-4">
+                {monthlyRevenue.map((month, index) => (
+                  <div key={index} className="flex items-center justify-between">
+                    <span className="text-sm text-gray-600 w-8">{month.month}</span>
+                    <div className="flex-1 mx-4 bg-gray-200 rounded-full h-3">
+                      <div
+                        className="bg-gradient-to-r from-blue-500 to-purple-600 h-3 rounded-full transition-all duration-500"
+                        style={{ width: `${(month.value / 400) * 100}%` }}
+                      ></div>
+                    </div>
+                    <span className="text-sm font-medium text-gray-900 w-12 text-right">{month.value}M</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Top Services */}
+            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-lg font-semibold text-gray-900">Top dịch vụ</h3>
+                <PieChart className="w-5 h-5 text-gray-400" />
+              </div>
+              <div className="space-y-4">
+                {topServices.map((service, index) => (
+                  <div key={index} className="flex items-center justify-between p-3 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors duration-200">
+                    <div className="flex-1">
+                      <p className="font-medium text-gray-900 text-sm">{service.name}</p>
+                      <p className="text-xs text-gray-600">{service.sessions} buổi</p>
+                    </div>
+                    <div className="text-right">
+                      <p className="font-semibold text-gray-900 text-sm">{service.revenue}</p>
+                      <span className="text-xs text-green-600">{service.growth}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Detailed Analytics */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Customer Analytics */}
+            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">Phân tích khách hàng</h3>
+              <div className="space-y-4">
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-gray-600">Khách mới</span>
+                  <span className="font-semibold text-blue-600">{reportData.customers.new}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-gray-600">Khách quay lại</span>
+                  <span className="font-semibold text-green-600">{reportData.customers.returning}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-gray-600">Tỷ lệ giữ chân</span>
+                  <span className="font-semibold text-purple-600">{reportData.customers.retention}</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Service Performance */}
+            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">Hiệu suất dịch vụ</h3>
+              <div className="space-y-4">
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-gray-600">Hoàn thành</span>
+                  <span className="font-semibold text-green-600">{reportData.services.completed}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-gray-600">Hủy bỏ</span>
+                  <span className="font-semibold text-red-600">{reportData.services.cancelled}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-gray-600">Không đến</span>
+                  <span className="font-semibold text-yellow-600">{reportData.services.noShow}</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Staff Performance */}
+            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">Hiệu suất nhân viên</h3>
+              <div className="space-y-4">
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-gray-600">Nhân viên hoạt động</span>
+                  <span className="font-semibold text-blue-600">{reportData.staff.active}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-gray-600">Tỷ lệ sử dụng</span>
+                  <span className="font-semibold text-green-600">{reportData.staff.utilization}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-gray-600">Đánh giá TB</span>
+                  <span className="font-semibold text-yellow-600">{reportData.staff.avgRating}/5</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
+
+      {activeTab === 'employee' && (
+        <>
+          {/* Employee Revenue Overview Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-3">
+                  <div className="p-3 bg-green-50 rounded-lg">
+                    <DollarSign className="w-6 h-6 text-green-600" />
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-600">Tổng doanh thu NV</p>
+                    <p className="text-2xl font-bold text-gray-900">{formatCurrency(employeeStats.totalRevenue)}</p>
+                  </div>
+                </div>
+                <span className="text-green-600 text-sm font-medium">+15.2%</span>
+              </div>
+            </div>
+
+            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-3">
+                  <div className="p-3 bg-blue-50 rounded-lg">
+                    <Calendar className="w-6 h-6 text-blue-600" />
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-600">Tổng buổi dịch vụ</p>
+                    <p className="text-2xl font-bold text-gray-900">{employeeStats.totalSessions}</p>
+                  </div>
+                </div>
+                <span className="text-blue-600 text-sm font-medium">+8.3%</span>
+              </div>
+            </div>
+
+            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-3">
+                  <div className="p-3 bg-purple-50 rounded-lg">
+                    <Award className="w-6 h-6 text-purple-600" />
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-600">Đánh giá TB</p>
+                    <p className="text-2xl font-bold text-gray-900">{employeeStats.avgRating.toFixed(1)}</p>
+                  </div>
+                </div>
+                <span className="text-purple-600 text-sm font-medium">⭐</span>
+              </div>
+            </div>
+
+            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-3">
+                  <div className="p-3 bg-orange-50 rounded-lg">
+                    <Target className="w-6 h-6 text-orange-600" />
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-600">Hiệu suất TB</p>
+                    <p className="text-2xl font-bold text-gray-900">{employeeStats.avgEfficiency.toFixed(0)}%</p>
+                  </div>
+                </div>
+                <span className="text-orange-600 text-sm font-medium">+5.2%</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Top Performer Highlight */}
+          <div className="bg-gradient-to-r from-yellow-50 to-orange-50 border border-yellow-200 rounded-xl p-6">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-4">
+                <div className="relative">
+                  <img
+                    src={employeeStats.topPerformer.avatar}
+                    alt={employeeStats.topPerformer.name}
+                    className="w-16 h-16 rounded-full object-cover border-4 border-yellow-300"
+                  />
+                  <div className="absolute -top-2 -right-2 bg-yellow-500 text-white rounded-full p-1">
+                    <Award className="w-4 h-4" />
+                  </div>
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold text-gray-900">Nhân viên xuất sắc tháng</h3>
+                  <p className="text-yellow-700 font-semibold">{employeeStats.topPerformer.name}</p>
+                  <p className="text-sm text-gray-600">{employeeStats.topPerformer.position}</p>
+                </div>
+              </div>
+              <div className="text-right">
+                <p className="text-2xl font-bold text-yellow-600">{employeeStats.topPerformer.revenueFormatted}</p>
                 <p className="text-sm text-gray-600">Doanh thu tháng</p>
-                <p className="text-2xl font-bold text-gray-900">{reportData.revenue.monthly}</p>
-              </div>
-            </div>
-            <span className="text-green-600 text-sm font-medium">{reportData.revenue.growth}</span>
-          </div>
-        </div>
-
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <div className="p-3 bg-blue-50 rounded-lg">
-                <Users className="w-6 h-6 text-blue-600" />
-              </div>
-              <div>
-                <p className="text-sm text-gray-600">Khách hàng</p>
-                <p className="text-2xl font-bold text-gray-900">{reportData.customers.total}</p>
-              </div>
-            </div>
-            <span className="text-blue-600 text-sm font-medium">+{reportData.customers.new} mới</span>
-          </div>
-        </div>
-
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <div className="p-3 bg-purple-50 rounded-lg">
-                <Calendar className="w-6 h-6 text-purple-600" />
-              </div>
-              <div>
-                <p className="text-sm text-gray-600">Dịch vụ hoàn thành</p>
-                <p className="text-2xl font-bold text-gray-900">{reportData.services.completed}</p>
-              </div>
-            </div>
-            <span className="text-purple-600 text-sm font-medium">{reportData.services.satisfaction}</span>
-          </div>
-        </div>
-
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <div className="p-3 bg-orange-50 rounded-lg">
-                <TrendingUp className="w-6 h-6 text-orange-600" />
-              </div>
-              <div>
-                <p className="text-sm text-gray-600">Hiệu suất NV</p>
-                <p className="text-2xl font-bold text-gray-900">{reportData.staff.performance}</p>
-              </div>
-            </div>
-            <span className="text-orange-600 text-sm font-medium">{reportData.staff.avgRating} ⭐</span>
-          </div>
-        </div>
-      </div>
-
-      {/* Charts */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Revenue Chart */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-          <div className="flex items-center justify-between mb-6">
-            <h3 className="text-lg font-semibold text-gray-900">Doanh thu 7 tháng qua</h3>
-            <BarChart3 className="w-5 h-5 text-gray-400" />
-          </div>
-          <div className="space-y-4">
-            {monthlyRevenue.map((month, index) => (
-              <div key={index} className="flex items-center justify-between">
-                <span className="text-sm text-gray-600 w-8">{month.month}</span>
-                <div className="flex-1 mx-4 bg-gray-200 rounded-full h-3">
-                  <div 
-                    className="bg-gradient-to-r from-blue-500 to-purple-600 h-3 rounded-full transition-all duration-500"
-                    style={{ width: `${(month.value / 400) * 100}%` }}
-                  ></div>
-                </div>
-                <span className="text-sm font-medium text-gray-900 w-12 text-right">{month.value}M</span>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Top Services */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-          <div className="flex items-center justify-between mb-6">
-            <h3 className="text-lg font-semibold text-gray-900">Top dịch vụ</h3>
-            <PieChart className="w-5 h-5 text-gray-400" />
-          </div>
-          <div className="space-y-4">
-            {topServices.map((service, index) => (
-              <div key={index} className="flex items-center justify-between p-3 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors duration-200">
-                <div className="flex-1">
-                  <p className="font-medium text-gray-900 text-sm">{service.name}</p>
-                  <p className="text-xs text-gray-600">{service.sessions} buổi</p>
-                </div>
-                <div className="text-right">
-                  <p className="font-semibold text-gray-900 text-sm">{service.revenue}</p>
-                  <span className="text-xs text-green-600">{service.growth}</span>
+                <div className="flex items-center space-x-1 mt-1">
+                  <span className="text-yellow-600 text-sm">⭐ {employeeStats.topPerformer.rating}</span>
+                  <span className="text-green-600 text-sm">{employeeStats.topPerformer.growth}</span>
                 </div>
               </div>
-            ))}
+            </div>
           </div>
-        </div>
-      </div>
 
-      {/* Detailed Analytics */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Customer Analytics */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Phân tích khách hàng</h3>
-          <div className="space-y-4">
-            <div className="flex justify-between items-center">
-              <span className="text-sm text-gray-600">Khách mới</span>
-              <span className="font-semibold text-blue-600">{reportData.customers.new}</span>
-            </div>
-            <div className="flex justify-between items-center">
-              <span className="text-sm text-gray-600">Khách quay lại</span>
-              <span className="font-semibold text-green-600">{reportData.customers.returning}</span>
-            </div>
-            <div className="flex justify-between items-center">
-              <span className="text-sm text-gray-600">Tỷ lệ giữ chân</span>
-              <span className="font-semibold text-purple-600">{reportData.customers.retention}</span>
+          {/* Controls */}
+          <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
+            <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
+              <div className="flex items-center space-x-4">
+                <div className="flex items-center space-x-2">
+                  <Filter className="w-4 h-4 text-gray-500" />
+                  <span className="text-sm font-medium text-gray-700">Sắp xếp theo:</span>
+                </div>
+                <select
+                  value={sortBy}
+                  onChange={(e) => setSortBy(e.target.value)}
+                  className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                >
+                  <option value="revenue">Doanh thu</option>
+                  <option value="sessions">Số buổi dịch vụ</option>
+                  <option value="rating">Đánh giá</option>
+                  <option value="efficiency">Hiệu suất</option>
+                  <option value="target">Hoàn thành mục tiêu</option>
+                </select>
+              </div>
+              <div className="flex items-center space-x-2">
+                <select
+                  value={selectedPeriod}
+                  onChange={(e) => setSelectedPeriod(e.target.value)}
+                  className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                >
+                  <option value="week">Tuần này</option>
+                  <option value="month">Tháng này</option>
+                  <option value="quarter">Quý này</option>
+                  <option value="year">Năm này</option>
+                </select>
+                <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm flex items-center space-x-2">
+                  <Download className="w-4 h-4" />
+                  <span>Xuất báo cáo</span>
+                </button>
+              </div>
             </div>
           </div>
-        </div>
 
-        {/* Service Performance */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Hiệu suất dịch vụ</h3>
-          <div className="space-y-4">
-            <div className="flex justify-between items-center">
-              <span className="text-sm text-gray-600">Hoàn th��nh</span>
-              <span className="font-semibold text-green-600">{reportData.services.completed}</span>
+          {/* Employee Revenue Table */}
+          <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+            <div className="px-6 py-4 border-b border-gray-200">
+              <h3 className="text-lg font-semibold text-gray-900">Chi tiết doanh thu nhân viên</h3>
             </div>
-            <div className="flex justify-between items-center">
-              <span className="text-sm text-gray-600">Hủy bỏ</span>
-              <span className="font-semibold text-red-600">{reportData.services.cancelled}</span>
-            </div>
-            <div className="flex justify-between items-center">
-              <span className="text-sm text-gray-600">Không đến</span>
-              <span className="font-semibold text-yellow-600">{reportData.services.noShow}</span>
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Nhân viên
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Doanh thu
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Buổi DV
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Hoa hồng
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Đánh giá
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Mục tiêu
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Hiệu suất
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Tăng trường
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {sortedEmployees.map((employee, index) => (
+                    <tr key={employee.id} className="hover:bg-gray-50 transition-colors duration-200">
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="flex items-center space-x-3">
+                          <div className="flex-shrink-0">
+                            <img
+                              src={employee.avatar}
+                              alt={employee.name}
+                              className="w-10 h-10 rounded-full object-cover"
+                            />
+                          </div>
+                          <div>
+                            <div className="flex items-center space-x-2">
+                              <p className="text-sm font-medium text-gray-900">{employee.name}</p>
+                              {index === 0 && (
+                                <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                                  <Award className="w-3 h-3 mr-1" />
+                                  #1
+                                </span>
+                              )}
+                            </div>
+                            <p className="text-xs text-gray-500">{employee.position}</p>
+                            <p className="text-xs text-gray-400">{employee.department}</p>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div>
+                          <p className="text-sm font-semibold text-gray-900">{employee.revenueFormatted}</p>
+                          <p className="text-xs text-gray-500">TB: {formatCurrency(employee.avgSessionValue)}</p>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div>
+                          <p className="text-sm font-medium text-gray-900">{employee.sessions}</p>
+                          <p className="text-xs text-gray-500">{employee.customers} khách</p>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <p className="text-sm font-medium text-green-600">{employee.commissionFormatted}</p>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="flex items-center space-x-1">
+                          <span className="text-sm font-medium text-gray-900">{employee.rating}</span>
+                          <span className="text-yellow-400">⭐</span>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div>
+                          <div className="flex items-center space-x-2 mb-1">
+                            <span className="text-sm font-medium text-gray-900">{employee.targetAchievement.toFixed(1)}%</span>
+                            {employee.targetAchievement >= 100 ? (
+                              <span className="text-green-600">✓</span>
+                            ) : (
+                              <span className="text-red-600">-</span>
+                            )}
+                          </div>
+                          <div className="w-20 bg-gray-200 rounded-full h-2">
+                            <div
+                              className={`h-2 rounded-full ${
+                                employee.targetAchievement >= 100 ? 'bg-green-500' : 'bg-yellow-500'
+                              }`}
+                              style={{ width: `${Math.min(employee.targetAchievement, 100)}%` }}
+                            ></div>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="flex items-center space-x-2">
+                          <span className="text-sm font-medium text-gray-900">{employee.efficiency}%</span>
+                          <div className="w-16 bg-gray-200 rounded-full h-2">
+                            <div
+                              className="bg-blue-500 h-2 rounded-full"
+                              style={{ width: `${employee.efficiency}%` }}
+                            ></div>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${
+                          employee.growth.startsWith('+')
+                            ? 'bg-green-100 text-green-800'
+                            : 'bg-red-100 text-red-800'
+                        }`}>
+                          {employee.growth}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
           </div>
-        </div>
 
-        {/* Staff Performance */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Hiệu suất nhân viên</h3>
-          <div className="space-y-4">
-            <div className="flex justify-between items-center">
-              <span className="text-sm text-gray-600">Nhân viên hoạt động</span>
-              <span className="font-semibold text-blue-600">{reportData.staff.active}</span>
+          {/* Employee Performance Chart */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-lg font-semibold text-gray-900">Top 5 nhân viên theo doanh thu</h3>
+                <BarChart3 className="w-5 h-5 text-gray-400" />
+              </div>
+              <div className="space-y-4">
+                {sortedEmployees.slice(0, 5).map((employee, index) => (
+                  <div key={employee.id} className="flex items-center space-x-3">
+                    <div className="flex items-center justify-center w-8 h-8 rounded-full bg-blue-100 text-blue-600 font-semibold text-sm">
+                      {index + 1}
+                    </div>
+                    <img
+                      src={employee.avatar}
+                      alt={employee.name}
+                      className="w-8 h-8 rounded-full object-cover"
+                    />
+                    <div className="flex-1">
+                      <p className="text-sm font-medium text-gray-900">{employee.name}</p>
+                      <div className="flex items-center space-x-2">
+                        <div className="flex-1 bg-gray-200 rounded-full h-2">
+                          <div
+                            className="bg-gradient-to-r from-blue-500 to-purple-600 h-2 rounded-full"
+                            style={{ width: `${(employee.revenue / sortedEmployees[0].revenue) * 100}%` }}
+                          ></div>
+                        </div>
+                        <span className="text-sm font-medium text-gray-900 w-16 text-right">{employee.revenueFormatted}</span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
-            <div className="flex justify-between items-center">
-              <span className="text-sm text-gray-600">Tỷ lệ sử dụng</span>
-              <span className="font-semibold text-green-600">{reportData.staff.utilization}</span>
-            </div>
-            <div className="flex justify-between items-center">
-              <span className="text-sm text-gray-600">Đánh giá TB</span>
-              <span className="font-semibold text-yellow-600">{reportData.staff.avgRating}/5</span>
+
+            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-lg font-semibold text-gray-900">Phân bố theo phòng ban</h3>
+                <PieChart className="w-5 h-5 text-gray-400" />
+              </div>
+              <div className="space-y-4">
+                {Object.entries(
+                  employeeRevenue.reduce((acc, emp) => {
+                    acc[emp.department] = (acc[emp.department] || 0) + emp.revenue;
+                    return acc;
+                  }, {} as Record<string, number>)
+                ).map(([department, revenue], index) => (
+                  <div key={department} className="flex items-center justify-between p-3 rounded-lg bg-gray-50">
+                    <span className="text-sm font-medium text-gray-900">{department}</span>
+                    <span className="text-sm font-semibold text-gray-900">{formatCurrency(revenue)}</span>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
-        </div>
-      </div>
+        </>
+      )}
     </div>
   );
 };
