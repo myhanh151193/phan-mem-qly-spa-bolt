@@ -949,7 +949,7 @@ const Inventory: React.FC<InventoryProps> = ({ selectedBranch }) => {
           <div className="bg-white rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between p-6 border-b border-gray-200">
               <h2 className="text-xl font-semibold text-gray-900">
-                {editingItem ? 'Chỉnh sửa sản phẩm' : 'Thêm sản phẩm mới'}
+                {editingProduct ? 'Chỉnh sửa sản phẩm & tồn kho' : 'Thêm sản phẩm mới'}
               </h2>
               <button onClick={() => setShowModal(false)} className="text-gray-400 hover:text-gray-600 transition-colors">
                 <X className="w-6 h-6" />
