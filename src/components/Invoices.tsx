@@ -27,6 +27,11 @@ interface Invoice {
   status: 'draft' | 'pending' | 'paid' | 'overdue' | 'cancelled';
   paymentMethod: 'cash' | 'transfer' | 'card' | 'other';
   notes?: string;
+  branch: string;
+}
+
+interface InvoicesProps {
+  selectedBranch: string;
 }
 
 // Sample treatment data - this should come from treatments context in real app
@@ -57,7 +62,7 @@ const sampleTreatments = [
   },
   {
     id: 4,
-    customer: 'Phạm Thị Lan',
+    customer: 'Phạm Th�� Lan',
     customerId: 4,
     name: 'Gói làm đẹp cao cấp',
     services: ['Chăm sóc da mặt Premium', 'Tắm trắng toàn thân', 'Triệt lông'],
@@ -111,7 +116,7 @@ const customers = [
   { id: 5, name: 'Hoàng Văn Nam', phone: '0976543210', membershipLevel: 'Member' },
 ];
 
-const Invoices: React.FC = () => {
+const Invoices: React.FC<InvoicesProps> = ({ selectedBranch }) => {
   const { updateInvoicePayment } = useTreatmentPayment();
 
   // Check URL params for treatment linking
@@ -135,7 +140,8 @@ const Invoices: React.FC = () => {
       tax: 112500,
       total: 1237500,
       status: 'paid',
-      paymentMethod: 'cash'
+      paymentMethod: 'cash',
+      branch: 'branch-1'
     },
     {
       id: 'HD002',
@@ -152,7 +158,8 @@ const Invoices: React.FC = () => {
       tax: 180000,
       total: 1980000,
       status: 'pending',
-      paymentMethod: 'transfer'
+      paymentMethod: 'transfer',
+      branch: 'branch-2'
     },
     {
       id: 'HD003',
@@ -169,8 +176,45 @@ const Invoices: React.FC = () => {
       tax: 102600,
       total: 1128600,
       status: 'overdue',
-      paymentMethod: 'card'
+      paymentMethod: 'card',
+      branch: 'branch-1'
     },
+    {
+      id: 'HD004',
+      customer: 'Phạm Thị Lan',
+      customerId: 4,
+      date: '2025-01-12',
+      dueDate: '2025-01-19',
+      items: [
+        { id: '1', name: 'Triệt lông', type: 'service', quantity: 1, price: 400000, total: 400000 },
+        { id: '2', name: 'Kem chống nắng SPF50', type: 'product', quantity: 1, price: 380000, total: 380000 }
+      ],
+      subtotal: 780000,
+      discount: 0,
+      tax: 78000,
+      total: 858000,
+      status: 'paid',
+      paymentMethod: 'card',
+      branch: 'branch-3'
+    },
+    {
+      id: 'HD005',
+      customer: 'Hoàng Văn Nam',
+      customerId: 5,
+      date: '2025-01-14',
+      dueDate: '2025-01-21',
+      items: [
+        { id: '1', name: 'Căng da mặt', type: 'service', quantity: 1, price: 1500000, total: 1500000 },
+        { id: '2', name: 'Toner cân bằng pH', type: 'product', quantity: 1, price: 200000, total: 200000 }
+      ],
+      subtotal: 1700000,
+      discount: 170000,
+      tax: 153000,
+      total: 1683000,
+      status: 'draft',
+      paymentMethod: 'transfer',
+      branch: 'branch-4'
+    }
   ]);
 
   const [searchTerm, setSearchTerm] = useState('');
@@ -252,7 +296,8 @@ const Invoices: React.FC = () => {
       tax: 10,
       paymentMethod: 'cash',
       status: 'draft',
-      notes: ''
+      notes: '',
+      branch: selectedBranch === 'all-branches' ? 'branch-1' : selectedBranch
     });
     setShowModal(true);
   };
@@ -284,7 +329,8 @@ const Invoices: React.FC = () => {
       tax: 10,
       paymentMethod: 'cash',
       status: 'draft',
-      notes: ''
+      notes: '',
+      branch: selectedBranch === 'all-branches' ? 'branch-1' : selectedBranch
     });
   };
 
@@ -317,7 +363,8 @@ const Invoices: React.FC = () => {
       total,
       status: formData.status as Invoice['status'] || 'draft',
       paymentMethod: formData.paymentMethod as Invoice['paymentMethod'] || 'cash',
-      notes: formData.notes
+      notes: formData.notes,
+      branch: formData.branch || (selectedBranch === 'all-branches' ? 'branch-1' : selectedBranch)
     };
 
     // Update treatment payment if invoice is paid and linked to a treatment
@@ -632,7 +679,7 @@ const Invoices: React.FC = () => {
         ` : ''}
 
         <div class="footer">
-          <p>Cảm ơn quý khách đã sử dụng dịch vụ của chúng tôi!</p>
+          <p>Cảm ơn quý khách ��ã sử dụng d��ch vụ của chúng tôi!</p>
           <p>Hóa đơn được in vào ${new Date().toLocaleString('vi-VN')}</p>
         </div>
       </body>
@@ -731,21 +778,23 @@ const Invoices: React.FC = () => {
 
   // Filter invoices
   const filteredInvoices = invoices.filter(invoice => {
-    const matchesSearch = 
+    const matchesSearch =
       invoice.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
       invoice.customer.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesStatus = filterStatus === 'all' || invoice.status === filterStatus;
-    
-    return matchesSearch && matchesStatus;
+    const matchesBranch = selectedBranch === 'all-branches' || invoice.branch === selectedBranch;
+
+    return matchesSearch && matchesStatus && matchesBranch;
   });
 
-  // Calculate stats
+  // Calculate stats (filtered by branch)
+  const branchFilteredInvoices = invoices.filter(inv => selectedBranch === 'all-branches' || inv.branch === selectedBranch);
   const stats = {
-    total: invoices.length,
-    paid: invoices.filter(inv => inv.status === 'paid').length,
-    pending: invoices.filter(inv => inv.status === 'pending').length,
-    overdue: invoices.filter(inv => inv.status === 'overdue').length,
-    revenue: invoices.filter(inv => inv.status === 'paid').reduce((sum, inv) => sum + inv.total, 0)
+    total: branchFilteredInvoices.length,
+    paid: branchFilteredInvoices.filter(inv => inv.status === 'paid').length,
+    pending: branchFilteredInvoices.filter(inv => inv.status === 'pending').length,
+    overdue: branchFilteredInvoices.filter(inv => inv.status === 'overdue').length,
+    revenue: branchFilteredInvoices.filter(inv => inv.status === 'paid').reduce((sum, inv) => sum + inv.total, 0)
   };
 
   const currentTotals = formData.items ? calculateTotals(formData.items, formData.discount || 0, formData.tax || 0) : null;
@@ -1024,7 +1073,7 @@ const Invoices: React.FC = () => {
                 {formData.customerId && (
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Liệu trình (tùy chọn)
+                      Li���u trình (tùy chọn)
                     </label>
                     <select
                       value={formData.treatmentId || ''}

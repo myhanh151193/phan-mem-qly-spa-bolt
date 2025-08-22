@@ -2,40 +2,64 @@ import React, { useState } from 'react';
 import { Search, Plus, Package, AlertTriangle, TrendingUp, TrendingDown, Edit2, Trash2, X, Save, Eye, Filter, Download, Upload, Calendar, User, Tag, Award, Grid, List } from 'lucide-react';
 import { categories as masterCategories, brands as masterBrands, Category, Brand } from '../data/masterData';
 
-interface InventoryItem {
+// Product master data (shared across all branches)
+interface Product {
   id: number;
   name: string;
   category: string;
   brand: string;
   sku: string;
+  description?: string;
+  image: string;
+  unitPrice: number;
+  supplier: string;
+  expiryDate?: string;
+  status: 'active' | 'inactive';
+  createdDate: string;
+}
+
+// Stock tracking per branch
+interface BranchStock {
+  id: number;
+  productId: number;
+  branch: string;
   stock: number;
   minStock: number;
   maxStock: number;
-  unitPrice: number;
-  totalValue: number;
-  lastRestocked: string;
-  supplier: string;
-  status: 'in-stock' | 'low-stock' | 'out-of-stock';
-  image: string;
-  description?: string;
-  expiryDate?: string;
   location?: string;
+  lastRestocked: string;
+}
+
+// Combined view for display
+interface InventoryView {
+  product: Product;
+  branchStock: BranchStock;
+  status: 'in-stock' | 'low-stock' | 'out-of-stock';
+  totalValue: number;
+}
+
+interface InventoryProps {
+  selectedBranch: string;
 }
 
 
-interface InventoryFormData {
+interface ProductFormData {
   name: string;
   category: string;
   brand: string;
   sku: string;
-  stock: number;
-  minStock: number;
-  maxStock: number;
   unitPrice: number;
   supplier: string;
   image: string;
   description: string;
   expiryDate: string;
+  status: 'active' | 'inactive';
+}
+
+interface StockFormData {
+  stock: number;
+  minStock: number;
+  maxStock: number;
   location: string;
 }
 
@@ -53,28 +77,24 @@ interface BrandFormData {
   logo: string;
 }
 
-const Inventory: React.FC = () => {
+const Inventory: React.FC<InventoryProps> = ({ selectedBranch }) => {
   const [activeTab, setActiveTab] = useState<'inventory' | 'categories' | 'brands'>('inventory');
   
-  const [inventory, setInventory] = useState<InventoryItem[]>([
+  // Product master data (shared across branches)
+  const [products, setProducts] = useState<Product[]>([
     {
       id: 1,
       name: 'Serum Vitamin C',
       category: 'Sản phẩm chăm sóc da',
       brand: 'SkinCare Pro',
       sku: 'SKU001',
-      stock: 25,
-      minStock: 10,
-      maxStock: 100,
-      unitPrice: 450000,
-      totalValue: 11250000,
-      lastRestocked: '2025-01-05',
-      supplier: 'Beauty Supply Co.',
-      status: 'in-stock',
+      description: 'Serum dưỡng trắng da với Vitamin C tự nhiên',
       image: 'https://images.pexels.com/photos/4041392/pexels-photo-4041392.jpeg?w=150',
-      description: 'Serum dư��ng trắng da với Vitamin C tự nhiên',
+      unitPrice: 450000,
+      supplier: 'Beauty Supply Co.',
       expiryDate: '2026-01-05',
-      location: 'Kệ A1'
+      status: 'active',
+      createdDate: '2024-11-01'
     },
     {
       id: 2,
@@ -82,18 +102,13 @@ const Inventory: React.FC = () => {
       category: 'Sản phẩm chăm sóc da',
       brand: 'Beauty Plus',
       sku: 'SKU002',
-      stock: 18,
-      minStock: 15,
-      maxStock: 80,
-      unitPrice: 320000,
-      totalValue: 5760000,
-      lastRestocked: '2024-12-28',
-      supplier: 'Cosmetics Wholesale',
-      status: 'in-stock',
-      image: 'https://images.pexels.com/photos/4041390/pexels-photo-4041390.jpeg?w=150',
       description: 'Kem dưỡng ẩm sâu cho da ban đêm',
+      image: 'https://images.pexels.com/photos/4041390/pexels-photo-4041390.jpeg?w=150',
+      unitPrice: 320000,
+      supplier: 'Cosmetics Wholesale',
       expiryDate: '2025-12-28',
-      location: 'Kệ A2'
+      status: 'active',
+      createdDate: '2024-11-01'
     },
     {
       id: 3,
@@ -101,18 +116,13 @@ const Inventory: React.FC = () => {
       category: 'Mặt nạ',
       brand: 'GlowSkin',
       sku: 'SKU003',
-      stock: 3,
-      minStock: 15,
-      maxStock: 50,
-      unitPrice: 150000,
-      totalValue: 450000,
-      lastRestocked: '2024-12-20',
-      supplier: 'Natural Beauty Ltd.',
-      status: 'low-stock',
-      image: 'https://images.pexels.com/photos/4041388/pexels-photo-4041388.jpeg?w=150',
       description: 'Mặt nạ bổ sung collagen cho da căng mịn',
+      image: 'https://images.pexels.com/photos/4041388/pexels-photo-4041388.jpeg?w=150',
+      unitPrice: 150000,
+      supplier: 'Natural Beauty Ltd.',
       expiryDate: '2025-06-20',
-      location: 'Kệ B1'
+      status: 'active',
+      createdDate: '2024-11-01'
     },
     {
       id: 4,
@@ -120,19 +130,59 @@ const Inventory: React.FC = () => {
       category: 'Dầu massage',
       brand: 'Aromatherapy Pro',
       sku: 'SKU004',
-      stock: 0,
-      minStock: 8,
-      maxStock: 40,
-      unitPrice: 280000,
-      totalValue: 0,
-      lastRestocked: '2024-11-15',
-      supplier: 'Essential Oils Inc.',
-      status: 'out-of-stock',
-      image: 'https://images.pexels.com/photos/4041387/pexels-photo-4041387.jpeg?w=150',
       description: 'Tinh dầu thư giãn cho massage toàn thân',
+      image: 'https://images.pexels.com/photos/4041387/pexels-photo-4041387.jpeg?w=150',
+      unitPrice: 280000,
+      supplier: 'Essential Oils Inc.',
       expiryDate: '2025-11-15',
-      location: 'Kệ C1'
+      status: 'active',
+      createdDate: '2024-11-01'
     },
+    {
+      id: 5,
+      name: 'Kem chống nắng SPF50',
+      category: 'Sản phẩm chăm sóc da',
+      brand: 'SunGuard',
+      sku: 'SKU005',
+      description: 'Kem chống nắng bảo vệ da hiệu quả',
+      image: 'https://images.pexels.com/photos/4041392/pexels-photo-4041392.jpeg?w=150',
+      unitPrice: 380000,
+      supplier: 'Beauty Supply Co.',
+      expiryDate: '2026-06-15',
+      status: 'active',
+      createdDate: '2024-11-01'
+    }
+  ]);
+
+  // Branch stock data (stock per branch for each product)
+  const [branchStocks, setBranchStocks] = useState<BranchStock[]>([
+    // Chi nhánh Quận 1 stocks
+    { id: 1, productId: 1, branch: 'branch-1', stock: 25, minStock: 10, maxStock: 100, location: 'Kệ A1', lastRestocked: '2025-01-05' },
+    { id: 2, productId: 2, branch: 'branch-1', stock: 18, minStock: 15, maxStock: 80, location: 'Kệ A2', lastRestocked: '2024-12-28' },
+    { id: 3, productId: 3, branch: 'branch-1', stock: 3, minStock: 15, maxStock: 50, location: 'Kệ B1', lastRestocked: '2024-12-20' },
+    { id: 4, productId: 4, branch: 'branch-1', stock: 0, minStock: 8, maxStock: 40, location: 'Kệ C1', lastRestocked: '2024-11-15' },
+    { id: 5, productId: 5, branch: 'branch-1', stock: 12, minStock: 10, maxStock: 60, location: 'K��� A3', lastRestocked: '2025-01-08' },
+
+    // Chi nhánh Quận 3 stocks
+    { id: 6, productId: 1, branch: 'branch-2', stock: 30, minStock: 12, maxStock: 80, location: 'Kệ B1', lastRestocked: '2025-01-10' },
+    { id: 7, productId: 2, branch: 'branch-2', stock: 22, minStock: 15, maxStock: 70, location: 'Kệ B2', lastRestocked: '2025-01-02' },
+    { id: 8, productId: 3, branch: 'branch-2', stock: 8, minStock: 10, maxStock: 40, location: 'Kệ C1', lastRestocked: '2024-12-25' },
+    { id: 9, productId: 4, branch: 'branch-2', stock: 15, minStock: 8, maxStock: 35, location: 'Kệ D1', lastRestocked: '2024-12-30' },
+    { id: 10, productId: 5, branch: 'branch-2', stock: 5, minStock: 8, maxStock: 50, location: 'Kệ B3', lastRestocked: '2024-12-20' },
+
+    // Chi nhánh Thủ Đức stocks
+    { id: 11, productId: 1, branch: 'branch-3', stock: 15, minStock: 8, maxStock: 60, location: 'Kệ A1', lastRestocked: '2024-12-28' },
+    { id: 12, productId: 2, branch: 'branch-3', stock: 10, minStock: 12, maxStock: 50, location: 'Kệ A2', lastRestocked: '2024-12-25' },
+    { id: 13, productId: 3, branch: 'branch-3', stock: 20, minStock: 15, maxStock: 45, location: 'Kệ B1', lastRestocked: '2025-01-03' },
+    { id: 14, productId: 4, branch: 'branch-3', stock: 8, minStock: 5, maxStock: 30, location: 'Kệ C1', lastRestocked: '2025-01-01' },
+    { id: 15, productId: 5, branch: 'branch-3', stock: 18, minStock: 10, maxStock: 55, location: 'Kệ A3', lastRestocked: '2025-01-12' },
+
+    // Chi nhánh Gò Vấp stocks
+    { id: 16, productId: 1, branch: 'branch-4', stock: 8, minStock: 10, maxStock: 70, location: 'Kệ A1', lastRestocked: '2024-12-15' },
+    { id: 17, productId: 2, branch: 'branch-4', stock: 25, minStock: 12, maxStock: 65, location: 'Kệ A2', lastRestocked: '2025-01-06' },
+    { id: 18, productId: 3, branch: 'branch-4', stock: 0, minStock: 10, maxStock: 40, location: 'Kệ B1', lastRestocked: '2024-11-20' },
+    { id: 19, productId: 4, branch: 'branch-4', stock: 12, minStock: 6, maxStock: 35, location: 'Kệ C1', lastRestocked: '2024-12-28' },
+    { id: 20, productId: 5, branch: 'branch-4', stock: 22, minStock: 10, maxStock: 60, location: 'Kệ A3', lastRestocked: '2025-01-10' }
   ]);
 
   const [categories, setCategories] = useState<Category[]>(masterCategories.filter(cat => cat.type === 'product' || !cat.type));
@@ -143,28 +193,33 @@ const Inventory: React.FC = () => {
   const [showModal, setShowModal] = useState(false);
   const [showCategoryModal, setShowCategoryModal] = useState(false);
   const [showBrandModal, setShowBrandModal] = useState(false);
-  const [editingItem, setEditingItem] = useState<InventoryItem | null>(null);
+  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+  const [editingStock, setEditingStock] = useState<BranchStock | null>(null);
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
   const [editingBrand, setEditingBrand] = useState<Brand | null>(null);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState<number | null>(null);
   const [showDetailModal, setShowDetailModal] = useState(false);
-  const [selectedItem, setSelectedItem] = useState<InventoryItem | null>(null);
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [showStockModal, setShowStockModal] = useState(false);
   const [stockAdjustment, setStockAdjustment] = useState({ quantity: 0, type: 'in', note: '' });
 
-  const [formData, setFormData] = useState<InventoryFormData>({
+  const [productFormData, setProductFormData] = useState<ProductFormData>({
     name: '',
     category: '',
     brand: '',
     sku: '',
-    stock: 0,
-    minStock: 0,
-    maxStock: 0,
     unitPrice: 0,
     supplier: '',
     image: '',
     description: '',
     expiryDate: '',
+    status: 'active'
+  });
+
+  const [stockFormData, setStockFormData] = useState<StockFormData>({
+    stock: 0,
+    minStock: 0,
+    maxStock: 0,
     location: ''
   });
 
@@ -223,84 +278,151 @@ const Inventory: React.FC = () => {
     return 'bg-green-500';
   };
 
-  const calculateStatus = (stock: number, minStock: number): InventoryItem['status'] => {
+  const calculateStatus = (stock: number, minStock: number): 'in-stock' | 'low-stock' | 'out-of-stock' => {
     if (stock === 0) return 'out-of-stock';
     if (stock <= minStock) return 'low-stock';
     return 'in-stock';
   };
 
+  // Create inventory views by combining products and branch stocks
+  const createInventoryViews = (): InventoryView[] => {
+    const views: InventoryView[] = [];
+
+    // Filter branch stocks by selected branch
+    const relevantStocks = branchStocks.filter(stock =>
+      selectedBranch === 'all-branches' || stock.branch === selectedBranch
+    );
+
+    // For each product, find its stock in the relevant branches
+    products.filter(product => product.status === 'active').forEach(product => {
+      if (selectedBranch === 'all-branches') {
+        // Show all branches for this product
+        const productStocks = branchStocks.filter(stock => stock.productId === product.id);
+        productStocks.forEach(branchStock => {
+          const status = calculateStatus(branchStock.stock, branchStock.minStock);
+          const totalValue = branchStock.stock * product.unitPrice;
+          views.push({
+            product,
+            branchStock,
+            status,
+            totalValue
+          });
+        });
+      } else {
+        // Show only selected branch stock
+        const branchStock = branchStocks.find(stock =>
+          stock.productId === product.id && stock.branch === selectedBranch
+        );
+        if (branchStock) {
+          const status = calculateStatus(branchStock.stock, branchStock.minStock);
+          const totalValue = branchStock.stock * product.unitPrice;
+          views.push({
+            product,
+            branchStock,
+            status,
+            totalValue
+          });
+        }
+      }
+    });
+
+    return views;
+  };
+
+  const inventoryViews = createInventoryViews();
+
   // Product CRUD Operations
   const openCreateModal = () => {
-    setEditingItem(null);
-    setFormData({
+    setEditingProduct(null);
+    setEditingStock(null);
+    setProductFormData({
       name: '',
       category: '',
       brand: '',
       sku: '',
-      stock: 0,
-      minStock: 0,
-      maxStock: 0,
       unitPrice: 0,
       supplier: '',
       image: '',
       description: '',
       expiryDate: '',
+      status: 'active'
+    });
+    setStockFormData({
+      stock: 0,
+      minStock: 0,
+      maxStock: 0,
       location: ''
     });
     setShowModal(true);
   };
 
-  const openEditModal = (item: InventoryItem) => {
-    setEditingItem(item);
-    setFormData({
-      name: item.name,
-      category: item.category,
-      brand: item.brand,
-      sku: item.sku,
-      stock: item.stock,
-      minStock: item.minStock,
-      maxStock: item.maxStock,
-      unitPrice: item.unitPrice,
-      supplier: item.supplier,
-      image: item.image,
-      description: item.description || '',
-      expiryDate: item.expiryDate || '',
-      location: item.location || ''
+  const openEditModal = (view: InventoryView) => {
+    setEditingProduct(view.product);
+    setEditingStock(view.branchStock);
+    setProductFormData({
+      name: view.product.name,
+      category: view.product.category,
+      brand: view.product.brand,
+      sku: view.product.sku,
+      unitPrice: view.product.unitPrice,
+      supplier: view.product.supplier,
+      image: view.product.image,
+      description: view.product.description || '',
+      expiryDate: view.product.expiryDate || '',
+      status: view.product.status
+    });
+    setStockFormData({
+      stock: view.branchStock.stock,
+      minStock: view.branchStock.minStock,
+      maxStock: view.branchStock.maxStock,
+      location: view.branchStock.location || ''
     });
     setShowModal(true);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
-    if (!formData.name || !formData.sku || !formData.category) {
+
+    if (!productFormData.name || !productFormData.sku || !productFormData.category) {
       alert('Vui lòng điền đầy đủ thông tin bắt buộc');
       return;
     }
 
-    const status = calculateStatus(formData.stock, formData.minStock);
-    const totalValue = formData.stock * formData.unitPrice;
-
-    const itemData: InventoryItem = {
-      id: editingItem ? editingItem.id : Date.now(),
-      ...formData,
-      totalValue,
-      status,
-      lastRestocked: editingItem ? editingItem.lastRestocked : new Date().toISOString().split('T')[0]
+    const productData: Product = {
+      id: editingProduct ? editingProduct.id : Date.now(),
+      ...productFormData,
+      createdDate: editingProduct ? editingProduct.createdDate : new Date().toISOString().split('T')[0]
     };
 
-    if (editingItem) {
-      setInventory(prev => prev.map(item => item.id === editingItem.id ? itemData : item));
+    const stockData: BranchStock = {
+      id: editingStock ? editingStock.id : Date.now() + 1,
+      productId: productData.id,
+      branch: selectedBranch === 'all-branches' ? 'branch-1' : selectedBranch,
+      ...stockFormData,
+      lastRestocked: editingStock ? editingStock.lastRestocked : new Date().toISOString().split('T')[0]
+    };
+
+    if (editingProduct) {
+      // Update existing product and stock
+      setProducts(prev => prev.map(product => product.id === editingProduct.id ? productData : product));
+      if (editingStock) {
+        setBranchStocks(prev => prev.map(stock => stock.id === editingStock.id ? stockData : stock));
+      }
     } else {
-      setInventory(prev => [...prev, itemData]);
+      // Create new product and initial stock for current branch
+      setProducts(prev => [...prev, productData]);
+      setBranchStocks(prev => [...prev, stockData]);
     }
 
     setShowModal(false);
-    setEditingItem(null);
+    setEditingProduct(null);
+    setEditingStock(null);
   };
 
-  const handleDelete = (id: number) => {
-    setInventory(prev => prev.filter(item => item.id !== id));
+  const handleDelete = (productId: number) => {
+    // Delete product and all its branch stocks
+    setProducts(prev => prev.filter(product => product.id !== productId));
+    setBranchStocks(prev => prev.filter(stock => stock.productId !== productId));
     setShowDeleteConfirm(null);
   };
 
@@ -409,24 +531,25 @@ const Inventory: React.FC = () => {
   };
 
   // Filter and stats
-  const filteredInventory = inventory.filter(item => {
-    const matchesSearch = 
-      item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.brand.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.sku.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.supplier.toLowerCase().includes(searchTerm.toLowerCase());
-    
-    const matchesStatus = filterStatus === 'all' || item.status === filterStatus;
-    
+  const filteredInventory = inventoryViews.filter(view => {
+    const { product } = view;
+    const matchesSearch =
+      product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      product.brand.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      product.sku.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      product.supplier.toLowerCase().includes(searchTerm.toLowerCase());
+
+    const matchesStatus = filterStatus === 'all' || view.status === filterStatus;
+
     return matchesSearch && matchesStatus;
   });
 
   const stats = {
-    total: inventory.length,
-    inStock: inventory.filter(item => item.status === 'in-stock').length,
-    lowStock: inventory.filter(item => item.status === 'low-stock').length,
-    outOfStock: inventory.filter(item => item.status === 'out-of-stock').length,
-    totalValue: inventory.reduce((sum, item) => sum + item.totalValue, 0)
+    total: inventoryViews.length,
+    inStock: inventoryViews.filter(view => view.status === 'in-stock').length,
+    lowStock: inventoryViews.filter(view => view.status === 'low-stock').length,
+    outOfStock: inventoryViews.filter(view => view.status === 'out-of-stock').length,
+    totalValue: inventoryViews.reduce((sum, view) => sum + view.totalValue, 0)
   };
 
   return (
@@ -465,7 +588,7 @@ const Inventory: React.FC = () => {
             }`}
           >
             <Award className="w-4 h-4" />
-            <span>Thương hiệu</span>
+            <span>Thương hi��u</span>
           </button>
         </div>
       </div>
@@ -579,7 +702,7 @@ const Inventory: React.FC = () => {
                       Sản phẩm
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      SKU / Vị trí
+                      SKU / V��� trí
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Tồn kho
@@ -599,70 +722,78 @@ const Inventory: React.FC = () => {
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {filteredInventory.map((item) => (
-                    <tr key={item.id} className="hover:bg-gray-50 transition-colors duration-200">
+                  {filteredInventory.map((view) => (
+                    <tr key={`${view.product.id}-${view.branchStock.branch}`} className="hover:bg-gray-50 transition-colors duration-200">
                       <td className="px-6 py-4">
                         <div className="flex items-center">
                           <img
-                            src={item.image}
-                            alt={item.name}
+                            src={view.product.image}
+                            alt={view.product.name}
                             className="w-12 h-12 rounded-lg object-cover mr-4"
                           />
                           <div>
-                            <div className="text-sm font-medium text-gray-900">{item.name}</div>
-                            <div className="text-sm text-gray-500">{item.brand} • {item.category}</div>
+                            <div className="text-sm font-medium text-gray-900">{view.product.name}</div>
+                            <div className="text-sm text-gray-500">{view.product.brand} • {view.product.category}</div>
+                            {selectedBranch === 'all-branches' && (
+                              <div className="text-xs text-blue-600 font-medium mt-1">
+                                {view.branchStock.branch === 'branch-1' && 'Quận 1'}
+                                {view.branchStock.branch === 'branch-2' && 'Quận 3'}
+                                {view.branchStock.branch === 'branch-3' && 'Thủ Đức'}
+                                {view.branchStock.branch === 'branch-4' && 'Gò Vấp'}
+                              </div>
+                            )}
                           </div>
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div>
-                          <span className="text-sm font-mono font-medium text-gray-900">{item.sku}</span>
-                          {item.location && (
-                            <div className="text-xs text-gray-500">{item.location}</div>
+                          <span className="text-sm font-mono font-medium text-gray-900">{view.product.sku}</span>
+                          {view.branchStock.location && (
+                            <div className="text-xs text-gray-500">{view.branchStock.location}</div>
                           )}
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center space-x-3">
                           <div className="flex flex-col">
-                            <span className="text-sm font-medium text-gray-900">{item.stock}</span>
-                            <div className="text-xs text-gray-500">Min: {item.minStock}</div>
+                            <span className="text-sm font-medium text-gray-900">{view.branchStock.stock}</span>
+                            <div className="text-xs text-gray-500">Min: {view.branchStock.minStock}</div>
                             <div className="w-20 bg-gray-200 rounded-full h-2 mt-1">
                               <div
-                                className={`h-2 rounded-full transition-all duration-300 ${getStockLevelColor(item.stock, item.minStock)} ${getStockLevel(item.stock, item.minStock, item.maxStock)}`}
+                                className={`h-2 rounded-full transition-all duration-300 ${getStockLevelColor(view.branchStock.stock, view.branchStock.minStock)} ${getStockLevel(view.branchStock.stock, view.branchStock.minStock, view.branchStock.maxStock)}`}
                               ></div>
                             </div>
                           </div>
-                          {item.stock <= item.minStock && item.stock > 0 && (
+                          {view.branchStock.stock <= view.branchStock.minStock && view.branchStock.stock > 0 && (
                             <AlertTriangle className="w-4 h-4 text-yellow-500" />
                           )}
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div>
-                          <span className="text-sm text-gray-900">{formatCurrency(item.unitPrice)}</span>
-                          <div className="text-sm font-semibold text-gray-900">{formatCurrency(item.totalValue)}</div>
+                          <span className="text-sm text-gray-900">{formatCurrency(view.product.unitPrice)}</span>
+                          <div className="text-sm font-semibold text-gray-900">{formatCurrency(view.totalValue)}</div>
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <span className="text-sm text-gray-500">{item.supplier}</span>
+                        <span className="text-sm text-gray-500">{view.product.supplier}</span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${getStatusColor(item.status)}`}>
-                          {getStatusText(item.status)}
+                        <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${getStatusColor(view.status)}`}>
+                          {getStatusText(view.status)}
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center space-x-2">
-                          <button 
-                            onClick={() => openEditModal(item)}
+                          <button
+                            onClick={() => openEditModal(view)}
                             className="p-2 text-gray-400 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors duration-200"
                             title="Chỉnh sửa"
                           >
                             <Edit2 className="w-4 h-4" />
                           </button>
-                          <button 
-                            onClick={() => setShowDeleteConfirm(item.id)}
+                          <button
+                            onClick={() => setShowDeleteConfirm(view.product.id)}
                             className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors duration-200"
                             title="Xóa"
                           >
@@ -750,14 +881,14 @@ const Inventory: React.FC = () => {
           <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
             <h2 className="text-2xl font-bold text-gray-900 flex items-center space-x-2">
               <Award className="w-6 h-6" />
-              <span>Qu���n lý thương hiệu</span>
+              <span>Qu���n lý thương hi���u</span>
             </h2>
             <button 
               onClick={openCreateBrandModal}
               className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition-colors duration-200"
             >
               <Plus className="w-4 h-4" />
-              <span>Thêm thương hiệu</span>
+              <span>Thêm thương hi��u</span>
             </button>
           </div>
 
@@ -799,7 +930,7 @@ const Inventory: React.FC = () => {
                 
                 <div className="flex justify-between items-center text-sm">
                   <div className="text-gray-500">
-                    Ngày tạo: {brand.createdDate}
+                    Ngày t��o: {brand.createdDate}
                   </div>
                   <div className="flex items-center space-x-1 text-blue-600 font-medium">
                     <Package className="w-4 h-4" />
@@ -818,7 +949,7 @@ const Inventory: React.FC = () => {
           <div className="bg-white rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between p-6 border-b border-gray-200">
               <h2 className="text-xl font-semibold text-gray-900">
-                {editingItem ? 'Chỉnh sửa sản phẩm' : 'Thêm sản phẩm mới'}
+                {editingProduct ? 'Chỉnh sửa sản phẩm & tồn kho' : 'Thêm sản phẩm mới'}
               </h2>
               <button onClick={() => setShowModal(false)} className="text-gray-400 hover:text-gray-600 transition-colors">
                 <X className="w-6 h-6" />
@@ -832,8 +963,8 @@ const Inventory: React.FC = () => {
                   <input
                     type="text"
                     required
-                    value={formData.name}
-                    onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+                    value={productFormData.name}
+                    onChange={(e) => setProductFormData(prev => ({ ...prev, name: e.target.value }))}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
                 </div>
@@ -843,8 +974,8 @@ const Inventory: React.FC = () => {
                   <input
                     type="text"
                     required
-                    value={formData.sku}
-                    onChange={(e) => setFormData(prev => ({ ...prev, sku: e.target.value }))}
+                    value={productFormData.sku}
+                    onChange={(e) => setProductFormData(prev => ({ ...prev, sku: e.target.value }))}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
                 </div>
@@ -853,8 +984,8 @@ const Inventory: React.FC = () => {
                   <label className="block text-sm font-medium text-gray-700 mb-2">Danh mục *</label>
                   <select
                     required
-                    value={formData.category}
-                    onChange={(e) => setFormData(prev => ({ ...prev, category: e.target.value }))}
+                    value={productFormData.category}
+                    onChange={(e) => setProductFormData(prev => ({ ...prev, category: e.target.value }))}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   >
                     <option value="">Chọn danh mục</option>
@@ -869,8 +1000,8 @@ const Inventory: React.FC = () => {
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Thương hiệu</label>
                   <select
-                    value={formData.brand}
-                    onChange={(e) => setFormData(prev => ({ ...prev, brand: e.target.value }))}
+                    value={productFormData.brand}
+                    onChange={(e) => setProductFormData(prev => ({ ...prev, brand: e.target.value }))}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   >
                     <option value="">Chọn thương hiệu</option>
@@ -883,12 +1014,15 @@ const Inventory: React.FC = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Số lượng hiện tại</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Số lượng hiện tại (Chi nhánh: {selectedBranch === 'all-branches' ? 'Quận 1' :
+                    selectedBranch === 'branch-1' ? 'Quận 1' :
+                    selectedBranch === 'branch-2' ? 'Quận 3' :
+                    selectedBranch === 'branch-3' ? 'Thủ Đức' : 'Gò Vấp'})</label>
                   <input
                     type="number"
                     min="0"
-                    value={formData.stock}
-                    onChange={(e) => setFormData(prev => ({ ...prev, stock: parseInt(e.target.value) || 0 }))}
+                    value={stockFormData.stock}
+                    onChange={(e) => setStockFormData(prev => ({ ...prev, stock: parseInt(e.target.value) || 0 }))}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
                 </div>
@@ -898,20 +1032,42 @@ const Inventory: React.FC = () => {
                   <input
                     type="number"
                     min="0"
-                    value={formData.minStock}
-                    onChange={(e) => setFormData(prev => ({ ...prev, minStock: parseInt(e.target.value) || 0 }))}
+                    value={stockFormData.minStock}
+                    onChange={(e) => setStockFormData(prev => ({ ...prev, minStock: parseInt(e.target.value) || 0 }))}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Giá đơn vị (VNĐ)</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Gi�� đơn vị (VNĐ)</label>
                   <input
                     type="number"
                     min="0"
-                    value={formData.unitPrice}
-                    onChange={(e) => setFormData(prev => ({ ...prev, unitPrice: parseInt(e.target.value) || 0 }))}
+                    value={productFormData.unitPrice}
+                    onChange={(e) => setProductFormData(prev => ({ ...prev, unitPrice: parseInt(e.target.value) || 0 }))}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Tồn kho tối đa</label>
+                  <input
+                    type="number"
+                    min="0"
+                    value={stockFormData.maxStock}
+                    onChange={(e) => setStockFormData(prev => ({ ...prev, maxStock: parseInt(e.target.value) || 0 }))}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Vị trí trong kho</label>
+                  <input
+                    type="text"
+                    value={stockFormData.location}
+                    onChange={(e) => setStockFormData(prev => ({ ...prev, location: e.target.value }))}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    placeholder="VD: Kệ A1"
                   />
                 </div>
 
@@ -919,8 +1075,40 @@ const Inventory: React.FC = () => {
                   <label className="block text-sm font-medium text-gray-700 mb-2">Nhà cung cấp</label>
                   <input
                     type="text"
-                    value={formData.supplier}
-                    onChange={(e) => setFormData(prev => ({ ...prev, supplier: e.target.value }))}
+                    value={productFormData.supplier}
+                    onChange={(e) => setProductFormData(prev => ({ ...prev, supplier: e.target.value }))}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">URL hình ảnh</label>
+                  <input
+                    type="url"
+                    value={productFormData.image}
+                    onChange={(e) => setProductFormData(prev => ({ ...prev, image: e.target.value }))}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    placeholder="https://example.com/image.jpg"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Mô tả</label>
+                  <textarea
+                    value={productFormData.description}
+                    onChange={(e) => setProductFormData(prev => ({ ...prev, description: e.target.value }))}
+                    rows={3}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    placeholder="Mô tả chi tiết về sản phẩm..."
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Ngày hết hạn</label>
+                  <input
+                    type="date"
+                    value={productFormData.expiryDate}
+                    onChange={(e) => setProductFormData(prev => ({ ...prev, expiryDate: e.target.value }))}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
                 </div>
@@ -939,7 +1127,7 @@ const Inventory: React.FC = () => {
                   className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2"
                 >
                   <Save className="w-4 h-4" />
-                  <span>{editingItem ? 'Cập nhật' : 'Thêm mới'}</span>
+                  <span>{editingProduct ? 'Cập nhật' : 'Thêm mới'}</span>
                 </button>
               </div>
             </form>
