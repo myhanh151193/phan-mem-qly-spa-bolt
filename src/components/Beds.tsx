@@ -151,6 +151,7 @@ const Beds: React.FC<BedsProps> = ({ selectedBranch }) => {
       room: 'Phòng Chăm sóc da',
       type: 'facial',
       status: 'occupied',
+      branch: 'branch-1',
       currentAssignment: {
         customerId: 2,
         customerName: 'Trần Mai Linh',
@@ -170,6 +171,7 @@ const Beds: React.FC<BedsProps> = ({ selectedBranch }) => {
       room: 'Phòng Chăm sóc da',
       type: 'facial',
       status: 'available',
+      branch: 'branch-1',
       equipment: ['Máy phun sương', 'Đèn chuyên dụng', 'Kính lúp'],
       lastCleaned: '11:00'
     },
@@ -179,6 +181,7 @@ const Beds: React.FC<BedsProps> = ({ selectedBranch }) => {
       room: 'Phòng Tắm trắng',
       type: 'body',
       status: 'occupied',
+      branch: 'branch-2',
       currentAssignment: {
         customerId: 4,
         customerName: 'Phạm Thị Lan',
@@ -198,6 +201,7 @@ const Beds: React.FC<BedsProps> = ({ selectedBranch }) => {
       room: 'Phòng Tắm trắng',
       type: 'body',
       status: 'available',
+      branch: 'branch-2',
       equipment: ['Bồn tắm cao cấp', 'Hệ thống massage'],
       lastCleaned: '12:30'
     },
@@ -207,6 +211,7 @@ const Beds: React.FC<BedsProps> = ({ selectedBranch }) => {
       room: 'Ph��ng Massage',
       type: 'massage',
       status: 'maintenance',
+      branch: 'branch-3',
       equipment: ['Hệ thống massage tự động', 'Đèn âm thanh'],
       lastCleaned: '08:00'
     },
@@ -216,6 +221,7 @@ const Beds: React.FC<BedsProps> = ({ selectedBranch }) => {
       room: 'Phòng Massage',
       type: 'massage',
       status: 'available',
+      branch: 'branch-3',
       equipment: ['Hệ thống massage tự động', 'Đèn âm thanh'],
       lastCleaned: '10:30'
     }
