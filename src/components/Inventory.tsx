@@ -278,11 +278,58 @@ const Inventory: React.FC<InventoryProps> = ({ selectedBranch }) => {
     return 'bg-green-500';
   };
 
-  const calculateStatus = (stock: number, minStock: number): InventoryItem['status'] => {
+  const calculateStatus = (stock: number, minStock: number): 'in-stock' | 'low-stock' | 'out-of-stock' => {
     if (stock === 0) return 'out-of-stock';
     if (stock <= minStock) return 'low-stock';
     return 'in-stock';
   };
+
+  // Create inventory views by combining products and branch stocks
+  const createInventoryViews = (): InventoryView[] => {
+    const views: InventoryView[] = [];
+
+    // Filter branch stocks by selected branch
+    const relevantStocks = branchStocks.filter(stock =>
+      selectedBranch === 'all-branches' || stock.branch === selectedBranch
+    );
+
+    // For each product, find its stock in the relevant branches
+    products.filter(product => product.status === 'active').forEach(product => {
+      if (selectedBranch === 'all-branches') {
+        // Show all branches for this product
+        const productStocks = branchStocks.filter(stock => stock.productId === product.id);
+        productStocks.forEach(branchStock => {
+          const status = calculateStatus(branchStock.stock, branchStock.minStock);
+          const totalValue = branchStock.stock * product.unitPrice;
+          views.push({
+            product,
+            branchStock,
+            status,
+            totalValue
+          });
+        });
+      } else {
+        // Show only selected branch stock
+        const branchStock = branchStocks.find(stock =>
+          stock.productId === product.id && stock.branch === selectedBranch
+        );
+        if (branchStock) {
+          const status = calculateStatus(branchStock.stock, branchStock.minStock);
+          const totalValue = branchStock.stock * product.unitPrice;
+          views.push({
+            product,
+            branchStock,
+            status,
+            totalValue
+          });
+        }
+      }
+    });
+
+    return views;
+  };
+
+  const inventoryViews = createInventoryViews();
 
   // Product CRUD Operations
   const openCreateModal = () => {
@@ -1008,7 +1055,7 @@ const Inventory: React.FC<InventoryProps> = ({ selectedBranch }) => {
           <div className="bg-white rounded-xl shadow-xl max-w-md w-full">
             <div className="flex items-center justify-between p-6 border-b border-gray-200">
               <h2 className="text-xl font-semibold text-gray-900">
-                {editingCategory ? 'Chỉnh sửa danh mục' : 'Thêm danh mục mới'}
+                {editingCategory ? 'Chỉnh sửa danh mục' : 'Th��m danh mục mới'}
               </h2>
               <button onClick={() => setShowCategoryModal(false)} className="text-gray-400 hover:text-gray-600 transition-colors">
                 <X className="w-6 h-6" />
