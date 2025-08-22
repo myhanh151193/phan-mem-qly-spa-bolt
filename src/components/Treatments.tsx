@@ -211,7 +211,7 @@ const Treatments: React.FC<TreatmentsProps> = ({ selectedBranch }) => {
 
   const availableServices = [
     'Điều trị mụn', 'Tái tạo da', 'Chăm sóc da', 'Chăm sóc da mặt', 
-    'Massage', 'Tắm trắng', 'Giảm béo RF', 'Massage giảm béo', 
+    'Massage', 'T��m trắng', 'Giảm béo RF', 'Massage giảm béo', 
     'Tư vấn dinh dưỡng', 'Triệt lông', 'Trị thâm', 'Căng da mặt'
   ];
 
@@ -714,11 +714,11 @@ const Treatments: React.FC<TreatmentsProps> = ({ selectedBranch }) => {
   };
 
   const stats = {
-    active: treatments.filter(t => t.status === 'active').length,
-    completed: treatments.filter(t => t.status === 'completed').length,
-    totalValue: treatments.reduce((sum, t) => sum + parseFloat(t.totalValue.replace(/,/g, '')), 0) / 1000000,
+    active: filteredTreatments.filter(t => t.status === 'active').length,
+    completed: filteredTreatments.filter(t => t.status === 'completed').length,
+    totalValue: filteredTreatments.reduce((sum, t) => sum + parseFloat(t.totalValue.replace(/,/g, '')), 0) / 1000000,
     completionRate: Math.round(
-      (treatments.reduce((sum, t) => sum + t.progress, 0) / treatments.length) || 0
+      (filteredTreatments.reduce((sum, t) => sum + t.progress, 0) / filteredTreatments.length) || 0
     )
   };
 
