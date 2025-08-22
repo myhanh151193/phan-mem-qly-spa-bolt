@@ -171,7 +171,8 @@ const Schedule: React.FC<ScheduleProps> = ({ selectedBranch }) => {
         status: 'pending',
         price: '',
         totalPrice: '',
-        notes: ''
+        notes: '',
+        branch: selectedBranch === 'all-branches' ? 'branch-1' : selectedBranch
       });
       setIsEditing(false);
     }
