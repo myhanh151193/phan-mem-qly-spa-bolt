@@ -51,6 +51,7 @@ interface TreatmentFormData {
 
 const Treatments: React.FC = () => {
   const { addTreatmentAppointments, getAppointmentsForTreatment, updateAppointment, deleteAppointment: deleteAppointmentFromContext } = useAppointments();
+  const { getTreatmentPayment, updateTreatmentPayment, initializeTreatmentPayment, getPaymentStatusColor, getPaymentStatusText, formatCurrency } = useTreatmentPayment();
 
   const [treatments, setTreatments] = useState<Treatment[]>([
     {
@@ -67,13 +68,6 @@ const Treatments: React.FC = () => {
       services: ['Điều trị mụn', 'Tái tạo da', 'Chăm sóc da'],
       totalValue: '15,600,000',
       totalAmount: 15600000,
-      paidAmount: 10400000,
-      remainingAmount: 5200000,
-      paymentStatus: 'partial',
-      paymentHistory: [
-        { id: 1, date: '2025-01-01', amount: 8000000, method: 'transfer', note: 'Thanh toán lần 1' },
-        { id: 2, date: '2025-01-08', amount: 2400000, method: 'cash', note: 'Thanh toán buổi 8' }
-      ],
       appointments: [
         { id: 1, treatmentId: 1, date: '2025-01-15', time: '09:00', duration: 90, staff: 'Nguyễn Mai', status: 'scheduled', services: ['Điều trị mụn'], notes: 'Buổi 9' },
         { id: 2, treatmentId: 1, date: '2025-01-22', time: '09:00', duration: 90, staff: 'Nguyễn Mai', status: 'scheduled', services: ['Tái tạo da'], notes: 'Buổi 10' },
@@ -94,12 +88,6 @@ const Treatments: React.FC = () => {
       services: ['Chăm sóc da mặt', 'Massage', 'Tắm trắng'],
       totalValue: '12,800,000',
       totalAmount: 12800000,
-      paidAmount: 12800000,
-      remainingAmount: 0,
-      paymentStatus: 'completed',
-      paymentHistory: [
-        { id: 3, date: '2024-12-01', amount: 12800000, method: 'card', note: 'Thanh toán đầy đủ' }
-      ],
       appointments: [
         { id: 4, treatmentId: 2, date: '2025-01-20', time: '14:00', duration: 120, staff: 'Lê Hoa', status: 'scheduled', services: ['Chăm sóc da mặt', 'Massage'], notes: 'Buổi 7' },
         { id: 5, treatmentId: 2, date: '2025-02-03', time: '14:00', duration: 120, staff: 'Lê Hoa', status: 'scheduled', services: ['Tắm trắng'], notes: 'Buổi cuối' }
@@ -116,16 +104,9 @@ const Treatments: React.FC = () => {
       nextSession: null,
       status: 'completed',
       progress: 100,
-      services: ['Giảm béo RF', 'Massage giảm béo', 'Tư vấn dinh dư���ng'],
+      services: ['Giảm béo RF', 'Massage giảm béo', 'Tư vấn dinh dưỡng'],
       totalValue: '28,800,000',
       totalAmount: 28800000,
-      paidAmount: 23200000,
-      remainingAmount: 5600000,
-      paymentStatus: 'partial',
-      paymentHistory: [
-        { id: 4, date: '2024-10-01', amount: 15000000, method: 'transfer', note: 'Thanh toán lần 1' },
-        { id: 5, date: '2024-12-01', amount: 8200000, method: 'cash', note: 'Thanh toán lần 2' }
-      ],
       appointments: []
     },
   ]);
@@ -1242,7 +1223,7 @@ const Treatments: React.FC = () => {
                         <h4 className="text-sm font-medium text-blue-900">Tự động tạo lịch hẹn</h4>
                         <p className="text-sm text-blue-700 mt-1">
                           {formData.scheduleType === 'weekly' && formData.weekDay !== undefined && (
-                            <>Hệ th���ng sẽ tự động tạo {formData.totalSessions} lịch hẹn vào {
+                            <>Hệ thống sẽ tự động tạo {formData.totalSessions} lịch hẹn vào {
                               ['Chủ Nhật', 'Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy'][formData.weekDay]
                             } hàng tuần l��c {formData.recurringTime}</>
                           )}
