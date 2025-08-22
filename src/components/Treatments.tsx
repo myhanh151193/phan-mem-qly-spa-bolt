@@ -211,6 +211,11 @@ const Treatments: React.FC<TreatmentsProps> = ({ selectedBranch }) => {
     note: ''
   });
 
+  // Filter customers by selected branch
+  const customers = selectedBranch === 'all-branches'
+    ? allCustomers
+    : allCustomers.filter(customer => customer.branch === selectedBranch);
+
   const availableServices = [
     'Điều trị mụn', 'Tái tạo da', 'Chăm sóc da', 'Chăm sóc da mặt', 
     'Massage', 'Tắm trắng', 'Giảm béo RF', 'Massage giảm béo', 
@@ -775,7 +780,7 @@ const Treatments: React.FC<TreatmentsProps> = ({ selectedBranch }) => {
                   return (totalValue / 1000000).toFixed(1) + 'M';
                 })()}
               </div>
-              <div className="text-purple-600">T���ng giá trị</div>
+              <div className="text-purple-600">Tổng giá trị</div>
             </div>
           )}
         </div>
@@ -1217,7 +1222,7 @@ const Treatments: React.FC<TreatmentsProps> = ({ selectedBranch }) => {
                       onChange={(e) => setFormData(prev => ({ ...prev, weekDay: parseInt(e.target.value) }))}
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     >
-                      <option value="1">Thứ Hai</option>
+                      <option value="1">Th��� Hai</option>
                       <option value="2">Thứ Ba</option>
                       <option value="3">Thứ Tư</option>
                       <option value="4">Thứ Năm</option>
