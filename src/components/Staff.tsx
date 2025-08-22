@@ -61,6 +61,7 @@ const Staff: React.FC = () => {
       rating: 4.8,
       totalServices: 156,
       branch: 'Chi nhánh Quận 1',
+      accessibleBranches: ['branch-1'], // Can only access their primary branch
       address: '123 Nguyễn Huệ, Q1, TP.HCM',
       emergencyContact: '0909888777',
       idNumber: '001234567890',
@@ -83,6 +84,7 @@ const Staff: React.FC = () => {
       rating: 4.9,
       totalServices: 234,
       branch: 'Chi nhánh Quận 3',
+      accessibleBranches: ['branch-2'], // Can only access their primary branch
       address: '456 Lê Lợi, Q3, TP.HCM',
       emergencyContact: '0909777666',
       idNumber: '001234567891',
@@ -105,6 +107,7 @@ const Staff: React.FC = () => {
       rating: 4.6,
       totalServices: 98,
       branch: 'Chi nhánh Thủ Đức',
+      accessibleBranches: ['branch-3'], // Can only access their primary branch
       address: '789 Võ Văn Ngân, Thủ Đức, TP.HCM',
       emergencyContact: '0909666555',
       idNumber: '001234567892',
@@ -127,6 +130,7 @@ const Staff: React.FC = () => {
       rating: 4.7,
       totalServices: 0,
       branch: 'Chi nhánh Quận 1',
+      accessibleBranches: ['branch-1', 'branch-2', 'branch-3'], // Manager can access multiple branches
       address: '321 Đống Đa, Q1, TP.HCM',
       emergencyContact: '0909555444',
       idNumber: '001234567893',
@@ -727,7 +731,7 @@ const Staff: React.FC = () => {
 
             {/* Permissions Preview */}
             <div className="mt-4 pt-4 border-t border-gray-100">
-              <p className="text-xs text-gray-500 mb-2">Quyền hạn ({member.permissions.length}):</p>
+              <p className="text-xs text-gray-500 mb-2">Quy���n hạn ({member.permissions.length}):</p>
               <div className="flex flex-wrap gap-1">
                 {member.permissions.slice(0, 4).map((permission) => {
                   const perm = allPermissions.find(p => p.id === permission);
@@ -1069,7 +1073,7 @@ const Staff: React.FC = () => {
                                   <h4 className="text-sm font-medium text-gray-900">{branch.name}</h4>
                                   {isPrimary && (
                                     <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                      Chi nhánh chính
+                                      Chi nh��nh chính
                                     </span>
                                   )}
                                 </div>
@@ -1387,7 +1391,7 @@ const Staff: React.FC = () => {
                 </div>
                 <div className="text-center">
                   <p className="text-2xl font-bold text-gray-900">{selectedStaff.totalServices}</p>
-                  <p className="text-sm text-gray-500">Dịch vụ đã thực hiện</p>
+                  <p className="text-sm text-gray-500">Dịch vụ đã th��c hiện</p>
                 </div>
                 <div className="text-center">
                   <p className="text-2xl font-bold text-gray-900">{selectedStaff.permissions.length}</p>
