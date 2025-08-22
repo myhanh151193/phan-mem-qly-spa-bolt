@@ -141,6 +141,7 @@ const Beds: React.FC<BedsProps> = ({ selectedBranch }) => {
       room: 'Phòng VIP A',
       type: 'vip',
       status: 'cleaning',
+      branch: 'branch-1',
       equipment: ['Máy hút chân không', 'Đèn LED', 'Hệ thống âm thanh'],
       lastCleaned: '10:15'
     },
