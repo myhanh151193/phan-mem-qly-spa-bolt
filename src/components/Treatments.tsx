@@ -1108,7 +1108,7 @@ const Treatments: React.FC<TreatmentsProps> = ({ selectedBranch }) => {
                   {formData.customerId && (
                     <div className="mt-2 p-3 bg-gray-50 rounded-lg">
                       {(() => {
-                        const selectedCustomer = customers.find(c => c.id === formData.customerId);
+                        const selectedCustomer = allCustomers.find(c => c.id === formData.customerId);
                         return selectedCustomer ? (
                           <div className="flex items-center space-x-3">
                             <img
@@ -1123,6 +1123,9 @@ const Treatments: React.FC<TreatmentsProps> = ({ selectedBranch }) => {
                                 <span className={`px-2 py-1 rounded-full text-xs font-medium ${getMembershipColor(selectedCustomer.membershipLevel)}`}>
                                   {selectedCustomer.membershipLevel}
                                 </span>
+                                <span className="px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                                  {branchMap[selectedCustomer.branch]}
+                                </span>
                               </div>
                             </div>
                           </div>
@@ -1130,6 +1133,25 @@ const Treatments: React.FC<TreatmentsProps> = ({ selectedBranch }) => {
                       })()}
                     </div>
                   )}
+
+                  {/* Warning when branch changes and customer selected */}
+                  {formData.customerId && (() => {
+                    const selectedCustomer = allCustomers.find(c => c.id === formData.customerId);
+                    return selectedCustomer && selectedCustomer.branch !== formData.branch ? (
+                      <div className="mt-2 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+                        <div className="flex items-start space-x-2">
+                          <div className="w-4 h-4 bg-yellow-400 rounded-full mt-0.5"></div>
+                          <div>
+                            <p className="text-sm font-medium text-yellow-800">Lưu ý</p>
+                            <p className="text-sm text-yellow-700">
+                              Khách hàng thuộc {branchMap[selectedCustomer.branch]} nhưng liệu trình đang được tạo cho {branchMap[formData.branch]}.
+                              Vui lòng chọn khách hàng phù hợp hoặc thay đổi chi nhánh.
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    ) : null;
+                  })()}
                 </div>
 
                 <div>
@@ -1516,7 +1538,7 @@ const Treatments: React.FC<TreatmentsProps> = ({ selectedBranch }) => {
                 <div>
                   <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center space-x-2">
                     <Calendar className="w-5 h-5 text-blue-600" />
-                    <span>Lịch hẹn sắp tới</span>
+                    <span>Lịch h���n sắp tới</span>
                   </h3>
                   <div className="space-y-3">
                     {selectedTreatment.appointments
@@ -1856,7 +1878,7 @@ const Treatments: React.FC<TreatmentsProps> = ({ selectedBranch }) => {
                     <div className="grid grid-cols-2 gap-4">
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Số tiền thanh toán *
+                          S�� tiền thanh toán *
                         </label>
                         <input
                           type="number"
