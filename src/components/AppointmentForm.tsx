@@ -37,6 +37,7 @@ interface Appointment {
   totalPrice: string;
   notes?: string;
   date: string;
+  branch?: string;
 }
 
 interface AppointmentFormProps {
@@ -65,7 +66,8 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
     duration: 60,
     totalPrice: '',
     notes: '',
-    status: 'pending' as Appointment['status']
+    status: 'pending' as Appointment['status'],
+    branch: 'branch-1' // Default branch
   });
 
   const [showCustomerSearch, setShowCustomerSearch] = useState(false);
@@ -128,14 +130,21 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
     { id: 11, name: 'Phun mày', duration: 90, price: '700K', category: 'Phun xăm' }
   ];
 
+  // Staff members with their branches
   const staffMembers = [
-    'Nguyễn Mai',
-    'Lê Hoa',
-    'Trần An',
-    'Phạm Thùy',
-    'Lý Thu',
-    'Vũ Lan'
+    { name: 'Nguyễn Mai', branch: 'branch-1' },
+    { name: 'Lê Hoa', branch: 'branch-2' },
+    { name: 'Trần An', branch: 'branch-3' },
+    { name: 'Phạm Thùy', branch: 'branch-1' },
+    { name: 'Lý Thu', branch: 'branch-2' },
+    { name: 'Vũ Lan', branch: 'branch-3' }
   ];
+
+  // Helper function to get staff member's branch
+  const getStaffBranch = (staffName: string): string => {
+    const staff = staffMembers.find(s => s.name === staffName);
+    return staff ? staff.branch : 'branch-1';
+  };
 
   const timeSlots = Array.from({ length: 24 }, (_, i) => {
     const hour = i + 8;
@@ -156,7 +165,8 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
         duration: appointment.duration || 60,
         totalPrice: appointment.totalPrice || '',
         notes: appointment.notes || '',
-        status: appointment.status || 'pending'
+        status: appointment.status || 'pending',
+        branch: appointment.branch || 'branch-1'
       });
     }
   }, [appointment]);
@@ -424,7 +434,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
               {showServiceSearch && (
                 <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-300 rounded-lg shadow-lg z-50 max-h-80 overflow-y-auto">
                   {/* Group services by category */}
-                  {['Chăm sóc da', 'Massage', 'Làm đẹp', 'Điều trị', 'Gói combo', 'Phun xăm'].map(category => {
+                  {['Ch��m sóc da', 'Massage', 'Làm đẹp', 'Điều trị', 'Gói combo', 'Phun xăm'].map(category => {
                     const categoryServices = services.filter(s => s.category === category);
                     if (categoryServices.length === 0) return null;
 
