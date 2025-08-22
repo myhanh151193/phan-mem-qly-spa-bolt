@@ -76,7 +76,7 @@ const sampleTreatments = [
 // Service catalog with pricing
 const serviceCatalog = {
   'Điều trị mụn': { price: 500000, duration: 60, category: 'Chăm sóc da', description: 'Điều trị mụn chuyên sâu với công nghệ hiện đại' },
-  'T��i tạo da': { price: 800000, duration: 90, category: 'Chăm sóc da', description: 'Tái tạo da bằng công nghệ laser và serum ��ặc biệt' },
+  'Tái tạo da': { price: 800000, duration: 90, category: 'Chăm sóc da', description: 'Tái tạo da bằng công nghệ laser và serum ��ặc biệt' },
   'Chăm sóc da': { price: 400000, duration: 60, category: 'Chăm sóc da', description: 'Chăm sóc da cơ bản với quy trình chuẩn' },
   'Chăm sóc da mặt': { price: 600000, duration: 75, category: 'Chăm sóc da', description: 'Chăm sóc da mặt toàn diện với các bước chuyên nghiệp' },
   'Chăm sóc da mặt Premium': { price: 800000, duration: 90, category: 'Chăm sóc da', description: 'Dịch vụ chăm sóc da mặt cao cấp với sản phẩm nhập khẩu' },
@@ -84,7 +84,7 @@ const serviceCatalog = {
   'Massage toàn thân': { price: 600000, duration: 120, category: 'Massage', description: 'Massage thư giãn toàn thân với tinh dầu thiên nhiên' },
   'Tắm trắng': { price: 800000, duration: 120, category: 'Làm đẹp', description: 'Tắm trắng cơ bản' },
   'Tắm trắng toàn thân': { price: 1200000, duration: 150, category: 'Làm đẹp', description: 'Tắm trắng toàn thân an toàn với công nghệ laser' },
-  'Giảm béo RF': { price: 800000, duration: 90, category: 'Giảm béo', description: 'Giảm béo bằng sóng RF không x��m lấn' },
+  'Giảm béo RF': { price: 800000, duration: 90, category: 'Giảm béo', description: 'Giảm béo bằng sóng RF không xâm lấn' },
   'Massage giảm béo': { price: 700000, duration: 100, category: 'Giảm béo', description: 'Massage chuyên sâu hỗ trợ giảm béo' },
   'Tư vấn dinh dưỡng': { price: 200000, duration: 30, category: 'Tư vấn', description: 'Tư vấn chế độ dinh dưỡng phù hợp' },
   'Triệt lông': { price: 400000, duration: 45, category: 'Làm đẹp', description: 'Triệt lông vĩnh viễn bằng laser diode' },
@@ -112,6 +112,8 @@ const customers = [
 ];
 
 const Invoices: React.FC = () => {
+  const { updateInvoicePayment } = useTreatmentPayment();
+
   // Check URL params for treatment linking
   const urlParams = new URLSearchParams(window.location.hash.split('?')[1] || '');
   const treatmentIdFromUrl = urlParams.get('treatmentId');
@@ -910,7 +912,7 @@ const Invoices: React.FC = () => {
           <div className="bg-white rounded-xl shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between p-6 border-b border-gray-200">
               <h2 className="text-xl font-semibold text-gray-900">
-                {editingInvoice ? 'Sửa hóa đơn' : 'Tạo hóa đơn mới'}
+                {editingInvoice ? 'Sửa hóa đơn' : 'T��o hóa đơn mới'}
               </h2>
               <button 
                 onClick={closeModal}
@@ -1325,7 +1327,7 @@ const Invoices: React.FC = () => {
                   className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2"
                 >
                   <Save className="w-4 h-4" />
-                  <span>{editingInvoice ? 'Cập nhật' : 'Tạo mới'}</span>
+                  <span>{editingInvoice ? 'C��p nhật' : 'Tạo mới'}</span>
                 </button>
               </div>
             </form>
@@ -1374,7 +1376,7 @@ const Invoices: React.FC = () => {
                   return (
                     <div className="text-center py-12">
                       <Calendar className="w-16 h-16 mx-auto text-gray-300 mb-4" />
-                      <h3 className="text-lg font-medium text-gray-900 mb-2">Không có dịch vụ nào</h3>
+                      <h3 className="text-lg font-medium text-gray-900 mb-2">Không có d��ch vụ nào</h3>
                       <p className="text-gray-600">Khách hàng này chưa có liệu trình nào đang hoạt đ���ng.</p>
                     </div>
                   );
