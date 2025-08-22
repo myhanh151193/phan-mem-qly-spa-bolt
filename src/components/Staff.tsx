@@ -508,6 +508,23 @@ const Staff: React.FC<StaffProps> = ({ selectedBranch }) => {
     <div className="space-y-6">
       {/* Header */}
       <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
+        {/* Branch Indicator */}
+        {selectedBranch !== 'all-branches' && (
+          <div className="w-full mb-4 lg:mb-0">
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+              <div className="flex items-center space-x-2">
+                <MapPin className="w-4 h-4 text-blue-600" />
+                <span className="text-sm font-medium text-blue-900">
+                  Đang xem nhân viên của: {getBranchNameFromId(selectedBranch)}
+                </span>
+                <span className="ml-2 px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">
+                  {stats.total} nhân viên
+                </span>
+              </div>
+            </div>
+          </div>
+        )}
+
         <div className="flex items-center space-x-4 flex-1">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
@@ -1145,7 +1162,7 @@ const Staff: React.FC<StaffProps> = ({ selectedBranch }) => {
                       }}
                       className="px-3 py-1 text-sm bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors"
                     >
-                      Chỉ chi nh��nh chính
+                      Chỉ chi nhánh chính
                     </button>
                     <button
                       type="button"
@@ -1440,7 +1457,7 @@ const Staff: React.FC<StaffProps> = ({ selectedBranch }) => {
             <div className="flex items-center justify-between p-6 border-b border-gray-200">
               <h2 className="text-xl font-semibold text-gray-900 flex items-center space-x-2">
                 <Shield className="w-6 h-6 text-purple-600" />
-                <span>Phân quy���n cho {selectedStaff.name}</span>
+                <span>Phân quyền cho {selectedStaff.name}</span>
               </h2>
               <button 
                 onClick={() => setShowPermissionModal(false)}
@@ -1518,7 +1535,7 @@ const Staff: React.FC<StaffProps> = ({ selectedBranch }) => {
                 Xác nhận xóa nhân viên
               </h3>
               <p className="text-gray-600 mb-6">
-                Bạn có chắc chắn muốn xóa nhân viên này? Hành động này không th�� hoàn tác và sẽ xóa tất cả dữ liệu liên quan.
+                Bạn có chắc chắn muốn xóa nhân viên này? Hành động này không thể hoàn tác và sẽ xóa tất cả dữ liệu liên quan.
               </p>
               <div className="flex justify-end space-x-3">
                 <button
