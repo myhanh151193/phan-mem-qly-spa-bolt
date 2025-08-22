@@ -283,6 +283,8 @@ const Invoices: React.FC = () => {
       id: editingInvoice ? editingInvoice.id : `HD${String(Date.now()).slice(-3)}`,
       customer: formData.customer!,
       customerId: formData.customerId,
+      treatmentId: formData.treatmentId,
+      treatmentName: formData.treatmentName,
       date: formData.date!,
       dueDate: formData.dueDate!,
       items: formData.items!,
@@ -294,6 +296,22 @@ const Invoices: React.FC = () => {
       paymentMethod: formData.paymentMethod as Invoice['paymentMethod'] || 'cash',
       notes: formData.notes
     };
+
+    // Update treatment payment if invoice is paid and linked to a treatment
+    if (invoiceData.status === 'paid' && invoiceData.treatmentId) {
+      // Check if this is a status change from non-paid to paid
+      const wasAlreadyPaid = editingInvoice && editingInvoice.status === 'paid';
+
+      if (!wasAlreadyPaid) {
+        updateInvoicePayment(
+          invoiceData.id,
+          invoiceData.treatmentId,
+          invoiceData.total,
+          invoiceData.paymentMethod === 'other' ? 'cash' : invoiceData.paymentMethod as 'cash' | 'transfer' | 'card',
+          `Thanh toán từ hóa đơn ${invoiceData.id}`
+        );
+      }
+    }
 
     if (editingInvoice) {
       setInvoices(prev => prev.map(inv => inv.id === editingInvoice.id ? invoiceData : inv));
@@ -786,7 +804,7 @@ const Invoices: React.FC = () => {
         <div className="bg-white rounded-lg p-4 border border-gray-200">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600">Quá hạn</p>
+              <p className="text-sm text-gray-600">Quá h��n</p>
               <p className="text-2xl font-bold text-red-600">{stats.overdue}</p>
             </div>
             <div className="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center">
@@ -912,7 +930,7 @@ const Invoices: React.FC = () => {
           <div className="bg-white rounded-xl shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between p-6 border-b border-gray-200">
               <h2 className="text-xl font-semibold text-gray-900">
-                {editingInvoice ? 'Sửa hóa đơn' : 'T��o hóa đơn mới'}
+                {editingInvoice ? 'Sửa hóa đơn' : 'Tạo hóa đơn mới'}
               </h2>
               <button 
                 onClick={closeModal}
@@ -1155,7 +1173,7 @@ const Invoices: React.FC = () => {
                     {!formData.customerId ? (
                       <>⚠️ <strong>Lưu ý:</strong> Vui lòng chọn khách hàng trước để xem dịch vụ từ liệu trình của họ.</>
                     ) : (
-                      <>💡 <strong>Mẹo:</strong> Nhấn "Chọn từ liệu tr��nh" để thêm các dịch vụ từ liệu trình hiện tại của khách hàng này.</>
+                      <>💡 <strong>Mẹo:</strong> Nhấn "Chọn từ liệu tr��nh" đ�� thêm các dịch vụ từ liệu trình hiện tại của khách hàng này.</>
                     )}
                   </p>
                 </div>
@@ -1327,7 +1345,7 @@ const Invoices: React.FC = () => {
                   className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2"
                 >
                   <Save className="w-4 h-4" />
-                  <span>{editingInvoice ? 'C��p nhật' : 'Tạo mới'}</span>
+                  <span>{editingInvoice ? 'Cập nhật' : 'Tạo mới'}</span>
                 </button>
               </div>
             </form>
@@ -1376,7 +1394,7 @@ const Invoices: React.FC = () => {
                   return (
                     <div className="text-center py-12">
                       <Calendar className="w-16 h-16 mx-auto text-gray-300 mb-4" />
-                      <h3 className="text-lg font-medium text-gray-900 mb-2">Không có d��ch vụ nào</h3>
+                      <h3 className="text-lg font-medium text-gray-900 mb-2">Không có dịch vụ nào</h3>
                       <p className="text-gray-600">Khách hàng này chưa có liệu trình nào đang hoạt đ���ng.</p>
                     </div>
                   );
