@@ -1299,6 +1299,53 @@ const Staff: React.FC = () => {
               </div>
 
               <div className="mt-6">
+                <label className="text-sm font-medium text-gray-500">Quyền truy cập chi nhánh</label>
+                <div className="mt-2">
+                  {selectedStaff.accessibleBranches && selectedStaff.accessibleBranches.length > 0 ? (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      {selectedStaff.accessibleBranches.map((branchId) => {
+                        const branch = allBranches.find(b => b.id === branchId);
+                        const isPrimary = selectedStaff.branch === branch?.name;
+                        return branch ? (
+                          <div
+                            key={branchId}
+                            className={`border rounded-lg p-3 ${
+                              isPrimary
+                                ? 'border-green-200 bg-green-50'
+                                : 'border-blue-200 bg-blue-50'
+                            }`}
+                          >
+                            <div className="flex items-center space-x-2">
+                              <MapPin className={`w-4 h-4 ${isPrimary ? 'text-green-600' : 'text-blue-600'}`} />
+                              <h4 className={`text-sm font-medium ${isPrimary ? 'text-green-900' : 'text-blue-900'}`}>
+                                {branch.name}
+                                {isPrimary && <span className="ml-1 text-green-600">★</span>}
+                              </h4>
+                            </div>
+                            <p className={`text-xs mt-1 ${isPrimary ? 'text-green-700' : 'text-blue-700'}`}>
+                              {branch.address}
+                            </p>
+                            {isPrimary && (
+                              <p className="text-xs text-green-600 mt-1 font-medium">Chi nhánh chính</p>
+                            )}
+                          </div>
+                        ) : null;
+                      })}
+                    </div>
+                  ) : (
+                    <div className="border border-red-200 bg-red-50 rounded-lg p-3">
+                      <div className="flex items-center space-x-2">
+                        <AlertCircle className="w-4 h-4 text-red-600" />
+                        <p className="text-sm text-red-700">
+                          Nhân viên này chưa được cấp quyền truy cập chi nhánh nào
+                        </p>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              <div className="mt-6">
                 <label className="text-sm font-medium text-gray-500">Quyền hạn</label>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
                   {Object.entries(
