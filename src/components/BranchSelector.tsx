@@ -31,8 +31,44 @@ const BranchSelector: React.FC<BranchSelectorProps> = ({
   const branches = accessibleBranches || defaultBranches;
   const currentBranch = branches.find(b => b.id === selectedBranch);
 
-  // If user has only one accessible branch, show it as read-only
-  if (branches.length === 1) {
+  // Create options list with "All Branches" if user can view all branches
+  const getDisplayOptions = () => {
+    const options = [...branches];
+
+    // Add "All Branches" option if user can view all branches and has access to multiple branches
+    if (canViewAllBranches && branches.length > 1) {
+      options.unshift({
+        id: 'all-branches',
+        name: 'Tất cả chi nhánh',
+        address: 'Báo cáo tổng hợp'
+      });
+    }
+
+    return options;
+  };
+
+  const displayOptions = getDisplayOptions();
+
+  // Get display text and icon based on selection
+  const getDisplayInfo = () => {
+    if (selectedBranch === 'all-branches') {
+      return {
+        icon: <Building2 className="w-4 h-4 text-blue-600" />,
+        text: 'Tất cả chi nhánh'
+      };
+    }
+
+    const branch = branches.find(b => b.id === selectedBranch);
+    return {
+      icon: <MapPin className="w-4 h-4 text-blue-600" />,
+      text: branch ? branch.name : 'Chi nhánh'
+    };
+  };
+
+  const displayInfo = getDisplayInfo();
+
+  // If user has only one accessible branch and can't view all branches, show it as read-only
+  if (branches.length === 1 && !canViewAllBranches) {
     return (
       <div className="flex items-center space-x-2 bg-blue-50 border border-blue-200 rounded-lg px-4 py-2">
         <MapPin className="w-4 h-4 text-blue-600" />
@@ -48,12 +84,15 @@ const BranchSelector: React.FC<BranchSelectorProps> = ({
         onChange={(e) => setSelectedBranch(e.target.value)}
         className="appearance-none bg-blue-50 border border-blue-200 rounded-lg px-4 py-2 pr-8 text-blue-900 font-medium focus:outline-none focus:ring-2 focus:ring-blue-500"
       >
-        {branches.map(branch => (
-          <option key={branch.id} value={branch.id}>
-            {branch.name}
+        {displayOptions.map(option => (
+          <option key={option.id} value={option.id}>
+            {option.name}
           </option>
         ))}
       </select>
+      <div className="absolute left-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
+        {displayInfo.icon}
+      </div>
       <ChevronDown className="absolute right-2 top-1/2 transform -translate-y-1/2 w-4 h-4 text-blue-600 pointer-events-none" />
     </div>
   );
