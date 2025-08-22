@@ -1014,12 +1014,15 @@ const Inventory: React.FC<InventoryProps> = ({ selectedBranch }) => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Số lượng hiện tại</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Số lượng hiện tại (Chi nhánh: {selectedBranch === 'all-branches' ? 'Quận 1' :
+                    selectedBranch === 'branch-1' ? 'Quận 1' :
+                    selectedBranch === 'branch-2' ? 'Quận 3' :
+                    selectedBranch === 'branch-3' ? 'Thủ Đức' : 'Gò Vấp'})</label>
                   <input
                     type="number"
                     min="0"
-                    value={formData.stock}
-                    onChange={(e) => setFormData(prev => ({ ...prev, stock: parseInt(e.target.value) || 0 }))}
+                    value={stockFormData.stock}
+                    onChange={(e) => setStockFormData(prev => ({ ...prev, stock: parseInt(e.target.value) || 0 }))}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
                 </div>
