@@ -192,7 +192,7 @@ const Staff: React.FC = () => {
     { id: 'manage_inventory', name: 'Quản lý kho', category: 'Kho hàng' },
     { id: 'view_reports', name: 'Xem báo cáo', category: 'Báo cáo' },
     { id: 'manage_reports', name: 'Quản lý báo cáo', category: 'Báo cáo' },
-    { id: 'view_finance', name: 'Xem tài ch��nh', category: 'Tài chính' },
+    { id: 'view_finance', name: 'Xem tài chính', category: 'Tài chính' },
     { id: 'manage_finance', name: 'Quản lý tài chính', category: 'Tài chính' },
     { id: 'system_admin', name: 'Quản trị hệ thống', category: 'Hệ thống' }
   ];
@@ -365,10 +365,58 @@ const Staff: React.FC = () => {
   };
 
   const handleRoleChange = (newRole: string) => {
+    // Set default branch access based on role
+    let defaultAccessibleBranches: string[] = [];
+    switch (newRole) {
+      case 'admin':
+        defaultAccessibleBranches = allBranches.map(b => b.id); // Admin can access all branches
+        break;
+      case 'manager':
+        defaultAccessibleBranches = allBranches.slice(0, 3).map(b => b.id); // Manager can access multiple branches
+        break;
+      case 'staff':
+      case 'trainee':
+        defaultAccessibleBranches = formData.branch ? [getBranchIdByName(formData.branch)] : []; // Staff/trainee access their primary branch only
+        break;
+    }
+
     setFormData(prev => ({
       ...prev,
       role: newRole as any,
-      permissions: rolePermissions[newRole as keyof typeof rolePermissions] || []
+      permissions: rolePermissions[newRole as keyof typeof rolePermissions] || [],
+      accessibleBranches: defaultAccessibleBranches.filter(Boolean)
+    }));
+  };
+
+  // Helper functions for branch management
+  const getBranchNameById = (branchId: string): string => {
+    const branch = allBranches.find(b => b.id === branchId);
+    return branch ? branch.name : branchId;
+  };
+
+  const getBranchIdByName = (branchName: string): string => {
+    const branch = allBranches.find(b => b.name === branchName);
+    return branch ? branch.id : '';
+  };
+
+  const toggleBranchAccess = (branchId: string) => {
+    setFormData(prev => ({
+      ...prev,
+      accessibleBranches: prev.accessibleBranches.includes(branchId)
+        ? prev.accessibleBranches.filter(id => id !== branchId)
+        : [...prev.accessibleBranches, branchId]
+    }));
+  };
+
+  const handlePrimaryBranchChange = (branchName: string) => {
+    const branchId = getBranchIdByName(branchName);
+    setFormData(prev => ({
+      ...prev,
+      branch: branchName,
+      // Automatically add primary branch to accessible branches if not already included
+      accessibleBranches: branchId && !prev.accessibleBranches.includes(branchId)
+        ? [...prev.accessibleBranches, branchId]
+        : prev.accessibleBranches
     }));
   };
 
