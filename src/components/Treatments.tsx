@@ -107,7 +107,7 @@ const Treatments: React.FC = () => {
       remainingAmount: 0,
       paymentStatus: 'completed',
       paymentHistory: [
-        { id: 3, date: '2024-12-01', amount: 12800000, method: 'card', note: 'Thanh toán đ���y đủ' }
+        { id: 3, date: '2024-12-01', amount: 12800000, method: 'card', note: 'Thanh toán đầy đủ' }
       ],
       appointments: [
         { id: 4, treatmentId: 2, date: '2025-01-20', time: '14:00', duration: 120, staff: 'Lê Hoa', status: 'scheduled', services: ['Chăm sóc da mặt', 'Massage'], notes: 'Buổi 7' },
@@ -142,7 +142,7 @@ const Treatments: React.FC = () => {
   const [customers] = useState<Customer[]>([
     {
       id: 1,
-      name: 'Nguy���n Thu Hà',
+      name: 'Nguyễn Thu Hà',
       phone: '0901234567',
       email: 'thuha@email.com',
       membershipLevel: 'VVIP',
@@ -230,6 +230,28 @@ const Treatments: React.FC = () => {
       case 'cancelled': return 'bg-red-100 text-red-800';
       default: return 'bg-gray-100 text-gray-800';
     }
+  };
+
+  const getPaymentStatusColor = (status: string) => {
+    switch (status) {
+      case 'completed': return 'bg-green-100 text-green-800';
+      case 'partial': return 'bg-yellow-100 text-yellow-800';
+      case 'pending': return 'bg-red-100 text-red-800';
+      default: return 'bg-gray-100 text-gray-800';
+    }
+  };
+
+  const getPaymentStatusText = (status: string) => {
+    switch (status) {
+      case 'completed': return 'Đã thanh toán';
+      case 'partial': return 'Thanh toán một phần';
+      case 'pending': return 'Chưa thanh toán';
+      default: return 'Không xác định';
+    }
+  };
+
+  const formatCurrency = (amount: number) => {
+    return new Intl.NumberFormat('vi-VN').format(amount) + 'đ';
   };
 
   const getStatusText = (status: string) => {
@@ -1095,7 +1117,7 @@ const Treatments: React.FC = () => {
                       type="text"
                       value={formData.preferredStaff}
                       onChange={(e) => setFormData(prev => ({ ...prev, preferredStaff: e.target.value }))}
-                      placeholder="VD: Nguyễn Mai"
+                      placeholder="VD: Nguy��n Mai"
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     />
                   </div>
