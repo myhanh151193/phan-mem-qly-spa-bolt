@@ -116,8 +116,8 @@ const Reports: React.FC<ReportsProps> = ({ selectedBranch }) => {
     ? allBranchesTopServices
     : branchTopServices[selectedBranch as keyof typeof branchTopServices] || allBranchesTopServices;
 
-  // Employee revenue data
-  const employeeRevenue = [
+  // All employee revenue data with branch information
+  const allEmployeeRevenue = [
     {
       id: 1,
       name: 'Nguyễn Thị Mai',
@@ -152,7 +152,7 @@ const Reports: React.FC<ReportsProps> = ({ selectedBranch }) => {
       commissionFormatted: '3.82M',
       rating: 4.9,
       growth: '+18%',
-      specialties: ['Massage to��n thân', 'Massage thái', 'Massage đá nóng'],
+      specialties: ['Massage toàn thân', 'Massage thái', 'Massage đá nóng'],
       customers: 102,
       avgSessionValue: 163000,
       branch: 'Chi nhánh Quận 3',
@@ -194,7 +194,7 @@ const Reports: React.FC<ReportsProps> = ({ selectedBranch }) => {
       commissionFormatted: '2.89M',
       rating: 4.6,
       growth: '+5%',
-      specialties: ['Tư vấn làm ��ẹp', 'Liệu trình cá nhân', 'Chăm sóc sau điều trị'],
+      specialties: ['Tư vấn làm đẹp', 'Liệu trình cá nhân', 'Chăm sóc sau điều trị'],
       customers: 67,
       avgSessionValue: 202000,
       branch: 'Chi nhánh Quận 3',
