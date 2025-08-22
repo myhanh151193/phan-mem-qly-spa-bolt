@@ -542,7 +542,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
           </div>
         </div>
 
-        {/* Staff Selection */}
+        {/* Staff and Bed Selection */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -561,20 +561,43 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
             </select>
           </div>
 
-          {/* Total Price Display */}
-          {formData.services.length > 0 && (
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                <DollarSign className="w-4 h-4 inline mr-2" />
-                Tổng giá dịch vụ
-              </label>
-              <div className="w-full p-3 border border-gray-300 rounded-lg bg-gray-50">
-                <span className="text-xl font-bold text-green-600">{formData.totalPrice}</span>
-                <span className="text-sm text-gray-600 ml-2">({formData.duration} phút)</span>
-              </div>
-            </div>
-          )}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Phòng / Giường
+            </label>
+            <select
+              value={formData.bedId || ''}
+              onChange={(e) => {
+                const selectedBedId = e.target.value ? parseInt(e.target.value) : undefined;
+                const selectedBed = allBeds.find(bed => bed.id === selectedBedId);
+                handleInputChange('bedId', selectedBedId);
+                handleInputChange('bedName', selectedBed ? selectedBed.name : '');
+              }}
+              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            >
+              <option value="">Chọn phòng/giường (không bắt buộc)</option>
+              {filteredBeds.map(bed => (
+                <option key={bed.id} value={bed.id}>
+                  {bed.name} • {bed.room}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
+
+        {/* Total Price Display */}
+        {formData.services.length > 0 && (
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              <DollarSign className="w-4 h-4 inline mr-2" />
+              Tổng giá dịch vụ
+            </label>
+            <div className="w-full p-3 border border-gray-300 rounded-lg bg-gray-50">
+              <span className="text-xl font-bold text-green-600">{formData.totalPrice}</span>
+              <span className="text-sm text-gray-600 ml-2">({formData.duration} phút)</span>
+            </div>
+          </div>
+        )}
 
         {/* Date and Time Selection */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -635,7 +658,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
             >
               <option value="pending">Chờ xác nhận</option>
               <option value="confirmed">Đã xác nhận</option>
-              <option value="in-progress">Đang thực hi��n</option>
+              <option value="in-progress">Đang thực hiện</option>
               <option value="completed">Hoàn thành</option>
               <option value="cancelled">Đã hủy</option>
             </select>
