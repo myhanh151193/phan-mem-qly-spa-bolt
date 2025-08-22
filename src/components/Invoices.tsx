@@ -57,7 +57,7 @@ const sampleTreatments = [
     customer: 'Lê Minh Châu',
     customerId: 3,
     name: 'Liệu trình giảm béo 6 tháng',
-    services: ['Giảm béo RF', 'Massage giảm béo', 'Tư vấn dinh dưỡng'],
+    services: ['Giảm béo RF', 'Massage giảm béo', 'Tư vấn dinh dư���ng'],
     status: 'completed'
   },
   {
@@ -73,7 +73,7 @@ const sampleTreatments = [
     customer: 'Hoàng Văn Nam',
     customerId: 5,
     name: 'Liệu trình trị thâm nám',
-    services: ['Trị thâm', 'Chăm s��c da mặt', 'Căng da mặt'],
+    services: ['Trị thâm', 'Chăm sóc da mặt', 'Căng da mặt'],
     status: 'active'
   }
 ];
@@ -116,7 +116,7 @@ const customers = [
   { id: 5, name: 'Hoàng Văn Nam', phone: '0976543210', membershipLevel: 'Member' },
 ];
 
-const Invoices: React.FC = () => {
+const Invoices: React.FC<InvoicesProps> = ({ selectedBranch }) => {
   const { updateInvoicePayment } = useTreatmentPayment();
 
   // Check URL params for treatment linking
