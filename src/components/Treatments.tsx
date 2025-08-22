@@ -762,6 +762,47 @@ const Treatments: React.FC = () => {
                   </div>
                 </div>
 
+                {/* Payment Status */}
+                <div className="mb-4 p-3 bg-gray-50 rounded-lg border border-gray-200">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center space-x-2">
+                      <CreditCard className="w-4 h-4 text-gray-600" />
+                      <span className="text-sm font-medium text-gray-700">Tình trạng thanh toán</span>
+                    </div>
+                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${getPaymentStatusColor(treatment.paymentStatus)}`}>
+                      {getPaymentStatusText(treatment.paymentStatus)}
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4 text-sm">
+                    <div>
+                      <span className="text-gray-600">Đã thanh toán:</span>
+                      <p className="font-semibold text-green-600">{formatCurrency(treatment.paidAmount)}</p>
+                    </div>
+                    <div>
+                      <span className="text-gray-600">Còn lại:</span>
+                      <p className={`font-semibold ${treatment.remainingAmount > 0 ? 'text-red-600' : 'text-green-600'}`}>
+                        {formatCurrency(treatment.remainingAmount)}
+                      </p>
+                    </div>
+                  </div>
+
+                  {treatment.remainingAmount > 0 && (
+                    <div className="mt-2">
+                      <div className="w-full bg-gray-200 rounded-full h-2">
+                        <div
+                          className="bg-green-500 h-2 rounded-full transition-all duration-300"
+                          style={{ width: `${(treatment.paidAmount / treatment.totalAmount) * 100}%` }}
+                        ></div>
+                      </div>
+                      <div className="flex justify-between items-center mt-1 text-xs text-gray-500">
+                        <span>{Math.round((treatment.paidAmount / treatment.totalAmount) * 100)}% đã thanh toán</span>
+                        <span>Tổng: {formatCurrency(treatment.totalAmount)}</span>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
                 {/* Next Session & Value */}
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between text-sm">
                   <div className="text-gray-600">
@@ -1117,7 +1158,7 @@ const Treatments: React.FC = () => {
                       type="text"
                       value={formData.preferredStaff}
                       onChange={(e) => setFormData(prev => ({ ...prev, preferredStaff: e.target.value }))}
-                      placeholder="VD: Nguy��n Mai"
+                      placeholder="VD: Nguyễn Mai"
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     />
                   </div>
