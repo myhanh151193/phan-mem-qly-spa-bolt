@@ -419,8 +419,10 @@ const Inventory: React.FC<InventoryProps> = ({ selectedBranch }) => {
     setEditingStock(null);
   };
 
-  const handleDelete = (id: number) => {
-    setInventory(prev => prev.filter(item => item.id !== id));
+  const handleDelete = (productId: number) => {
+    // Delete product and all its branch stocks
+    setProducts(prev => prev.filter(product => product.id !== productId));
+    setBranchStocks(prev => prev.filter(stock => stock.productId !== productId));
     setShowDeleteConfirm(null);
   };
 
