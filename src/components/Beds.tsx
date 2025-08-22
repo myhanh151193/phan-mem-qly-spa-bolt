@@ -30,6 +30,13 @@ interface BedsProps {
 
 const Beds: React.FC<BedsProps> = ({ selectedBranch }) => {
   const [selectedRoom, setSelectedRoom] = useState<string>('all');
+
+  // Reset room selection when branch changes and current room is not available
+  React.useEffect(() => {
+    if (selectedRoom !== 'all' && !getAvailableRooms().includes(selectedRoom)) {
+      setSelectedRoom('all');
+    }
+  }, [selectedBranch, selectedRoom]);
   const [viewMode, setViewMode] = useState<'grid' | 'timeline'>('grid');
   const [showAddDialog, setShowAddDialog] = useState<boolean>(false);
   const [newBedForm, setNewBedForm] = useState({
@@ -405,16 +412,37 @@ const Beds: React.FC<BedsProps> = ({ selectedBranch }) => {
     }
   };
 
+  // Calculate stats based on branch filtering
+  const branchFilteredBeds = beds.filter(bed => {
+    const bedBranch = getRoomBranch(bed.room);
+    return selectedBranch === 'all-branches' || bedBranch === selectedBranch;
+  });
+
   const stats = {
-    total: beds.length,
-    available: beds.filter(b => b.status === 'available').length,
-    occupied: beds.filter(b => b.status === 'occupied').length,
-    cleaning: beds.filter(b => b.status === 'cleaning').length,
-    maintenance: beds.filter(b => b.status === 'maintenance').length
+    total: branchFilteredBeds.length,
+    available: branchFilteredBeds.filter(b => b.status === 'available').length,
+    occupied: branchFilteredBeds.filter(b => b.status === 'occupied').length,
+    cleaning: branchFilteredBeds.filter(b => b.status === 'cleaning').length,
+    maintenance: branchFilteredBeds.filter(b => b.status === 'maintenance').length
   };
 
   return (
     <div className="space-y-6">
+      {/* Branch Indicator */}
+      {selectedBranch !== 'all-branches' && (
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+          <div className="flex items-center space-x-2">
+            <MapPin className="w-4 h-4 text-blue-600" />
+            <span className="text-sm font-medium text-blue-900">
+              Đang xem giường/phòng của: {getBranchNameFromId(selectedBranch)}
+            </span>
+            <span className="ml-2 px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">
+              {branchFilteredBeds.length} giường
+            </span>
+          </div>
+        </div>
+      )}
+
       {/* Header */}
       <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
         <div className="flex items-center space-x-4">
