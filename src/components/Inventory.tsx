@@ -541,7 +541,7 @@ const Inventory: React.FC<InventoryProps> = ({ selectedBranch }) => {
   const deleteBrandHandler = (id: number) => {
     const brand = brands.find(b => b.id === id);
     if (brand && brand.productCount > 0) {
-      alert('Không thể xóa thương hiệu đang có s���n phẩm');
+      alert('Không thể xóa thương hiệu đang có sản phẩm');
       return;
     }
     setBrands(prev => prev.filter(brand => brand.id !== id));
@@ -751,14 +751,6 @@ const Inventory: React.FC<InventoryProps> = ({ selectedBranch }) => {
                           <div>
                             <div className="text-sm font-medium text-gray-900">{view.product.name}</div>
                             <div className="text-sm text-gray-500">{view.product.brand} • {view.product.category}</div>
-                            {selectedBranch === 'all-branches' && (
-                              <div className="text-xs text-blue-600 font-medium mt-1">
-                                {view.branchStock.branch === 'branch-1' && 'Quận 1'}
-                                {view.branchStock.branch === 'branch-2' && 'Quận 3'}
-                                {view.branchStock.branch === 'branch-3' && 'Thủ Đức'}
-                                {view.branchStock.branch === 'branch-4' && 'Gò Vấp'}
-                              </div>
-                            )}
                           </div>
                         </div>
                       </td>
