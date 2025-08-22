@@ -88,7 +88,7 @@ const Inventory: React.FC<InventoryProps> = ({ selectedBranch }) => {
       category: 'Sản phẩm chăm sóc da',
       brand: 'SkinCare Pro',
       sku: 'SKU001',
-      description: 'Serum dưỡng tr��ng da với Vitamin C tự nhiên',
+      description: 'Serum dưỡng trắng da với Vitamin C tự nhiên',
       image: 'https://images.pexels.com/photos/4041392/pexels-photo-4041392.jpeg?w=150',
       unitPrice: 450000,
       supplier: 'Beauty Supply Co.',
@@ -747,9 +747,9 @@ const Inventory: React.FC<InventoryProps> = ({ selectedBranch }) => {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div>
-                          <span className="text-sm font-mono font-medium text-gray-900">{item.sku}</span>
-                          {item.location && (
-                            <div className="text-xs text-gray-500">{item.location}</div>
+                          <span className="text-sm font-mono font-medium text-gray-900">{view.product.sku}</span>
+                          {view.branchStock.location && (
+                            <div className="text-xs text-gray-500">{view.branchStock.location}</div>
                           )}
                         </div>
                       </td>
