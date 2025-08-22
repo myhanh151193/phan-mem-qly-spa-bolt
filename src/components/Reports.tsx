@@ -791,6 +791,9 @@ const Reports: React.FC<ReportsProps> = ({ selectedBranch }) => {
                             </div>
                             <p className="text-xs text-gray-500">{employee.position}</p>
                             <p className="text-xs text-gray-400">{employee.department}</p>
+                            {selectedBranch === 'all-branches' && (
+                              <p className="text-xs text-blue-600 font-medium">{employee.branchName}</p>
+                            )}
                           </div>
                         </div>
                       </td>
