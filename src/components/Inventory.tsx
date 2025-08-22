@@ -531,24 +531,25 @@ const Inventory: React.FC<InventoryProps> = ({ selectedBranch }) => {
   };
 
   // Filter and stats
-  const filteredInventory = inventory.filter(item => {
-    const matchesSearch = 
-      item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.brand.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.sku.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.supplier.toLowerCase().includes(searchTerm.toLowerCase());
-    
-    const matchesStatus = filterStatus === 'all' || item.status === filterStatus;
-    
+  const filteredInventory = inventoryViews.filter(view => {
+    const { product } = view;
+    const matchesSearch =
+      product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      product.brand.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      product.sku.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      product.supplier.toLowerCase().includes(searchTerm.toLowerCase());
+
+    const matchesStatus = filterStatus === 'all' || view.status === filterStatus;
+
     return matchesSearch && matchesStatus;
   });
 
   const stats = {
-    total: inventory.length,
-    inStock: inventory.filter(item => item.status === 'in-stock').length,
-    lowStock: inventory.filter(item => item.status === 'low-stock').length,
-    outOfStock: inventory.filter(item => item.status === 'out-of-stock').length,
-    totalValue: inventory.reduce((sum, item) => sum + item.totalValue, 0)
+    total: inventoryViews.length,
+    inStock: inventoryViews.filter(view => view.status === 'in-stock').length,
+    lowStock: inventoryViews.filter(view => view.status === 'low-stock').length,
+    outOfStock: inventoryViews.filter(view => view.status === 'out-of-stock').length,
+    totalValue: inventoryViews.reduce((sum, view) => sum + view.totalValue, 0)
   };
 
   return (
@@ -587,7 +588,7 @@ const Inventory: React.FC<InventoryProps> = ({ selectedBranch }) => {
             }`}
           >
             <Award className="w-4 h-4" />
-            <span>Thương hiệu</span>
+            <span>Thương hi��u</span>
           </button>
         </div>
       </div>
@@ -872,7 +873,7 @@ const Inventory: React.FC<InventoryProps> = ({ selectedBranch }) => {
           <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
             <h2 className="text-2xl font-bold text-gray-900 flex items-center space-x-2">
               <Award className="w-6 h-6" />
-              <span>Qu���n lý thương hiệu</span>
+              <span>Qu���n lý thương hi���u</span>
             </h2>
             <button 
               onClick={openCreateBrandModal}
@@ -1027,7 +1028,7 @@ const Inventory: React.FC<InventoryProps> = ({ selectedBranch }) => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Giá đơn vị (VNĐ)</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Gi�� đơn vị (VNĐ)</label>
                   <input
                     type="number"
                     min="0"
