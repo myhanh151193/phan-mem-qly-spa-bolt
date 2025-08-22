@@ -193,7 +193,8 @@ const Inventory: React.FC<InventoryProps> = ({ selectedBranch }) => {
   const [showModal, setShowModal] = useState(false);
   const [showCategoryModal, setShowCategoryModal] = useState(false);
   const [showBrandModal, setShowBrandModal] = useState(false);
-  const [editingItem, setEditingItem] = useState<InventoryItem | null>(null);
+  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+  const [editingStock, setEditingStock] = useState<BranchStock | null>(null);
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
   const [editingBrand, setEditingBrand] = useState<Brand | null>(null);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState<number | null>(null);
