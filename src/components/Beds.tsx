@@ -339,6 +339,61 @@ const Beds: React.FC<BedsProps> = ({ selectedBranch }) => {
     });
   };
 
+  // Edit bed functions
+  const openEditDialog = (bed: TreatmentBed) => {
+    setEditingBed(bed);
+    setEditBedForm({
+      name: bed.name,
+      room: bed.room,
+      type: bed.type,
+      equipment: [...bed.equipment]
+    });
+    setShowEditDialog(true);
+  };
+
+  const handleEditBed = () => {
+    if (!editingBed || !editBedForm.name.trim()) return;
+
+    const updatedBed: TreatmentBed = {
+      ...editingBed,
+      name: editBedForm.name,
+      room: editBedForm.room,
+      type: editBedForm.type,
+      equipment: editBedForm.equipment.length > 0 ? editBedForm.equipment : ['Thiết bị cơ bản']
+    };
+
+    setBeds(prev => prev.map(bed =>
+      bed.id === editingBed.id ? updatedBed : bed
+    ));
+
+    handleCancelEdit();
+  };
+
+  const handleCancelEdit = () => {
+    setShowEditDialog(false);
+    setEditingBed(null);
+    setEditBedForm({
+      name: '',
+      room: 'Phòng Massage',
+      type: 'massage',
+      equipment: []
+    });
+  };
+
+  // Delete bed functions
+  const openDeleteConfirm = (bedId: number) => {
+    setShowDeleteConfirm(bedId);
+  };
+
+  const handleDeleteBed = (bedId: number) => {
+    setBeds(prev => prev.filter(bed => bed.id !== bedId));
+    setShowDeleteConfirm(null);
+  };
+
+  const handleCancelDelete = () => {
+    setShowDeleteConfirm(null);
+  };
+
   const handleAppointmentSave = (appointmentData: any) => {
     if (selectedBed) {
       const newAssignment: BedAssignment = {
