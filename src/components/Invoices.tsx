@@ -778,12 +778,13 @@ const Invoices: React.FC<InvoicesProps> = ({ selectedBranch }) => {
 
   // Filter invoices
   const filteredInvoices = invoices.filter(invoice => {
-    const matchesSearch = 
+    const matchesSearch =
       invoice.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
       invoice.customer.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesStatus = filterStatus === 'all' || invoice.status === filterStatus;
-    
-    return matchesSearch && matchesStatus;
+    const matchesBranch = selectedBranch === 'all-branches' || invoice.branch === selectedBranch;
+
+    return matchesSearch && matchesStatus && matchesBranch;
   });
 
   // Calculate stats
