@@ -15,6 +15,8 @@ interface Invoice {
   id: string;
   customer: string;
   customerId?: number;
+  treatmentId?: number;
+  treatmentName?: string;
   date: string;
   dueDate: string;
   items: InvoiceItem[];
@@ -74,7 +76,7 @@ const sampleTreatments = [
 // Service catalog with pricing
 const serviceCatalog = {
   'Điều trị mụn': { price: 500000, duration: 60, category: 'Chăm sóc da', description: 'Điều trị mụn chuyên sâu với công nghệ hiện đại' },
-  'Tái tạo da': { price: 800000, duration: 90, category: 'Chăm sóc da', description: 'Tái tạo da bằng công nghệ laser và serum ��ặc biệt' },
+  'T��i tạo da': { price: 800000, duration: 90, category: 'Chăm sóc da', description: 'Tái tạo da bằng công nghệ laser và serum ��ặc biệt' },
   'Chăm sóc da': { price: 400000, duration: 60, category: 'Chăm sóc da', description: 'Chăm sóc da cơ bản với quy trình chuẩn' },
   'Chăm sóc da mặt': { price: 600000, duration: 75, category: 'Chăm sóc da', description: 'Chăm sóc da mặt toàn diện với các bước chuyên nghiệp' },
   'Chăm sóc da mặt Premium': { price: 800000, duration: 90, category: 'Chăm sóc da', description: 'Dịch vụ chăm sóc da mặt cao cấp với sản phẩm nhập khẩu' },
@@ -82,7 +84,7 @@ const serviceCatalog = {
   'Massage toàn thân': { price: 600000, duration: 120, category: 'Massage', description: 'Massage thư giãn toàn thân với tinh dầu thiên nhiên' },
   'Tắm trắng': { price: 800000, duration: 120, category: 'Làm đẹp', description: 'Tắm trắng cơ bản' },
   'Tắm trắng toàn thân': { price: 1200000, duration: 150, category: 'Làm đẹp', description: 'Tắm trắng toàn thân an toàn với công nghệ laser' },
-  'Giảm béo RF': { price: 800000, duration: 90, category: 'Giảm béo', description: 'Giảm béo bằng sóng RF không xâm lấn' },
+  'Giảm béo RF': { price: 800000, duration: 90, category: 'Giảm béo', description: 'Giảm béo bằng sóng RF không x��m lấn' },
   'Massage giảm béo': { price: 700000, duration: 100, category: 'Giảm béo', description: 'Massage chuyên sâu hỗ trợ giảm béo' },
   'Tư vấn dinh dưỡng': { price: 200000, duration: 30, category: 'Tư vấn', description: 'Tư vấn chế độ dinh dưỡng phù hợp' },
   'Triệt lông': { price: 400000, duration: 45, category: 'Làm đẹp', description: 'Triệt lông vĩnh viễn bằng laser diode' },
@@ -1067,7 +1069,7 @@ const Invoices: React.FC = () => {
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   >
                     <option value="cash">Tiền mặt</option>
-                    <option value="transfer">Chuy���n khoản</option>
+                    <option value="transfer">Chuyển khoản</option>
                     <option value="card">Thẻ</option>
                     <option value="other">Khác</option>
                   </select>
