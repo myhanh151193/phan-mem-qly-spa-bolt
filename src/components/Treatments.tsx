@@ -285,7 +285,7 @@ const Treatments: React.FC<TreatmentsProps> = ({ selectedBranch }) => {
 
   const openEditModal = (treatment: Treatment) => {
     setEditingTreatment(treatment);
-    const selectedCustomer = customers.find(c => c.name === treatment.customer);
+    const selectedCustomer = allCustomers.find(c => c.name === treatment.customer);
     setFormData({
       name: treatment.name,
       customerId: selectedCustomer?.id || null,
@@ -1165,7 +1165,7 @@ const Treatments: React.FC<TreatmentsProps> = ({ selectedBranch }) => {
                           <div>
                             <p className="text-sm font-medium text-yellow-800">Lưu ý</p>
                             <p className="text-sm text-yellow-700">
-                              Khách hàng thuộc {branchMap[selectedCustomer.branch]} nhưng li��u trình đang được tạo cho {branchMap[formData.branch]}.
+                              Khách hàng thuộc {branchMap[selectedCustomer.branch]} nhưng liệu trình đang được tạo cho {branchMap[formData.branch]}.
                               Vui lòng chọn khách hàng phù hợp hoặc thay đổi chi nhánh.
                             </p>
                           </div>
