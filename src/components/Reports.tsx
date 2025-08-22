@@ -10,7 +10,36 @@ const Reports: React.FC<ReportsProps> = ({ selectedBranch }) => {
   const [selectedPeriod, setSelectedPeriod] = useState('month');
   const [sortBy, setSortBy] = useState('revenue');
 
-  const reportData = {
+  // Branch-specific data
+  const branchData = {
+    'branch-1': {
+      revenue: { daily: '6.2M', weekly: '38.5M', monthly: '145.3M', growth: '+15.2%' },
+      customers: { new: 12, returning: 67, total: 456, retention: '82%' },
+      services: { completed: 67, cancelled: 3, noShow: 1, satisfaction: '4.9/5' },
+      staff: { active: 4, performance: '94%', avgRating: '4.8', utilization: '88%' }
+    },
+    'branch-2': {
+      revenue: { daily: '4.8M', weekly: '28.2M', monthly: '98.7M', growth: '+10.3%' },
+      customers: { new: 8, returning: 45, total: 312, retention: '75%' },
+      services: { completed: 52, cancelled: 2, noShow: 1, satisfaction: '4.7/5' },
+      staff: { active: 3, performance: '91%', avgRating: '4.7', utilization: '82%' }
+    },
+    'branch-3': {
+      revenue: { daily: '2.9M', weekly: '15.8M', monthly: '58.2M', growth: '+8.7%' },
+      customers: { new: 3, returning: 32, total: 287, retention: '76%' },
+      services: { completed: 21, cancelled: 2, noShow: 1, satisfaction: '4.6/5' },
+      staff: { active: 3, performance: '89%', avgRating: '4.6', utilization: '80%' }
+    },
+    'branch-4': {
+      revenue: { daily: '1.3M', weekly: '7.0M', monthly: '18.6M', growth: '+12.8%' },
+      customers: { new: 1, returning: 12, total: 179, retention: '79%' },
+      services: { completed: 8, cancelled: 1, noShow: 0, satisfaction: '4.8/5' },
+      staff: { active: 2, performance: '93%', avgRating: '4.9', utilization: '85%' }
+    }
+  };
+
+  // Calculate aggregated data for all branches
+  const aggregatedData = {
     revenue: {
       daily: '15.2M',
       weekly: '89.5M',
@@ -36,6 +65,11 @@ const Reports: React.FC<ReportsProps> = ({ selectedBranch }) => {
       utilization: '85%'
     }
   };
+
+  // Get current report data based on selected branch
+  const reportData = selectedBranch === 'all-branches'
+    ? aggregatedData
+    : branchData[selectedBranch as keyof typeof branchData] || aggregatedData;
 
   const topServices = [
     { name: 'Chăm sóc da mặt Premium', revenue: '45.2M', sessions: 89, growth: '+15%' },
