@@ -952,6 +952,32 @@ const Beds: React.FC<BedsProps> = ({ selectedBranch }) => {
                 </select>
               </div>
 
+              {/* Branch Selection */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Chi nhánh *
+                </label>
+                <select
+                  value={newBedForm.branch}
+                  onChange={(e) => {
+                    const selectedBranchId = e.target.value;
+                    setNewBedForm(prev => ({
+                      ...prev,
+                      branch: selectedBranchId,
+                      room: getRoomsForBranch(selectedBranchId)[0] // Auto-select first room for branch
+                    }));
+                  }}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                >
+                  {getAccessibleBranches().map(branch => (
+                    <option key={branch.id} value={branch.id}>{branch.name}</option>
+                  ))}
+                </select>
+                <p className="text-xs text-gray-500 mt-1">
+                  Chỉ hiển thị các chi nhánh bạn có quyền quản lý
+                </p>
+              </div>
+
               {/* Equipment */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
