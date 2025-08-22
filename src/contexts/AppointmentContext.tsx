@@ -16,6 +16,7 @@ export interface Appointment {
   service?: string; // For backward compatibility
   price?: string;
   totalPrice?: string;
+  branch?: string; // Branch where the appointment takes place
 }
 
 interface AppointmentContextType {
@@ -53,6 +54,7 @@ export const AppointmentProvider: React.FC<{ children: ReactNode }> = ({ childre
       price: '800K',
       totalPrice: '800K',
       date: new Date().toISOString().split('T')[0],
+      branch: 'branch-1',
       notes: 'Khách hàng VIP, cần chú ý đặc biệt'
     },
     {
@@ -69,6 +71,7 @@ export const AppointmentProvider: React.FC<{ children: ReactNode }> = ({ childre
       price: '1.1M',
       totalPrice: '1100K',
       date: new Date().toISOString().split('T')[0],
+      branch: 'branch-2',
       notes: 'Đang thực hiện 2 dịch vụ'
     },
     {
@@ -84,7 +87,8 @@ export const AppointmentProvider: React.FC<{ children: ReactNode }> = ({ childre
       status: 'pending',
       price: '400K',
       totalPrice: '400K',
-      date: new Date().toISOString().split('T')[0]
+      date: new Date().toISOString().split('T')[0],
+      branch: 'branch-3'
     },
     {
       id: 4,
@@ -99,6 +103,7 @@ export const AppointmentProvider: React.FC<{ children: ReactNode }> = ({ childre
       price: '1900K',
       totalPrice: '1900K',
       date: new Date().toISOString().split('T')[0],
+      branch: 'branch-1',
       notes: 'Gói combo 3 dịch vụ'
     },
   ]);

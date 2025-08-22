@@ -3,7 +3,11 @@ import { Calendar, Clock, Plus, Filter, ChevronLeft, ChevronRight, X, Edit, Tras
 import AppointmentForm from './AppointmentForm';
 import { useAppointments, Appointment } from '../contexts/AppointmentContext';
 
-const Schedule: React.FC = () => {
+interface ScheduleProps {
+  selectedBranch: string;
+}
+
+const Schedule: React.FC<ScheduleProps> = ({ selectedBranch }) => {
   const { appointments, updateAppointment, deleteAppointment: deleteFromContext, addAppointment } = useAppointments();
   
   const [currentDate, setCurrentDate] = useState(new Date());
@@ -91,7 +95,11 @@ const Schedule: React.FC = () => {
       const appointmentDate = new Date(appointment.date);
       const isDateMatch = appointmentDate.toDateString() === date.toDateString();
       const statusMatch = filterStatus === 'all' || appointment.status === filterStatus;
-      return isDateMatch && statusMatch;
+
+      // Branch filtering
+      const branchMatch = selectedBranch === 'all-branches' || appointment.branch === selectedBranch;
+
+      return isDateMatch && statusMatch && branchMatch;
     });
   };
 
@@ -131,7 +139,11 @@ const Schedule: React.FC = () => {
     }
 
     const statusMatch = filterStatus === 'all' || appointment.status === filterStatus;
-    return dateMatch && statusMatch;
+
+    // Branch filtering
+    const branchMatch = selectedBranch === 'all-branches' || appointment.branch === selectedBranch;
+
+    return dateMatch && statusMatch && branchMatch;
   });
 
   const openAppointmentModal = (appointment?: Appointment, selectedDate?: Date) => {
@@ -223,6 +235,29 @@ const Schedule: React.FC = () => {
 
   return (
     <div className="space-y-6">
+      {/* Branch Indicator */}
+      {selectedBranch !== 'all-branches' && (
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+          <div className="flex items-center space-x-2">
+            <Calendar className="w-4 h-4 text-blue-600" />
+            <span className="text-sm font-medium text-blue-900">
+              Đang xem lịch hẹn của: {(() => {
+                const branchMap: { [key: string]: string } = {
+                  'branch-1': 'Chi nhánh Quận 1',
+                  'branch-2': 'Chi nhánh Quận 3',
+                  'branch-3': 'Chi nhánh Thủ Đức',
+                  'branch-4': 'Chi nhánh Gò Vấp'
+                };
+                return branchMap[selectedBranch] || selectedBranch;
+              })()}
+            </span>
+            <span className="ml-2 px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">
+              {filteredAppointments.length} lịch hẹn
+            </span>
+          </div>
+        </div>
+      )}
+
       {/* Header Controls */}
       <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
         <div className="flex items-center space-x-4">
@@ -610,7 +645,12 @@ const Schedule: React.FC = () => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-600">Tổng lịch hẹn</p>
-              <p className="text-2xl font-bold text-gray-900">{appointments.length}</p>
+              <p className="text-2xl font-bold text-gray-900">
+                {selectedBranch === 'all-branches'
+                  ? appointments.length
+                  : appointments.filter(apt => apt.branch === selectedBranch).length
+                }
+              </p>
             </div>
             <Calendar className="w-8 h-8 text-blue-600" />
           </div>
@@ -620,7 +660,10 @@ const Schedule: React.FC = () => {
             <div>
               <p className="text-sm text-gray-600">Đã hoàn thành</p>
               <p className="text-2xl font-bold text-green-600">
-                {appointments.filter(apt => apt.status === 'completed').length}
+                {selectedBranch === 'all-branches'
+                  ? appointments.filter(apt => apt.status === 'completed').length
+                  : appointments.filter(apt => apt.status === 'completed' && apt.branch === selectedBranch).length
+                }
               </p>
             </div>
             <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
@@ -633,7 +676,10 @@ const Schedule: React.FC = () => {
             <div>
               <p className="text-sm text-gray-600">Đang thực hiện</p>
               <p className="text-2xl font-bold text-blue-600">
-                {appointments.filter(apt => apt.status === 'in-progress').length}
+                {selectedBranch === 'all-branches'
+                  ? appointments.filter(apt => apt.status === 'in-progress').length
+                  : appointments.filter(apt => apt.status === 'in-progress' && apt.branch === selectedBranch).length
+                }
               </p>
             </div>
             <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
@@ -646,7 +692,10 @@ const Schedule: React.FC = () => {
             <div>
               <p className="text-sm text-gray-600">Từ liệu trình</p>
               <p className="text-2xl font-bold text-purple-600">
-                {appointments.filter(apt => apt.treatmentId).length}
+                {selectedBranch === 'all-branches'
+                  ? appointments.filter(apt => apt.treatmentId).length
+                  : appointments.filter(apt => apt.treatmentId && apt.branch === selectedBranch).length
+                }
               </p>
             </div>
             <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">

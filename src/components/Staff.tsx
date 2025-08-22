@@ -44,7 +44,11 @@ interface StaffFormData {
   permissions: string[];
 }
 
-const Staff: React.FC = () => {
+interface StaffProps {
+  selectedBranch: string;
+}
+
+const Staff: React.FC<StaffProps> = ({ selectedBranch }) => {
   const [staff, setStaff] = useState<Staff[]>([
     {
       id: 1,
@@ -451,33 +455,76 @@ const Staff: React.FC = () => {
     ));
   };
 
+  // Helper function to get branch name from ID
+  const getBranchNameFromId = (branchId: string): string => {
+    const branchMap: { [key: string]: string } = {
+      'branch-1': 'Chi nhánh Quận 1',
+      'branch-2': 'Chi nhánh Quận 3',
+      'branch-3': 'Chi nhánh Thủ Đức',
+      'branch-4': 'Chi nhánh Gò Vấp'
+    };
+    return branchMap[branchId] || '';
+  };
+
   // Filter staff
   const filteredStaff = staff.filter(member => {
-    const matchesSearch = 
+    const matchesSearch =
       member.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       member.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
       member.position.toLowerCase().includes(searchTerm.toLowerCase()) ||
       member.department.toLowerCase().includes(searchTerm.toLowerCase());
-    
+
     const matchesStatus = filterStatus === 'all' || member.status === filterStatus;
     const matchesRole = filterRole === 'all' || member.role === filterRole;
-    
-    return matchesSearch && matchesStatus && matchesRole;
+
+    // Branch filtering
+    let matchesBranch = true;
+    if (selectedBranch !== 'all-branches') {
+      const selectedBranchName = getBranchNameFromId(selectedBranch);
+      if (selectedBranchName) {
+        matchesBranch = member.branch === selectedBranchName;
+      }
+    }
+
+    return matchesSearch && matchesStatus && matchesRole && matchesBranch;
   });
 
-  // Calculate stats
+  // Calculate stats based on branch filtering (but before other filters)
+  const branchFilteredStaff = staff.filter(member => {
+    if (selectedBranch === 'all-branches') return true;
+    const selectedBranchName = getBranchNameFromId(selectedBranch);
+    return selectedBranchName ? member.branch === selectedBranchName : true;
+  });
+
   const stats = {
-    total: staff.length,
-    active: staff.filter(s => s.status === 'active').length,
-    onLeave: staff.filter(s => s.status === 'on-leave').length,
-    inactive: staff.filter(s => s.status === 'inactive').length,
-    avgRating: staff.length > 0 ? (staff.reduce((sum, s) => sum + s.rating, 0) / staff.length).toFixed(1) : '0'
+    total: branchFilteredStaff.length,
+    active: branchFilteredStaff.filter(s => s.status === 'active').length,
+    onLeave: branchFilteredStaff.filter(s => s.status === 'on-leave').length,
+    inactive: branchFilteredStaff.filter(s => s.status === 'inactive').length,
+    avgRating: branchFilteredStaff.length > 0 ? (branchFilteredStaff.reduce((sum, s) => sum + s.rating, 0) / branchFilteredStaff.length).toFixed(1) : '0'
   };
 
   return (
     <div className="space-y-6">
       {/* Header */}
       <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
+        {/* Branch Indicator */}
+        {selectedBranch !== 'all-branches' && (
+          <div className="w-full mb-4 lg:mb-0">
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+              <div className="flex items-center space-x-2">
+                <MapPin className="w-4 h-4 text-blue-600" />
+                <span className="text-sm font-medium text-blue-900">
+                  Đang xem nhân viên của: {getBranchNameFromId(selectedBranch)}
+                </span>
+                <span className="ml-2 px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">
+                  {stats.total} nhân viên
+                </span>
+              </div>
+            </div>
+          </div>
+        )}
+
         <div className="flex items-center space-x-4 flex-1">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />

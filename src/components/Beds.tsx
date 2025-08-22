@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
-import { Bed, Clock, User, Plus, MapPin, Settings, Eye, CheckCircle, XCircle, Play, Pause, Timer } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Bed, Clock, User, Plus, MapPin, Settings, Eye, CheckCircle, XCircle, Play, Pause, Timer, Edit, Trash2, X, Save } from 'lucide-react';
 import AppointmentDialog from './AppointmentDialog';
+import { useAuth } from '../contexts/AuthContext';
 
 interface BedAssignment {
   customerId: number;
@@ -22,17 +23,53 @@ interface TreatmentBed {
   currentAssignment?: BedAssignment;
   equipment: string[];
   lastCleaned: string;
+  branch: string; // Branch ID where the bed is located
 }
 
-const Beds: React.FC = () => {
+interface BedsProps {
+  selectedBranch: string;
+}
+
+const Beds: React.FC<BedsProps> = ({ selectedBranch }) => {
+  const { user, canAccessBranch } = useAuth();
   const [selectedRoom, setSelectedRoom] = useState<string>('all');
+
+  // Reset room selection when branch changes and current room is not available
+  useEffect(() => {
+    if (selectedRoom !== 'all' && !getAvailableRooms().includes(selectedRoom)) {
+      setSelectedRoom('all');
+    }
+  }, [selectedBranch, selectedRoom]);
+
+  // Update newBedForm default branch when selectedBranch changes
+  useEffect(() => {
+    if (selectedBranch !== 'all-branches') {
+      const rooms = getRoomsForBranch(selectedBranch);
+      setNewBedForm(prev => ({
+        ...prev,
+        branch: selectedBranch,
+        room: rooms[0] || 'Phòng Massage'
+      }));
+    }
+  }, [selectedBranch]);
   const [viewMode, setViewMode] = useState<'grid' | 'timeline'>('grid');
   const [showAddDialog, setShowAddDialog] = useState<boolean>(false);
+  const [showEditDialog, setShowEditDialog] = useState<boolean>(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState<number | null>(null);
+  const [editingBed, setEditingBed] = useState<TreatmentBed | null>(null);
   const [newBedForm, setNewBedForm] = useState({
     name: '',
     room: 'Phòng Massage',
     type: 'massage' as TreatmentBed['type'],
-    equipment: [] as string[]
+    equipment: [] as string[],
+    branch: selectedBranch !== 'all-branches' ? selectedBranch : (user?.accessibleBranches[0] || 'branch-1')
+  });
+  const [editBedForm, setEditBedForm] = useState({
+    name: '',
+    room: 'Phòng Massage',
+    type: 'massage' as TreatmentBed['type'],
+    equipment: [] as string[],
+    branch: 'branch-1'
   });
 
   // Appointment Dialog State
@@ -42,6 +79,53 @@ const Beds: React.FC = () => {
   const [editingAssignment, setEditingAssignment] = useState<BedAssignment | null>(null);
   const [isEditingAppointment, setIsEditingAppointment] = useState<boolean>(false);
 
+  // Helper function to map rooms to branches
+  const getRoomBranch = (room: string): string => {
+    const roomToBranch: { [key: string]: string } = {
+      'Phòng VIP A': 'branch-1',
+      'Phòng Chăm sóc da': 'branch-1',
+      'Phòng Tắm trắng': 'branch-2',
+      'Phòng Massage': 'branch-3'
+    };
+    return roomToBranch[room] || 'branch-1';
+  };
+
+  // Helper function to get branch name from ID
+  const getBranchNameFromId = (branchId: string): string => {
+    const branchMap: { [key: string]: string } = {
+      'branch-1': 'Chi nhánh Quận 1',
+      'branch-2': 'Chi nhánh Quận 3',
+      'branch-3': 'Chi nhánh Thủ Đức',
+      'branch-4': 'Chi nhánh Gò Vấp'
+    };
+    return branchMap[branchId] || '';
+  };
+
+  // Get accessible branches for current user
+  const getAccessibleBranches = () => {
+    if (!user) return [];
+
+    const allBranches = [
+      { id: 'branch-1', name: 'Chi nhánh Quận 1' },
+      { id: 'branch-2', name: 'Chi nhánh Quận 3' },
+      { id: 'branch-3', name: 'Chi nhánh Thủ Đức' },
+      { id: 'branch-4', name: 'Chi nhánh Gò Vấp' }
+    ];
+
+    return allBranches.filter(branch => canAccessBranch(branch.id));
+  };
+
+  // Get rooms for selected branch
+  const getRoomsForBranch = (branchId: string): string[] => {
+    const branchRooms: { [key: string]: string[] } = {
+      'branch-1': ['Phòng VIP A', 'Phòng Chăm sóc da'],
+      'branch-2': ['Phòng Tắm trắng'],
+      'branch-3': ['Phòng Massage'],
+      'branch-4': ['Phòng VIP B', 'Phòng Trị li��u']
+    };
+    return branchRooms[branchId] || ['Phòng Massage'];
+  };
+
   const [beds, setBeds] = useState<TreatmentBed[]>([
     {
       id: 1,
@@ -49,6 +133,7 @@ const Beds: React.FC = () => {
       room: 'Phòng VIP A',
       type: 'vip',
       status: 'occupied',
+      branch: 'branch-1',
       currentAssignment: {
         customerId: 1,
         customerName: 'Nguyễn Thu Hà',
@@ -68,6 +153,7 @@ const Beds: React.FC = () => {
       room: 'Phòng VIP A',
       type: 'vip',
       status: 'cleaning',
+      branch: 'branch-1',
       equipment: ['Máy hút chân không', 'Đèn LED', 'Hệ thống âm thanh'],
       lastCleaned: '10:15'
     },
@@ -77,6 +163,7 @@ const Beds: React.FC = () => {
       room: 'Phòng Chăm sóc da',
       type: 'facial',
       status: 'occupied',
+      branch: 'branch-1',
       currentAssignment: {
         customerId: 2,
         customerName: 'Trần Mai Linh',
@@ -96,6 +183,7 @@ const Beds: React.FC = () => {
       room: 'Phòng Chăm sóc da',
       type: 'facial',
       status: 'available',
+      branch: 'branch-1',
       equipment: ['Máy phun sương', 'Đèn chuyên dụng', 'Kính lúp'],
       lastCleaned: '11:00'
     },
@@ -105,6 +193,7 @@ const Beds: React.FC = () => {
       room: 'Phòng Tắm trắng',
       type: 'body',
       status: 'occupied',
+      branch: 'branch-2',
       currentAssignment: {
         customerId: 4,
         customerName: 'Phạm Thị Lan',
@@ -124,15 +213,17 @@ const Beds: React.FC = () => {
       room: 'Phòng Tắm trắng',
       type: 'body',
       status: 'available',
+      branch: 'branch-2',
       equipment: ['Bồn tắm cao cấp', 'Hệ thống massage'],
       lastCleaned: '12:30'
     },
     {
       id: 7,
       name: 'Giường Massage 3',
-      room: 'Phòng Massage',
+      room: 'Ph��ng Massage',
       type: 'massage',
       status: 'maintenance',
+      branch: 'branch-3',
       equipment: ['Hệ thống massage tự động', 'Đèn âm thanh'],
       lastCleaned: '08:00'
     },
@@ -142,12 +233,24 @@ const Beds: React.FC = () => {
       room: 'Phòng Massage',
       type: 'massage',
       status: 'available',
+      branch: 'branch-3',
       equipment: ['Hệ thống massage tự động', 'Đèn âm thanh'],
       lastCleaned: '10:30'
     }
   ]);
 
-  const rooms = ['all', 'Phòng VIP A', 'Phòng Chăm sóc da', 'Phòng Tắm trắng', 'Phòng Massage'];
+  // Filter rooms based on selected branch
+  const getAllRooms = () => ['Phòng VIP A', 'Phòng Chăm sóc da', 'Phòng Tắm trắng', 'Phòng Massage'];
+
+  const getAvailableRooms = () => {
+    if (selectedBranch === 'all-branches') {
+      return ['all', ...getAllRooms()];
+    }
+    const availableRooms = getAllRooms().filter(room => getRoomBranch(room) === selectedBranch);
+    return ['all', ...availableRooms];
+  };
+
+  const rooms = getAvailableRooms();
 
   const getBedTypeColor = (type: string) => {
     switch (type) {
@@ -197,9 +300,15 @@ const Beds: React.FC = () => {
     }
   };
 
-  const filteredBeds = beds.filter(bed => 
-    selectedRoom === 'all' || bed.room === selectedRoom
-  );
+  const filteredBeds = beds.filter(bed => {
+    // Room filtering
+    const roomMatch = selectedRoom === 'all' || bed.room === selectedRoom;
+
+    // Branch filtering - use bed.branch instead of getRoomBranch
+    const branchMatch = selectedBranch === 'all-branches' || bed.branch === selectedBranch;
+
+    return roomMatch && branchMatch;
+  });
 
   const getCurrentTime = () => {
     return new Date().toLocaleTimeString('vi-VN', { 
@@ -256,6 +365,7 @@ const Beds: React.FC = () => {
       room: newBedForm.room,
       type: newBedForm.type,
       status: 'available',
+      branch: newBedForm.branch,
       equipment: newBedForm.equipment.length > 0 ? newBedForm.equipment : ['Thiết bị cơ bản'],
       lastCleaned: getCurrentTime()
     };
@@ -265,7 +375,8 @@ const Beds: React.FC = () => {
       name: '',
       room: 'Phòng Massage',
       type: 'massage',
-      equipment: []
+      equipment: [],
+      branch: selectedBranch !== 'all-branches' ? selectedBranch : (user?.accessibleBranches[0] || 'branch-1')
     });
   };
 
@@ -275,8 +386,67 @@ const Beds: React.FC = () => {
       name: '',
       room: 'Phòng Massage',
       type: 'massage',
-      equipment: []
+      equipment: [],
+      branch: selectedBranch !== 'all-branches' ? selectedBranch : (user?.accessibleBranches[0] || 'branch-1')
     });
+  };
+
+  // Edit bed functions
+  const openEditDialog = (bed: TreatmentBed) => {
+    setEditingBed(bed);
+    setEditBedForm({
+      name: bed.name,
+      room: bed.room,
+      type: bed.type,
+      equipment: [...bed.equipment],
+      branch: bed.branch
+    });
+    setShowEditDialog(true);
+  };
+
+  const handleEditBed = () => {
+    if (!editingBed || !editBedForm.name.trim()) return;
+
+    const updatedBed: TreatmentBed = {
+      ...editingBed,
+      name: editBedForm.name,
+      room: editBedForm.room,
+      type: editBedForm.type,
+      branch: editBedForm.branch,
+      equipment: editBedForm.equipment.length > 0 ? editBedForm.equipment : ['Thiết bị cơ bản']
+    };
+
+    setBeds(prev => prev.map(bed =>
+      bed.id === editingBed.id ? updatedBed : bed
+    ));
+
+    handleCancelEdit();
+  };
+
+  const handleCancelEdit = () => {
+    setShowEditDialog(false);
+    setEditingBed(null);
+    setEditBedForm({
+      name: '',
+      room: 'Phòng Massage',
+      type: 'massage',
+      equipment: [],
+      branch: 'branch-1'
+    });
+  };
+
+  // Delete bed functions
+  const openDeleteConfirm = (bedId: number) => {
+    setShowDeleteConfirm(bedId);
+  };
+
+  const handleDeleteBed = (bedId: number) => {
+    setBeds(prev => prev.filter(bed => bed.id !== bedId));
+    setShowDeleteConfirm(null);
+  };
+
+  const handleCancelDelete = () => {
+    setShowDeleteConfirm(null);
   };
 
   const handleAppointmentSave = (appointmentData: any) => {
@@ -361,16 +531,36 @@ const Beds: React.FC = () => {
     }
   };
 
+  // Calculate stats based on branch filtering
+  const branchFilteredBeds = beds.filter(bed => {
+    return selectedBranch === 'all-branches' || bed.branch === selectedBranch;
+  });
+
   const stats = {
-    total: beds.length,
-    available: beds.filter(b => b.status === 'available').length,
-    occupied: beds.filter(b => b.status === 'occupied').length,
-    cleaning: beds.filter(b => b.status === 'cleaning').length,
-    maintenance: beds.filter(b => b.status === 'maintenance').length
+    total: branchFilteredBeds.length,
+    available: branchFilteredBeds.filter(b => b.status === 'available').length,
+    occupied: branchFilteredBeds.filter(b => b.status === 'occupied').length,
+    cleaning: branchFilteredBeds.filter(b => b.status === 'cleaning').length,
+    maintenance: branchFilteredBeds.filter(b => b.status === 'maintenance').length
   };
 
   return (
     <div className="space-y-6">
+      {/* Branch Indicator */}
+      {selectedBranch !== 'all-branches' && (
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+          <div className="flex items-center space-x-2">
+            <MapPin className="w-4 h-4 text-blue-600" />
+            <span className="text-sm font-medium text-blue-900">
+              Đang xem giường/phòng của: {getBranchNameFromId(selectedBranch)}
+            </span>
+            <span className="ml-2 px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">
+              {branchFilteredBeds.length} giường
+            </span>
+          </div>
+        </div>
+      )}
+
       {/* Header */}
       <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
         <div className="flex items-center space-x-4">
@@ -483,6 +673,14 @@ const Beds: React.FC = () => {
                     <MapPin className="w-4 h-4 text-gray-400" />
                     <span className="text-sm text-gray-600">{bed.room}</span>
                   </div>
+                  {selectedBranch === 'all-branches' && (
+                    <div className="flex items-center space-x-2 mt-1">
+                      <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                      <span className="text-xs text-blue-600 font-medium">
+                        {getBranchNameFromId(bed.branch)}
+                      </span>
+                    </div>
+                  )}
                 </div>
                 <div className="flex flex-col items-end space-y-2">
                   <span className={`px-2 py-1 text-xs rounded-full border ${getBedTypeColor(bed.type)}`}>
@@ -544,34 +742,55 @@ const Beds: React.FC = () => {
               </div>
 
               {/* Actions */}
-              <div className="flex space-x-2">
-                {bed.status === 'available' && (
-                  <button
-                    onClick={() => updateBedStatus(bed.id, 'occupied')}
-                    className="flex-1 bg-green-600 text-white text-sm py-2 rounded-lg hover:bg-green-700 transition-colors"
-                  >
-                    Bắt đầu sử dụng
+              <div className="space-y-2">
+                {/* Status actions */}
+                <div className="flex space-x-2">
+                  {bed.status === 'available' && (
+                    <button
+                      onClick={() => updateBedStatus(bed.id, 'occupied')}
+                      className="flex-1 bg-green-600 text-white text-sm py-2 rounded-lg hover:bg-green-700 transition-colors"
+                    >
+                      Bắt đầu sử dụng
+                    </button>
+                  )}
+                  {bed.status === 'cleaning' && (
+                    <button
+                      onClick={() => updateBedStatus(bed.id, 'available')}
+                      className="flex-1 bg-blue-600 text-white text-sm py-2 rounded-lg hover:bg-blue-700 transition-colors"
+                    >
+                      Hoàn tất dọn dẹp
+                    </button>
+                  )}
+                  {bed.status === 'maintenance' && (
+                    <button
+                      onClick={() => updateBedStatus(bed.id, 'available')}
+                      className="flex-1 bg-gray-600 text-white text-sm py-2 rounded-lg hover:bg-gray-700 transition-colors"
+                    >
+                      Hoàn tất bảo trì
+                    </button>
+                  )}
+                  <button className="px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+                    <Eye className="w-4 h-4 text-gray-600" />
                   </button>
-                )}
-                {bed.status === 'cleaning' && (
+                </div>
+
+                {/* Management actions */}
+                <div className="flex space-x-2">
                   <button
-                    onClick={() => updateBedStatus(bed.id, 'available')}
-                    className="flex-1 bg-blue-600 text-white text-sm py-2 rounded-lg hover:bg-blue-700 transition-colors"
+                    onClick={() => openEditDialog(bed)}
+                    className="flex-1 bg-orange-100 text-orange-700 text-sm py-2 rounded-lg hover:bg-orange-200 transition-colors flex items-center justify-center space-x-1"
                   >
-                    Hoàn tất dọn dẹp
+                    <Edit className="w-4 h-4" />
+                    <span>Chỉnh sửa</span>
                   </button>
-                )}
-                {bed.status === 'maintenance' && (
                   <button
-                    onClick={() => updateBedStatus(bed.id, 'available')}
-                    className="flex-1 bg-gray-600 text-white text-sm py-2 rounded-lg hover:bg-gray-700 transition-colors"
+                    onClick={() => openDeleteConfirm(bed.id)}
+                    className="flex-1 bg-red-100 text-red-700 text-sm py-2 rounded-lg hover:bg-red-200 transition-colors flex items-center justify-center space-x-1"
                   >
-                    Hoàn tất bảo trì
+                    <Trash2 className="w-4 h-4" />
+                    <span>Xóa</span>
                   </button>
-                )}
-                <button className="px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
-                  <Eye className="w-4 h-4 text-gray-600" />
-                </button>
+                </div>
               </div>
             </div>
           ))}
@@ -720,7 +939,7 @@ const Beds: React.FC = () => {
                 />
               </div>
 
-              {/* Room */}
+              {/* Room - Shows rooms for selected branch */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Phòng
@@ -730,10 +949,13 @@ const Beds: React.FC = () => {
                   onChange={(e) => setNewBedForm(prev => ({ ...prev, room: e.target.value }))}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 >
-                  {rooms.filter(room => room !== 'all').map(room => (
+                  {getRoomsForBranch(newBedForm.branch).map(room => (
                     <option key={room} value={room}>{room}</option>
                   ))}
                 </select>
+                <p className="text-xs text-gray-500 mt-1">
+                  Phòng thuộc {getBranchNameFromId(newBedForm.branch)}
+                </p>
               </div>
 
               {/* Type */}
@@ -751,6 +973,32 @@ const Beds: React.FC = () => {
                   <option value="body">Body</option>
                   <option value="vip">VIP</option>
                 </select>
+              </div>
+
+              {/* Branch Selection */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Chi nhánh *
+                </label>
+                <select
+                  value={newBedForm.branch}
+                  onChange={(e) => {
+                    const selectedBranchId = e.target.value;
+                    setNewBedForm(prev => ({
+                      ...prev,
+                      branch: selectedBranchId,
+                      room: getRoomsForBranch(selectedBranchId)[0] // Auto-select first room for branch
+                    }));
+                  }}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                >
+                  {getAccessibleBranches().map(branch => (
+                    <option key={branch.id} value={branch.id}>{branch.name}</option>
+                  ))}
+                </select>
+                <p className="text-xs text-gray-500 mt-1">
+                  Chỉ hiển thị các chi nhánh bạn có quyền quản lý
+                </p>
               </div>
 
               {/* Equipment */}
@@ -785,6 +1033,202 @@ const Beds: React.FC = () => {
                 className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
               >
                 Thêm giường
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Edit Bed Dialog */}
+      {showEditDialog && editingBed && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 w-full max-w-md mx-4">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">Chỉnh sửa giường</h3>
+
+            <div className="space-y-4">
+              {/* Bed Name */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Tên giường *
+                </label>
+                <input
+                  type="text"
+                  value={editBedForm.name}
+                  onChange={(e) => setEditBedForm(prev => ({ ...prev, name: e.target.value }))}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="Ví dụ: Giường Massage 1"
+                />
+              </div>
+
+              {/* Branch Selection */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Chi nhánh *
+                </label>
+                <select
+                  value={editBedForm.branch}
+                  onChange={(e) => {
+                    const selectedBranchId = e.target.value;
+                    setEditBedForm(prev => ({
+                      ...prev,
+                      branch: selectedBranchId,
+                      room: getRoomsForBranch(selectedBranchId)[0] // Auto-select first room for branch
+                    }));
+                  }}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                >
+                  {getAccessibleBranches().map(branch => (
+                    <option key={branch.id} value={branch.id}>{branch.name}</option>
+                  ))}
+                </select>
+                <p className="text-xs text-gray-500 mt-1">
+                  Chỉ hiển thị các chi nhánh bạn có quyền quản lý
+                </p>
+              </div>
+
+              {/* Room - Shows rooms for selected branch */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Phòng
+                </label>
+                <select
+                  value={editBedForm.room}
+                  onChange={(e) => setEditBedForm(prev => ({ ...prev, room: e.target.value }))}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                >
+                  {getRoomsForBranch(editBedForm.branch).map(room => (
+                    <option key={room} value={room}>{room}</option>
+                  ))}
+                </select>
+                <p className="text-xs text-gray-500 mt-1">
+                  Phòng thuộc {getBranchNameFromId(editBedForm.branch)}
+                </p>
+              </div>
+
+              {/* Type */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Loại giường
+                </label>
+                <select
+                  value={editBedForm.type}
+                  onChange={(e) => setEditBedForm(prev => ({ ...prev, type: e.target.value as TreatmentBed['type'] }))}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                >
+                  <option value="massage">Massage</option>
+                  <option value="facial">Facial</option>
+                  <option value="body">Body</option>
+                  <option value="vip">VIP</option>
+                </select>
+              </div>
+
+              {/* Equipment */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Thiết bị (cách nhau bởi dấu phẩy)
+                </label>
+                <input
+                  type="text"
+                  value={editBedForm.equipment.join(', ')}
+                  onChange={(e) => setEditBedForm(prev => ({
+                    ...prev,
+                    equipment: e.target.value.split(',').map(item => item.trim()).filter(item => item)
+                  }))}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="Ví dụ: Máy massage, Đèn LED, Hệ thống âm thanh"
+                />
+              </div>
+
+              {/* Current Status Warning */}
+              {editingBed.status !== 'available' && (
+                <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
+                  <div className="flex items-start space-x-2">
+                    <div className="w-4 h-4 bg-yellow-400 rounded-full mt-0.5"></div>
+                    <div>
+                      <p className="text-sm font-medium text-yellow-800">Lưu ý</p>
+                      <p className="text-sm text-yellow-700">
+                        Giường đang có trạng thái: <strong>{getStatusText(editingBed.status)}</strong>.
+                        Việc chỉnh sửa có thể ảnh hưởng đến lịch hẹn hi���n tại.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Dialog Actions */}
+            <div className="flex space-x-3 mt-6">
+              <button
+                onClick={handleCancelEdit}
+                className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+              >
+                Hủy
+              </button>
+              <button
+                onClick={handleEditBed}
+                disabled={!editBedForm.name.trim()}
+                className="flex-1 px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors flex items-center justify-center space-x-2"
+              >
+                <Save className="w-4 h-4" />
+                <span>Cập nhật</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {showDeleteConfirm && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 w-full max-w-md mx-4">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">Xác nh��n xóa giường</h3>
+
+            <div className="mb-6">
+              <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+                <div className="flex items-start space-x-3">
+                  <div className="w-5 h-5 bg-red-500 rounded-full flex items-center justify-center mt-0.5">
+                    <Trash2 className="w-3 h-3 text-white" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-red-800">Cảnh báo</p>
+                    <p className="text-sm text-red-700 mt-1">
+                      Bạn có chắc chắn muốn xóa giường này? Hành động này không thể hoàn tác và sẽ:
+                    </p>
+                    <ul className="text-sm text-red-700 mt-2 space-y-1">
+                      <li>• Xóa tất cả thông tin về giường</li>
+                      <li>• Hủy các lịch hẹn đang được lên kế hoạch (nếu có)</li>
+                      <li>• Không thể khôi phục sau khi xóa</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              {(() => {
+                const bedToDelete = beds.find(bed => bed.id === showDeleteConfirm);
+                return bedToDelete ? (
+                  <div className="mt-4 p-3 bg-gray-50 rounded-lg">
+                    <h4 className="text-sm font-medium text-gray-900">{bedToDelete.name}</h4>
+                    <p className="text-sm text-gray-600">{bedToDelete.room} • {bedToDelete.type.toUpperCase()}</p>
+                    <p className="text-sm text-gray-500">Trạng thái: {getStatusText(bedToDelete.status)}</p>
+                  </div>
+                ) : null;
+              })()}
+            </div>
+
+            {/* Dialog Actions */}
+            <div className="flex space-x-3">
+              <button
+                onClick={handleCancelDelete}
+                className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+              >
+                Hủy
+              </button>
+              <button
+                onClick={() => handleDeleteBed(showDeleteConfirm)}
+                className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors flex items-center justify-center space-x-2"
+              >
+                <Trash2 className="w-4 h-4" />
+                <span>Xóa giường</span>
               </button>
             </div>
           </div>
