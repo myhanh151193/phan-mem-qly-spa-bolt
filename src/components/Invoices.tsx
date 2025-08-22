@@ -88,7 +88,7 @@ const serviceCatalog = {
   'Massage giảm béo': { price: 700000, duration: 100, category: 'Giảm béo', description: 'Massage chuyên sâu hỗ trợ giảm béo' },
   'Tư vấn dinh dưỡng': { price: 200000, duration: 30, category: 'Tư vấn', description: 'Tư vấn chế độ dinh dưỡng phù hợp' },
   'Triệt lông': { price: 400000, duration: 45, category: 'Làm đẹp', description: 'Triệt lông vĩnh viễn bằng laser diode' },
-  'Trị thâm': { price: 350000, duration: 60, category: 'Chăm sóc da', description: 'Điều trị th��m nám, tàn nhang hi���u quả' },
+  'Trị thâm': { price: 350000, duration: 60, category: 'Chăm sóc da', description: 'Điều trị thâm nám, tàn nhang hi���u quả' },
   'Căng da mặt': { price: 1500000, duration: 180, category: 'Làm ��ẹp', description: 'Căng da mặt không phẫu thuật bằng Hifu' },
 };
 
@@ -891,10 +891,17 @@ const Invoices: React.FC = () => {
                   </td>
                   <td className="px-6 py-4">
                     <div>
-                      <span className="text-sm font-medium text-gray-900">{invoice.customer}</span>
+                      <div className="flex items-center space-x-2">
+                        <span className="text-sm font-medium text-gray-900">{invoice.customer}</span>
+                        {invoice.treatmentId && (
+                          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+                            <Calendar className="w-3 h-3 mr-1" />
+                            Liệu trình
+                          </span>
+                        )}
+                      </div>
                       {invoice.treatmentName && (
                         <div className="text-xs text-purple-600 mt-1 flex items-center space-x-1">
-                          <Calendar className="w-3 h-3" />
                           <span>{invoice.treatmentName}</span>
                         </div>
                       )}
@@ -1030,7 +1037,7 @@ const Invoices: React.FC = () => {
                     {formData.treatmentId && (
                       <div className="mt-2 p-3 bg-green-50 border border-green-200 rounded-lg">
                         <p className="text-sm text-green-700">
-                          ✓ Đã chọn liệu trình: <strong>{formData.treatmentName}</strong>
+                          ✓ Đã chọn li��u trình: <strong>{formData.treatmentName}</strong>
                         </p>
                         <button
                           type="button"
@@ -1373,7 +1380,7 @@ const Invoices: React.FC = () => {
                   className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2"
                 >
                   <Save className="w-4 h-4" />
-                  <span>{editingInvoice ? 'Cập nh���t' : 'Tạo mới'}</span>
+                  <span>{editingInvoice ? 'Cập nhật' : 'Tạo mới'}</span>
                 </button>
               </div>
             </form>
@@ -1422,7 +1429,7 @@ const Invoices: React.FC = () => {
                   return (
                     <div className="text-center py-12">
                       <Calendar className="w-16 h-16 mx-auto text-gray-300 mb-4" />
-                      <h3 className="text-lg font-medium text-gray-900 mb-2">Không có dịch v��� nào</h3>
+                      <h3 className="text-lg font-medium text-gray-900 mb-2">Không có dịch vụ nào</h3>
                       <p className="text-gray-600">Khách hàng này chưa có liệu trình nào đang hoạt đ���ng.</p>
                     </div>
                   );
