@@ -127,7 +127,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
     { id: 6, name: 'Chăm sóc da mặt cơ bản', duration: 60, price: '300K', category: 'Chăm sóc da' },
     { id: 7, name: 'Tẩy tế bào chết', duration: 45, price: '250K', category: 'Làm đẹp' },
     { id: 8, name: 'Massage mặt', duration: 30, price: '200K', category: 'Massage' },
-    { id: 9, name: 'Điều trị nám', duration: 75, price: '600K', category: 'Đi���u trị' },
+    { id: 9, name: 'Điều trị nám', duration: 75, price: '600K', category: 'Điều trị' },
     { id: 10, name: 'Phun môi', duration: 120, price: '800K', category: 'Phun xăm' },
     { id: 11, name: 'Phun mày', duration: 90, price: '700K', category: 'Phun xăm' }
   ];
@@ -177,6 +177,11 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
     customer.name.toLowerCase().includes(customerSearchTerm.toLowerCase()) ||
     customer.phone.includes(customerSearchTerm)
   );
+
+  // Filter staff members by selected branch (unless viewing all branches)
+  const filteredStaffMembers = selectedBranch === 'all-branches'
+    ? staffMembers
+    : staffMembers.filter(staff => staff.branch === selectedBranch);
 
   const selectCustomer = (customer: Customer) => {
     setFormData(prev => ({
