@@ -489,13 +489,19 @@ const Staff: React.FC<StaffProps> = ({ selectedBranch }) => {
     return matchesSearch && matchesStatus && matchesRole && matchesBranch;
   });
 
-  // Calculate stats
+  // Calculate stats based on branch filtering (but before other filters)
+  const branchFilteredStaff = staff.filter(member => {
+    if (selectedBranch === 'all-branches') return true;
+    const selectedBranchName = getBranchNameFromId(selectedBranch);
+    return selectedBranchName ? member.branch === selectedBranchName : true;
+  });
+
   const stats = {
-    total: staff.length,
-    active: staff.filter(s => s.status === 'active').length,
-    onLeave: staff.filter(s => s.status === 'on-leave').length,
-    inactive: staff.filter(s => s.status === 'inactive').length,
-    avgRating: staff.length > 0 ? (staff.reduce((sum, s) => sum + s.rating, 0) / staff.length).toFixed(1) : '0'
+    total: branchFilteredStaff.length,
+    active: branchFilteredStaff.filter(s => s.status === 'active').length,
+    onLeave: branchFilteredStaff.filter(s => s.status === 'on-leave').length,
+    inactive: branchFilteredStaff.filter(s => s.status === 'inactive').length,
+    avgRating: branchFilteredStaff.length > 0 ? (branchFilteredStaff.reduce((sum, s) => sum + s.rating, 0) / branchFilteredStaff.length).toFixed(1) : '0'
   };
 
   return (
@@ -813,7 +819,7 @@ const Staff: React.FC<StaffProps> = ({ selectedBranch }) => {
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Ch��c vụ *
+                      Chức vụ *
                     </label>
                     <input
                       type="text"
@@ -1126,7 +1132,7 @@ const Staff: React.FC<StaffProps> = ({ selectedBranch }) => {
                       }))}
                       className="px-3 py-1 text-sm bg-blue-100 text-blue-700 rounded-md hover:bg-blue-200 transition-colors"
                     >
-                      Chọn tất c��
+                      Chọn tất cả
                     </button>
                     <button
                       type="button"
@@ -1139,7 +1145,7 @@ const Staff: React.FC<StaffProps> = ({ selectedBranch }) => {
                       }}
                       className="px-3 py-1 text-sm bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors"
                     >
-                      Chỉ chi nhánh chính
+                      Chỉ chi nh��nh chính
                     </button>
                     <button
                       type="button"
@@ -1293,7 +1299,7 @@ const Staff: React.FC<StaffProps> = ({ selectedBranch }) => {
                   </div>
                   <div>
                     <label className="text-sm font-medium text-gray-500">Địa chỉ</label>
-                    <p className="text-gray-900">{selectedStaff.address || 'Chưa c��p nhật'}</p>
+                    <p className="text-gray-900">{selectedStaff.address || 'Chưa cập nhật'}</p>
                   </div>
                   <div>
                     <label className="text-sm font-medium text-gray-500">Liên hệ khẩn cấp</label>
@@ -1434,7 +1440,7 @@ const Staff: React.FC<StaffProps> = ({ selectedBranch }) => {
             <div className="flex items-center justify-between p-6 border-b border-gray-200">
               <h2 className="text-xl font-semibold text-gray-900 flex items-center space-x-2">
                 <Shield className="w-6 h-6 text-purple-600" />
-                <span>Phân quyền cho {selectedStaff.name}</span>
+                <span>Phân quy���n cho {selectedStaff.name}</span>
               </h2>
               <button 
                 onClick={() => setShowPermissionModal(false)}
@@ -1512,7 +1518,7 @@ const Staff: React.FC<StaffProps> = ({ selectedBranch }) => {
                 Xác nhận xóa nhân viên
               </h3>
               <p className="text-gray-600 mb-6">
-                Bạn có chắc chắn muốn xóa nhân viên này? Hành động này không thể hoàn tác và sẽ xóa tất cả dữ liệu liên quan.
+                Bạn có chắc chắn muốn xóa nhân viên này? Hành động này không th�� hoàn tác và sẽ xóa tất cả dữ liệu liên quan.
               </p>
               <div className="flex justify-end space-x-3">
                 <button
