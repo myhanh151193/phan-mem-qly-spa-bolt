@@ -121,7 +121,7 @@ const Treatments: React.FC<TreatmentsProps> = ({ selectedBranch }) => {
     },
   ]);
 
-  const [customers] = useState<Customer[]>([
+  const [allCustomers] = useState<Customer[]>([
     {
       id: 1,
       name: 'Nguyễn Thu Hà',
@@ -775,7 +775,7 @@ const Treatments: React.FC<TreatmentsProps> = ({ selectedBranch }) => {
                   return (totalValue / 1000000).toFixed(1) + 'M';
                 })()}
               </div>
-              <div className="text-purple-600">Tổng giá trị</div>
+              <div className="text-purple-600">T���ng giá trị</div>
             </div>
           )}
         </div>
