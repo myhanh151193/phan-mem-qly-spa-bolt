@@ -21,6 +21,8 @@ interface AppointmentData {
   customerPhone: string;
   service: string;
   staff: string;
+  bedId?: number;
+  bedName?: string;
   startTime: string;
   estimatedEndTime: string;
   notes: string;
