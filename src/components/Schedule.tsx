@@ -728,6 +728,7 @@ const Schedule: React.FC<ScheduleProps> = ({ selectedBranch }) => {
                 onCancel={closeModal}
                 isEditing={isEditing}
                 onUpdateStatus={updateAppointmentStatus}
+                selectedBranch={selectedBranch}
               />
             </div>
           </div>
