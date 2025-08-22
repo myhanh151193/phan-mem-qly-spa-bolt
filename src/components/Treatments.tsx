@@ -724,6 +724,59 @@ const Treatments: React.FC<TreatmentsProps> = ({ selectedBranch }) => {
 
   return (
     <div className="space-y-6">
+      {/* Branch Indicator */}
+      <div className="bg-gradient-to-r from-purple-50 to-indigo-50 border border-purple-200 rounded-lg p-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-3">
+            <div className="flex items-center space-x-2">
+              <ClipboardCheck className="w-5 h-5 text-purple-600" />
+              <span className="text-sm font-medium text-purple-900">
+                {selectedBranch === 'all-branches' ? (
+                  'Tất cả liệu trình'
+                ) : (
+                  `Liệu trình ${branchMap[selectedBranch] || selectedBranch}`
+                )}
+              </span>
+            </div>
+            <div className="flex items-center space-x-4">
+              <div className="flex items-center space-x-1">
+                <span className="px-2 py-1 bg-purple-100 text-purple-800 text-xs rounded-full font-medium">
+                  {filteredTreatments.length} liệu trình
+                </span>
+              </div>
+              {selectedBranch !== 'all-branches' && (
+                <div className="flex items-center space-x-2 text-xs text-purple-700">
+                  <span className="flex items-center space-x-1">
+                    <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                    <span>{filteredTreatments.filter(t => t.status === 'active').length} đang thực hiện</span>
+                  </span>
+                  <span className="flex items-center space-x-1">
+                    <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                    <span>{filteredTreatments.filter(t => t.status === 'completed').length} hoàn thành</span>
+                  </span>
+                  <span className="flex items-center space-x-1">
+                    <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
+                    <span>{filteredTreatments.filter(t => t.status === 'paused').length} tạm dừng</span>
+                  </span>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {selectedBranch !== 'all-branches' && (
+            <div className="text-right text-xs text-purple-700">
+              <div className="font-medium">
+                {(() => {
+                  const totalValue = filteredTreatments.reduce((sum, treatment) => sum + treatment.totalAmount, 0);
+                  return (totalValue / 1000000).toFixed(1) + 'M';
+                })()}
+              </div>
+              <div className="text-purple-600">Tổng giá trị</div>
+            </div>
+          )}
+        </div>
+      </div>
+
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div className="relative flex-1 max-w-md">
@@ -1113,7 +1166,7 @@ const Treatments: React.FC<TreatmentsProps> = ({ selectedBranch }) => {
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   >
                     <option value="manual">Thủ công</option>
-                    <option value="weekly">Hàng tu���n</option>
+                    <option value="weekly">Hàng tuần</option>
                     <option value="monthly">Hàng tháng</option>
                   </select>
                 </div>
@@ -1143,7 +1196,7 @@ const Treatments: React.FC<TreatmentsProps> = ({ selectedBranch }) => {
                     <option value="45">45 phút</option>
                     <option value="60">60 phút</option>
                     <option value="90">90 phút</option>
-                    <option value="120">120 ph��t</option>
+                    <option value="120">120 phút</option>
                     <option value="180">180 phút</option>
                   </select>
                 </div>
@@ -1376,7 +1429,7 @@ const Treatments: React.FC<TreatmentsProps> = ({ selectedBranch }) => {
                 Xác nhận xóa liệu trình
               </h3>
               <p className="text-gray-600 mb-6">
-                Bạn có ch��c chắn muốn x��a liệu trình này? Hành động này không thể hoàn tác.
+                Bạn có chắc chắn muốn x��a liệu trình này? Hành động này không thể hoàn tác.
               </p>
               <div className="flex justify-end space-x-3">
                 <button
