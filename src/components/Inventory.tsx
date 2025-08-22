@@ -771,8 +771,8 @@ const Inventory: React.FC<InventoryProps> = ({ selectedBranch }) => {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div>
-                          <span className="text-sm text-gray-900">{formatCurrency(item.unitPrice)}</span>
-                          <div className="text-sm font-semibold text-gray-900">{formatCurrency(item.totalValue)}</div>
+                          <span className="text-sm text-gray-900">{formatCurrency(view.product.unitPrice)}</span>
+                          <div className="text-sm font-semibold text-gray-900">{formatCurrency(view.totalValue)}</div>
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
