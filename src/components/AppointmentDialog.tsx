@@ -127,12 +127,14 @@ const AppointmentDialog: React.FC<AppointmentDialogProps> = ({
         customerPhone: '',
         service: '',
         staff: '',
+        bedId: undefined,
+        bedName: bedName || '',
         startTime: timeSlot,
         estimatedEndTime: '',
         notes: ''
       });
     }
-  }, [existingAppointment, timeSlot]);
+  }, [existingAppointment, timeSlot, bedName]);
 
   const filteredCustomers = customers.filter(customer =>
     customer.name.toLowerCase().includes(customerSearchTerm.toLowerCase()) ||
