@@ -1118,9 +1118,14 @@ const Customers: React.FC<CustomersProps> = ({ selectedBranch }) => {
                 />
                 <div>
                   <h3 className="text-xl font-semibold text-gray-900">{selectedCustomer.name}</h3>
-                  <span className={`inline-block px-3 py-1 rounded-full text-sm font-medium ${getMembershipColor(selectedCustomer.membershipLevel)}`}>
-                    {selectedCustomer.membershipLevel}
-                  </span>
+                  <div className="flex items-center space-x-2 mt-1">
+                    <span className={`inline-block px-3 py-1 rounded-full text-sm font-medium ${getMembershipColor(selectedCustomer.membershipLevel)}`}>
+                      {selectedCustomer.membershipLevel}
+                    </span>
+                    <span className="inline-block px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-800">
+                      {branchMap[selectedCustomer.branch]}
+                    </span>
+                  </div>
                 </div>
               </div>
               <button
