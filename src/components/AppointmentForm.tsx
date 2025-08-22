@@ -46,6 +46,7 @@ interface AppointmentFormProps {
   onCancel: () => void;
   isEditing: boolean;
   onUpdateStatus?: (id: number, status: Appointment['status']) => void;
+  selectedBranch?: string;
 }
 
 const AppointmentForm: React.FC<AppointmentFormProps> = ({
@@ -53,7 +54,8 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
   onSave,
   onCancel,
   isEditing,
-  onUpdateStatus
+  onUpdateStatus,
+  selectedBranch = 'branch-1'
 }) => {
   const [formData, setFormData] = useState({
     customer: '',
@@ -67,7 +69,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
     totalPrice: '',
     notes: '',
     status: 'pending' as Appointment['status'],
-    branch: 'branch-1' // Default branch
+    branch: selectedBranch // Use selected branch
   });
 
   const [showCustomerSearch, setShowCustomerSearch] = useState(false);
@@ -125,7 +127,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
     { id: 6, name: 'Chăm sóc da mặt cơ bản', duration: 60, price: '300K', category: 'Chăm sóc da' },
     { id: 7, name: 'Tẩy tế bào chết', duration: 45, price: '250K', category: 'Làm đẹp' },
     { id: 8, name: 'Massage mặt', duration: 30, price: '200K', category: 'Massage' },
-    { id: 9, name: 'Điều trị nám', duration: 75, price: '600K', category: 'Điều trị' },
+    { id: 9, name: 'Điều trị nám', duration: 75, price: '600K', category: 'Đi���u trị' },
     { id: 10, name: 'Phun môi', duration: 120, price: '800K', category: 'Phun xăm' },
     { id: 11, name: 'Phun mày', duration: 90, price: '700K', category: 'Phun xăm' }
   ];
@@ -166,7 +168,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
         totalPrice: appointment.totalPrice || '',
         notes: appointment.notes || '',
         status: appointment.status || 'pending',
-        branch: appointment.branch || 'branch-1'
+        branch: appointment.branch || selectedBranch
       });
     }
   }, [appointment]);
