@@ -40,6 +40,18 @@ const Beds: React.FC<BedsProps> = ({ selectedBranch }) => {
       setSelectedRoom('all');
     }
   }, [selectedBranch, selectedRoom]);
+
+  // Update newBedForm default branch when selectedBranch changes
+  useEffect(() => {
+    if (selectedBranch !== 'all-branches') {
+      const rooms = getRoomsForBranch(selectedBranch);
+      setNewBedForm(prev => ({
+        ...prev,
+        branch: selectedBranch,
+        room: rooms[0] || 'Phòng Massage'
+      }));
+    }
+  }, [selectedBranch]);
   const [viewMode, setViewMode] = useState<'grid' | 'timeline'>('grid');
   const [showAddDialog, setShowAddDialog] = useState<boolean>(false);
   const [showEditDialog, setShowEditDialog] = useState<boolean>(false);
