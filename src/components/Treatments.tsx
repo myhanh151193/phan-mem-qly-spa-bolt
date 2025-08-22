@@ -20,16 +20,6 @@ interface Treatment {
   services: string[];
   totalValue: string;
   totalAmount: number; // Total package amount in VND
-  paidAmount: number; // Amount already paid
-  remainingAmount: number; // Amount remaining to pay
-  paymentStatus: 'pending' | 'partial' | 'completed';
-  paymentHistory: Array<{
-    id: number;
-    date: string;
-    amount: number;
-    method: 'cash' | 'transfer' | 'card';
-    note?: string;
-  }>;
   appointments: Appointment[];
 }
 
@@ -126,7 +116,7 @@ const Treatments: React.FC = () => {
       nextSession: null,
       status: 'completed',
       progress: 100,
-      services: ['Giảm béo RF', 'Massage giảm béo', 'Tư vấn dinh dưỡng'],
+      services: ['Giảm béo RF', 'Massage giảm béo', 'Tư vấn dinh dư���ng'],
       totalValue: '28,800,000',
       totalAmount: 28800000,
       paidAmount: 23200000,
@@ -1252,7 +1242,7 @@ const Treatments: React.FC = () => {
                         <h4 className="text-sm font-medium text-blue-900">Tự động tạo lịch hẹn</h4>
                         <p className="text-sm text-blue-700 mt-1">
                           {formData.scheduleType === 'weekly' && formData.weekDay !== undefined && (
-                            <>Hệ thống sẽ tự động tạo {formData.totalSessions} lịch hẹn vào {
+                            <>Hệ th���ng sẽ tự động tạo {formData.totalSessions} lịch hẹn vào {
                               ['Chủ Nhật', 'Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy'][formData.weekDay]
                             } hàng tuần l��c {formData.recurringTime}</>
                           )}
