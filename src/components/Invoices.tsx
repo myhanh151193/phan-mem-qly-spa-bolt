@@ -85,7 +85,7 @@ const serviceCatalog = {
   'Tắm trắng': { price: 800000, duration: 120, category: 'Làm đẹp', description: 'Tắm trắng cơ bản' },
   'Tắm trắng toàn thân': { price: 1200000, duration: 150, category: 'Làm đẹp', description: 'Tắm trắng toàn thân an toàn với công nghệ laser' },
   'Giảm béo RF': { price: 800000, duration: 90, category: 'Giảm béo', description: 'Giảm béo bằng sóng RF không xâm lấn' },
-  'Massage giảm béo': { price: 700000, duration: 100, category: 'Giảm béo', description: 'Massage chuyên sâu hỗ trợ giảm béo' },
+  'Massage giảm béo': { price: 700000, duration: 100, category: 'Giảm béo', description: 'Massage chuyên sâu hỗ trợ gi��m béo' },
   'Tư vấn dinh dưỡng': { price: 200000, duration: 30, category: 'Tư vấn', description: 'Tư vấn chế độ dinh dưỡng phù hợp' },
   'Triệt lông': { price: 400000, duration: 45, category: 'Làm đẹp', description: 'Triệt lông vĩnh viễn bằng laser diode' },
   'Trị thâm': { price: 350000, duration: 60, category: 'Chăm sóc da', description: 'Điều trị thâm nám, tàn nhang hi���u quả' },
@@ -99,7 +99,7 @@ const availableProducts = [
   { id: 'prd-003', name: 'Mặt nạ collagen', price: 150000, brand: 'GlowSkin', category: 'Mặt nạ' },
   { id: 'prd-004', name: 'Sữa rửa mặt tạo bọt', price: 280000, brand: 'CleanFace', category: 'Sữa rửa mặt' },
   { id: 'prd-005', name: 'Toner cân bằng pH', price: 200000, brand: 'SkinCare Pro', category: 'Toner' },
-  { id: 'prd-006', name: 'Kem chống nắng SPF50', price: 380000, brand: 'SunGuard', category: 'Kem chống nắng' },
+  { id: 'prd-006', name: 'Kem chống nắng SPF50', price: 380000, brand: 'SunGuard', category: 'Kem chống n���ng' },
 ];
 
 // Sample customers
@@ -234,9 +234,17 @@ const Invoices: React.FC = () => {
 
   const openCreateModal = () => {
     setEditingInvoice(null);
+
+    // Auto-fill treatment info if coming from treatment page
+    const treatmentId = treatmentIdFromUrl ? parseInt(treatmentIdFromUrl) : undefined;
+    const customerId = customerIdFromUrl ? parseInt(customerIdFromUrl) : undefined;
+    const treatment = treatmentId ? sampleTreatments.find(t => t.id === treatmentId) : undefined;
+
     setFormData({
-      customer: '',
-      customerId: undefined,
+      customer: treatment?.customer || '',
+      customerId: customerId,
+      treatmentId: treatmentId,
+      treatmentName: treatment?.name || '',
       date: new Date().toISOString().split('T')[0],
       dueDate: '',
       items: [],
@@ -1373,7 +1381,7 @@ const Invoices: React.FC = () => {
                       return `Dịch vụ từ ${customerTreatments.length} liệu trình hiện tại của ${selectedCustomer.name}`;
                     }
                     return selectedCustomer
-                      ? `${selectedCustomer.name} chưa có liệu trình nào - hiển thị tất cả dịch vụ`
+                      ? `${selectedCustomer.name} ch��a có liệu trình nào - hiển thị tất cả dịch vụ`
                       : 'Các dịch vụ có s���n trong h�� thống';
                   })()}
                 </p>
