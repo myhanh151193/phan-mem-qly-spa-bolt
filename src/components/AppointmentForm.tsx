@@ -219,6 +219,8 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
         customerPhone: appointment.customerPhone || '',
         services: appointment.services || [],
         staff: appointment.staff || '',
+        bedId: appointment.bedId,
+        bedName: appointment.bedName || '',
         date: appointment.date || new Date().toISOString().split('T')[0],
         time: appointment.time || '',
         duration: appointment.duration || 60,
@@ -228,7 +230,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
         branch: appointment.branch || selectedBranch
       });
     }
-  }, [appointment]);
+  }, [appointment, selectedBranch]);
 
   const filteredCustomers = customers.filter(customer =>
     customer.name.toLowerCase().includes(customerSearchTerm.toLowerCase()) ||
