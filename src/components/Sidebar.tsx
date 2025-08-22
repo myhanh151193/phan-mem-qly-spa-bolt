@@ -77,37 +77,6 @@ const Sidebar: React.FC<SidebarProps> = ({ activeMenu, setActiveMenu, user }) =>
         </div>
       </div>
 
-      {/* User Info Section */}
-      <div className="px-6 pb-4">
-        <div className="bg-white/10 rounded-lg p-4">
-          <div className="flex items-center space-x-3">
-            <img
-              src={user.avatar}
-              alt={user.name}
-              className="w-10 h-10 rounded-full object-cover border-2 border-white/20"
-            />
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-white truncate">{user.name}</p>
-              <p className="text-xs text-blue-100 truncate">{user.position}</p>
-              <div className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium border mt-1 ${getRoleColor(user.role)}`}>
-                {getRoleIcon(user.role)}
-                <span className="ml-1">{getRoleText(user.role)}</span>
-              </div>
-            </div>
-          </div>
-          
-          <div className="mt-3 text-xs text-blue-100">
-            <div className="flex justify-between">
-              <span>Quyền hạn:</span>
-              <span className="font-medium">{user.permissions.length}</span>
-            </div>
-            <div className="flex justify-between">
-              <span>Chi nhánh:</span>
-              <span className="font-medium">{user.accessibleBranches.length}</span>
-            </div>
-          </div>
-        </div>
-      </div>
 
       <nav className="flex-1 px-4 overflow-y-auto scrollbar-hide" style={{
         scrollbarWidth: 'none', // Firefox
