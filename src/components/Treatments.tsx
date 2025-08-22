@@ -535,7 +535,7 @@ const Treatments: React.FC<TreatmentsProps> = ({ selectedBranch }) => {
     });
 
     closePaymentModal();
-    alert('Thanh toán đã được ghi nhận th��nh công!');
+    alert('Thanh toán đã được ghi nhận thành công!');
   };
 
   const openAppointmentModal = (treatment: Treatment) => {
@@ -1035,7 +1035,7 @@ const Treatments: React.FC<TreatmentsProps> = ({ selectedBranch }) => {
           <div className="bg-white rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between p-6 border-b border-gray-200">
               <h2 className="text-xl font-semibold text-gray-900">
-                {editingTreatment ? 'Sửa liệu trình' : 'Tạo li���u trình mới'}
+                {editingTreatment ? 'Sửa liệu trình' : 'Tạo liệu trình mới'}
               </h2>
               <button 
                 onClick={closeModal}
@@ -1046,7 +1046,7 @@ const Treatments: React.FC<TreatmentsProps> = ({ selectedBranch }) => {
             </div>
 
             <form onSubmit={handleSubmit} className="p-6 space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Tên liệu trình *
@@ -1059,6 +1059,26 @@ const Treatments: React.FC<TreatmentsProps> = ({ selectedBranch }) => {
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     placeholder="VD: Liệu trình trị mụn 3 tháng"
                   />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Chi nhánh *
+                  </label>
+                  <select
+                    required
+                    value={formData.branch}
+                    onChange={(e) => setFormData(prev => ({ ...prev, branch: e.target.value }))}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  >
+                    <option value="branch-1">{branchMap['branch-1']}</option>
+                    <option value="branch-2">{branchMap['branch-2']}</option>
+                    <option value="branch-3">{branchMap['branch-3']}</option>
+                    <option value="branch-4">{branchMap['branch-4']}</option>
+                  </select>
+                  <p className="text-xs text-gray-500 mt-1">
+                    Chi nhánh thực hiện liệu trình
+                  </p>
                 </div>
 
                 <div>
