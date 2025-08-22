@@ -62,7 +62,7 @@ const sampleTreatments = [
   },
   {
     id: 4,
-    customer: 'Phạm Thị Lan',
+    customer: 'Phạm Th�� Lan',
     customerId: 4,
     name: 'Gói làm đẹp cao cấp',
     services: ['Chăm sóc da mặt Premium', 'Tắm trắng toàn thân', 'Triệt lông'],
@@ -363,7 +363,8 @@ const Invoices: React.FC<InvoicesProps> = ({ selectedBranch }) => {
       total,
       status: formData.status as Invoice['status'] || 'draft',
       paymentMethod: formData.paymentMethod as Invoice['paymentMethod'] || 'cash',
-      notes: formData.notes
+      notes: formData.notes,
+      branch: formData.branch || (selectedBranch === 'all-branches' ? 'branch-1' : selectedBranch)
     };
 
     // Update treatment payment if invoice is paid and linked to a treatment
