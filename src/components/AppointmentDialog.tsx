@@ -46,7 +46,8 @@ const AppointmentDialog: React.FC<AppointmentDialogProps> = ({
   timeSlot,
   date,
   existingAppointment,
-  isEditing = false
+  isEditing = false,
+  selectedBranch = 'branch-1'
 }) => {
   const [formData, setFormData] = useState<AppointmentData>({
     customerId: undefined,
