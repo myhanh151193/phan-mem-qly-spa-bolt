@@ -296,7 +296,8 @@ const Invoices: React.FC<InvoicesProps> = ({ selectedBranch }) => {
       tax: 10,
       paymentMethod: 'cash',
       status: 'draft',
-      notes: ''
+      notes: '',
+      branch: selectedBranch === 'all-branches' ? 'branch-1' : selectedBranch
     });
     setShowModal(true);
   };
@@ -676,7 +677,7 @@ const Invoices: React.FC<InvoicesProps> = ({ selectedBranch }) => {
         ` : ''}
 
         <div class="footer">
-          <p>Cảm ơn quý khách đã sử dụng dịch vụ của chúng tôi!</p>
+          <p>Cảm ơn quý khách ��ã sử dụng dịch vụ của chúng tôi!</p>
           <p>Hóa đơn được in vào ${new Date().toLocaleString('vi-VN')}</p>
         </div>
       </body>
@@ -1068,7 +1069,7 @@ const Invoices: React.FC<InvoicesProps> = ({ selectedBranch }) => {
                 {formData.customerId && (
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Liệu trình (tùy chọn)
+                      Li���u trình (tùy chọn)
                     </label>
                     <select
                       value={formData.treatmentId || ''}
