@@ -702,7 +702,7 @@ const Inventory: React.FC<InventoryProps> = ({ selectedBranch }) => {
                       Sản phẩm
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      SKU / Vị trí
+                      SKU / V��� trí
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Tồn kho
@@ -1127,7 +1127,7 @@ const Inventory: React.FC<InventoryProps> = ({ selectedBranch }) => {
                   className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2"
                 >
                   <Save className="w-4 h-4" />
-                  <span>{editingItem ? 'Cập nhật' : 'Thêm mới'}</span>
+                  <span>{editingProduct ? 'Cập nhật' : 'Thêm mới'}</span>
                 </button>
               </div>
             </form>
