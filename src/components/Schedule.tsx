@@ -239,27 +239,106 @@ const Schedule: React.FC<ScheduleProps> = ({ selectedBranch }) => {
   return (
     <div className="space-y-6">
       {/* Branch Indicator */}
-      {selectedBranch !== 'all-branches' && (
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
-          <div className="flex items-center space-x-2">
-            <Calendar className="w-4 h-4 text-blue-600" />
-            <span className="text-sm font-medium text-blue-900">
-              Đang xem lịch hẹn của: {(() => {
-                const branchMap: { [key: string]: string } = {
-                  'branch-1': 'Chi nhánh Quận 1',
-                  'branch-2': 'Chi nhánh Quận 3',
-                  'branch-3': 'Chi nhánh Thủ Đức',
-                  'branch-4': 'Chi nhánh Gò Vấp'
-                };
-                return branchMap[selectedBranch] || selectedBranch;
-              })()}
-            </span>
-            <span className="ml-2 px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">
-              {filteredAppointments.length} lịch hẹn
-            </span>
+      <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-lg p-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-3">
+            <div className="flex items-center space-x-2">
+              <Calendar className="w-5 h-5 text-blue-600" />
+              <span className="text-sm font-medium text-blue-900">
+                {selectedBranch === 'all-branches' ? (
+                  'Tất cả chi nhánh'
+                ) : (
+                  (() => {
+                    const branchMap: { [key: string]: string } = {
+                      'branch-1': 'Chi nhánh Quận 1',
+                      'branch-2': 'Chi nhánh Quận 3',
+                      'branch-3': 'Chi nhánh Thủ Đức',
+                      'branch-4': 'Chi nhánh Gò Vấp'
+                    };
+                    return branchMap[selectedBranch] || selectedBranch;
+                  })()
+                )}
+              </span>
+            </div>
+            <div className="flex items-center space-x-4">
+              <div className="flex items-center space-x-1">
+                <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full font-medium">
+                  {filteredAppointments.length} lịch hẹn hôm {viewMode === 'day' ? 'nay' : viewMode === 'week' ? 'tuần' : 'tháng'}
+                </span>
+              </div>
+              {selectedBranch !== 'all-branches' && (
+                <div className="flex items-center space-x-2 text-xs text-blue-700">
+                  <span className="flex items-center space-x-1">
+                    <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                    <span>{filteredAppointments.filter(apt => apt.status === 'completed').length} hoàn thành</span>
+                  </span>
+                  <span className="flex items-center space-x-1">
+                    <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                    <span>{filteredAppointments.filter(apt => apt.status === 'in-progress').length} đang thực hiện</span>
+                  </span>
+                  <span className="flex items-center space-x-1">
+                    <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
+                    <span>{filteredAppointments.filter(apt => apt.status === 'pending').length} chờ xác nhận</span>
+                  </span>
+                </div>
+              )}
+            </div>
           </div>
+
+          {selectedBranch === 'all-branches' && (
+            <div className="text-xs text-blue-700">
+              <span>Tổng quan toàn hệ thống</span>
+            </div>
+          )}
         </div>
-      )}
+
+        {/* Branch Staff Info */}
+        {selectedBranch !== 'all-branches' && (
+          <div className="mt-3 pt-3 border-t border-blue-200">
+            <div className="flex items-center justify-between text-xs text-blue-700">
+              <div className="flex items-center space-x-2">
+                <User className="w-3 h-3" />
+                <span>Nhân viên ca làm:</span>
+                <div className="flex items-center space-x-1">
+                  {(() => {
+                    const branchStaff = staffMembers.filter(staff => staff.branch === selectedBranch);
+                    return branchStaff.length > 0 ? (
+                      branchStaff.slice(0, 3).map((staff, idx) => (
+                        <span key={idx} className="px-2 py-1 bg-white bg-opacity-70 rounded text-xs">
+                          {staff.name}
+                        </span>
+                      ))
+                    ) : (
+                      <span className="text-gray-500">Không có nhân viên</span>
+                    );
+                  })()}
+                  {(() => {
+                    const branchStaff = staffMembers.filter(staff => staff.branch === selectedBranch);
+                    return branchStaff.length > 3 && (
+                      <span className="px-2 py-1 bg-white bg-opacity-70 rounded text-xs">
+                        +{branchStaff.length - 3} khác
+                      </span>
+                    );
+                  })()}
+                </div>
+              </div>
+              <div className="text-right">
+                <span className="font-medium">
+                  {(() => {
+                    const totalRevenue = filteredAppointments
+                      .filter(apt => apt.status === 'completed')
+                      .reduce((sum, apt) => {
+                        const price = parseInt((apt.totalPrice || apt.price || '0').replace(/[^0-9]/g, ''));
+                        return sum + price;
+                      }, 0);
+                    return `${totalRevenue}K doanh thu`;
+                  })()}
+                </span>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
 
       {/* Header Controls */}
       <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
