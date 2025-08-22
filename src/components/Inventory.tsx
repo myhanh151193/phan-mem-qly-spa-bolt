@@ -126,7 +126,7 @@ const Inventory: React.FC<InventoryProps> = ({ selectedBranch }) => {
     },
     {
       id: 4,
-      name: 'Tinh dầu massage',
+      name: 'Tinh d��u massage',
       category: 'Dầu massage',
       brand: 'Aromatherapy Pro',
       sku: 'SKU004',
@@ -776,11 +776,11 @@ const Inventory: React.FC<InventoryProps> = ({ selectedBranch }) => {
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <span className="text-sm text-gray-500">{item.supplier}</span>
+                        <span className="text-sm text-gray-500">{view.product.supplier}</span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${getStatusColor(item.status)}`}>
-                          {getStatusText(item.status)}
+                        <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${getStatusColor(view.status)}`}>
+                          {getStatusText(view.status)}
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
