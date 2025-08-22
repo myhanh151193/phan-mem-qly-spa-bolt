@@ -210,12 +210,43 @@ const Dashboard: React.FC<DashboardProps> = ({ selectedBranch }) => {
     ? allBranchesStats
     : branchStats[selectedBranch as keyof typeof branchStats] || allBranchesStats;
 
-  const recentAppointments = [
-    { id: 1, customer: 'Nguyễn Thu Hà', service: 'Chăm sóc da mặt', time: '09:00', status: 'confirmed' },
-    { id: 2, customer: 'Trần Mai Linh', service: 'Massage toàn thân', time: '10:30', status: 'in-progress' },
-    { id: 3, customer: 'Lê Minh Châu', service: 'Điều trị mụn', time: '14:00', status: 'pending' },
-    { id: 4, customer: 'Phạm Thị Lan', service: 'Tắm trắng', time: '15:30', status: 'confirmed' },
+  // Branch-specific appointments
+  const branchAppointments = {
+    'branch-1': [
+      { id: 1, customer: 'Nguyễn Thu Hà', service: 'Chăm sóc da mặt Premium', time: '09:00', status: 'confirmed', branch: 'Quận 1' },
+      { id: 2, customer: 'Võ Minh Tâm', service: 'Liệu trình giảm béo', time: '10:30', status: 'in-progress', branch: 'Quận 1' },
+      { id: 3, customer: 'Trần Minh An', service: 'Tắm trắng', time: '14:00', status: 'pending', branch: 'Quận 1' },
+      { id: 4, customer: 'Phạm Thị Lan', service: 'Massage toàn thân', time: '15:30', status: 'confirmed', branch: 'Quận 1' },
+    ],
+    'branch-2': [
+      { id: 5, customer: 'Trần Mai Linh', service: 'Massage toàn thân', time: '09:30', status: 'confirmed', branch: 'Quận 3' },
+      { id: 6, customer: 'Lê Thanh Hoa', service: 'Chăm sóc da mặt', time: '11:00', status: 'in-progress', branch: 'Quận 3' },
+      { id: 7, customer: 'Lý Thị Bích', service: 'Nail art', time: '13:30', status: 'pending', branch: 'Quận 3' },
+      { id: 8, customer: 'Phạm Thị Lan', service: 'Tư vấn làm đẹp', time: '16:00', status: 'confirmed', branch: 'Quận 3' },
+    ],
+    'branch-3': [
+      { id: 9, customer: 'Lê Minh Châu', service: 'Điều trị mụn', time: '10:00', status: 'confirmed', branch: 'Thủ Đức' },
+      { id: 10, customer: 'Nguyễn Văn Đức', service: 'Massage thái', time: '14:00', status: 'pending', branch: 'Thủ Đức' },
+      { id: 11, customer: 'Trần Thị Hương', service: 'Chăm sóc da mặt', time: '16:30', status: 'confirmed', branch: 'Thủ Đức' },
+    ],
+    'branch-4': [
+      { id: 12, customer: 'Lê Thị Mai', service: 'Tắm trắng', time: '11:00', status: 'confirmed', branch: 'Gò Vấp' },
+      { id: 13, customer: 'Phạm Văn Hải', service: 'Massage toàn thân', time: '15:00', status: 'pending', branch: 'Gò Vấp' },
+    ]
+  };
+
+  // All branches aggregated appointments
+  const allBranchesAppointments = [
+    { id: 1, customer: 'Nguyễn Thu Hà', service: 'Chăm sóc da mặt Premium', time: '09:00', status: 'confirmed', branch: 'Quận 1' },
+    { id: 2, customer: 'Trần Mai Linh', service: 'Massage toàn thân', time: '09:30', status: 'in-progress', branch: 'Quận 3' },
+    { id: 3, customer: 'Lê Minh Châu', service: 'Điều trị mụn', time: '10:00', status: 'pending', branch: 'Thủ Đức' },
+    { id: 4, customer: 'Phạm Thị Lan', service: 'Tắm trắng', time: '15:30', status: 'confirmed', branch: 'Quận 1' },
   ];
+
+  // Get current appointments based on selected branch
+  const recentAppointments = selectedBranch === 'all-branches'
+    ? allBranchesAppointments
+    : branchAppointments[selectedBranch as keyof typeof branchAppointments] || [];
 
   return (
     <div className="space-y-6">
