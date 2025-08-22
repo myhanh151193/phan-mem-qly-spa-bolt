@@ -295,7 +295,8 @@ const Treatments: React.FC<TreatmentsProps> = ({ selectedBranch }) => {
       weekDay: 1,
       monthDay: 1,
       sessionDuration: 90,
-      preferredStaff: ''
+      preferredStaff: '',
+      branch: treatment.branch
     });
     setShowModal(true);
   };
