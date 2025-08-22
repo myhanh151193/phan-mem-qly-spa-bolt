@@ -289,6 +289,9 @@ const Dashboard: React.FC<DashboardProps> = ({ selectedBranch }) => {
                 <div className="flex-1">
                   <p className="font-medium text-gray-900">{appointment.customer}</p>
                   <p className="text-sm text-gray-600">{appointment.service}</p>
+                  {selectedBranch === 'all-branches' && (
+                    <p className="text-xs text-blue-600 font-medium mt-1">{appointment.branch}</p>
+                  )}
                 </div>
                 <div className="text-right">
                   <p className="font-medium text-gray-900">{appointment.time}</p>
