@@ -57,6 +57,8 @@ const AppointmentDialog: React.FC<AppointmentDialogProps> = ({
     customerPhone: '',
     service: '',
     staff: '',
+    bedId: undefined,
+    bedName: bedName || '',
     startTime: timeSlot,
     estimatedEndTime: '',
     notes: ''
