@@ -91,7 +91,7 @@ const Reports: React.FC<ReportsProps> = ({ selectedBranch }) => {
       { name: 'Chăm sóc da mặt Premium', revenue: '9.8M', sessions: 18, growth: '+12%' },
       { name: 'Massage toàn thân', revenue: '7.5M', sessions: 15, growth: '+8%' },
       { name: 'Điều trị mụn', revenue: '6.2M', sessions: 12, growth: '+3%' },
-      { name: 'Tắm tr���ng toàn thân', revenue: '5.8M', sessions: 8, growth: '+18%' },
+      { name: 'Tắm trắng toàn thân', revenue: '5.8M', sessions: 8, growth: '+18%' },
       { name: 'Liệu trình giảm béo', revenue: '4.5M', sessions: 6, growth: '+10%' },
     ],
     'branch-4': [
@@ -156,7 +156,8 @@ const Reports: React.FC<ReportsProps> = ({ selectedBranch }) => {
       specialties: ['Massage toàn thân', 'Massage thái', 'Massage đá nóng'],
       customers: 102,
       avgSessionValue: 163000,
-      branch: 'Chi nhánh Quận 3',
+      branchId: 'branch-2',
+      branchName: 'Chi nhánh Quận 3',
       efficiency: 96,
       monthlyTarget: 35000000,
       targetAchievement: 109.1
@@ -177,7 +178,8 @@ const Reports: React.FC<ReportsProps> = ({ selectedBranch }) => {
       specialties: ['Tắm trắng', 'Triệt lông', 'Căng da'],
       customers: 76,
       avgSessionValue: 191000,
-      branch: 'Chi nhánh Quận 1',
+      branchId: 'branch-1',
+      branchName: 'Chi nhánh Quận 1',
       efficiency: 88,
       monthlyTarget: 40000000,
       targetAchievement: 89.5
@@ -198,7 +200,8 @@ const Reports: React.FC<ReportsProps> = ({ selectedBranch }) => {
       specialties: ['Tư vấn làm đẹp', 'Liệu trình cá nhân', 'Chăm sóc sau điều trị'],
       customers: 67,
       avgSessionValue: 202000,
-      branch: 'Chi nhánh Quận 3',
+      branchId: 'branch-2',
+      branchName: 'Chi nhánh Quận 3',
       efficiency: 85,
       monthlyTarget: 30000000,
       targetAchievement: 96.3
@@ -219,7 +222,8 @@ const Reports: React.FC<ReportsProps> = ({ selectedBranch }) => {
       specialties: ['Giảm béo RF', 'Massage giảm béo', 'Tư vấn dinh dưỡng'],
       customers: 45,
       avgSessionValue: 339000,
-      branch: 'Chi nhánh Quận 1',
+      branchId: 'branch-1',
+      branchName: 'Chi nhánh Quận 1',
       efficiency: 94,
       monthlyTarget: 32000000,
       targetAchievement: 103.8
@@ -240,7 +244,8 @@ const Reports: React.FC<ReportsProps> = ({ selectedBranch }) => {
       specialties: ['Nail art', 'Gel nails', 'Manicure/Pedicure'],
       customers: 98,
       avgSessionValue: 111000,
-      branch: 'Chi nhánh Quận 3',
+      branchId: 'branch-2',
+      branchName: 'Chi nhánh Quận 3',
       efficiency: 82,
       monthlyTarget: 20000000,
       targetAchievement: 92.5
@@ -480,7 +485,7 @@ const Reports: React.FC<ReportsProps> = ({ selectedBranch }) => {
               <h3 className="text-lg font-semibold text-gray-900 mb-4">Hiệu suất nhân viên</h3>
               <div className="space-y-4">
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-gray-600">Nhân viên hoạt động</span>
+                  <span className="text-sm text-gray-600">Nhân viên ho���t động</span>
                   <span className="font-semibold text-blue-600">{reportData.staff.active}</span>
                 </div>
                 <div className="flex justify-between items-center">
