@@ -148,11 +148,13 @@ const AppContent: React.FC = () => {
             </div>
             
             <div className="flex items-center space-x-4">
-              {/* Branch Selector - only show accessible branches */}
-              {accessibleBranches.length > 1 && (
-                <BranchSelector 
-                  selectedBranch={selectedBranch} 
+              {/* Branch Selector - show if user has multiple branches or can view all branches */}
+              {(accessibleBranches.length > 1 || canViewAllBranches) && (
+                <BranchSelector
+                  selectedBranch={selectedBranch}
                   setSelectedBranch={setSelectedBranch}
+                  accessibleBranches={accessibleBranches}
+                  canViewAllBranches={canViewAllBranches}
                 />
               )}
               
