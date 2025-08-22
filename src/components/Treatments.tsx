@@ -64,7 +64,7 @@ const Treatments: React.FC<TreatmentsProps> = ({ selectedBranch }) => {
     {
       id: 1,
       name: 'Liệu trình trị mụn 3 tháng',
-      customer: 'Nguy��n Thu Hà',
+      customer: 'Nguyễn Thu Hà',
       startDate: '2025-01-01',
       endDate: '2025-04-01',
       totalSessions: 12,
@@ -186,7 +186,8 @@ const Treatments: React.FC<TreatmentsProps> = ({ selectedBranch }) => {
     weekDay: 1, // Monday
     monthDay: 1,
     sessionDuration: 90,
-    preferredStaff: ''
+    preferredStaff: '',
+    branch: selectedBranch === 'all-branches' ? 'branch-1' : selectedBranch
   });
   const [serviceInput, setServiceInput] = useState('');
   const [deleteConfirm, setDeleteConfirm] = useState<number | null>(null);
@@ -211,7 +212,7 @@ const Treatments: React.FC<TreatmentsProps> = ({ selectedBranch }) => {
   });
 
   const availableServices = [
-    'Điều trị mụn', 'T��i tạo da', 'Chăm sóc da', 'Chăm sóc da mặt', 
+    'Điều trị mụn', 'Tái tạo da', 'Chăm sóc da', 'Chăm sóc da mặt', 
     'Massage', 'Tắm trắng', 'Giảm béo RF', 'Massage giảm béo', 
     'Tư vấn dinh dưỡng', 'Triệt lông', 'Trị thâm', 'Căng da mặt'
   ];
@@ -1168,7 +1169,7 @@ const Treatments: React.FC<TreatmentsProps> = ({ selectedBranch }) => {
                   >
                     <option value="manual">Thủ công</option>
                     <option value="weekly">Hàng tuần</option>
-                    <option value="monthly">Hàng th��ng</option>
+                    <option value="monthly">Hàng tháng</option>
                   </select>
                 </div>
 
@@ -1430,7 +1431,7 @@ const Treatments: React.FC<TreatmentsProps> = ({ selectedBranch }) => {
                 Xác nhận xóa liệu trình
               </h3>
               <p className="text-gray-600 mb-6">
-                Bạn có chắc chắn muốn x��a liệu trình này? Hành động này không thể hoàn tác.
+                Bạn có chắc chắn muốn x���a liệu trình này? Hành động này không thể hoàn tác.
               </p>
               <div className="flex justify-end space-x-3">
                 <button
