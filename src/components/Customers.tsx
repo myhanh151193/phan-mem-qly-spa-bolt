@@ -159,7 +159,7 @@ const Customers: React.FC = () => {
       status: 'active',
       loyaltyPoints: 420,
       nextBirthday: '2025-12-03',
-      personalOffers: ['Giảm 10% d���ch vụ đầu tiên trong tháng'],
+      personalOffers: ['Giảm 10% dịch vụ đầu tiên trong tháng'],
       serviceHistory: [
         {
           id: 4,
@@ -294,6 +294,7 @@ const Customers: React.FC = () => {
       const newCustomerData: Customer = {
         id: Math.max(...customers.map(c => c.id)) + 1,
         ...newCustomer,
+        branch: newCustomer.branch || 'branch-1',
         avatar: 'https://images.pexels.com/photos/1181519/pexels-photo-1181519.jpeg?w=150',
         membershipLevel: 'Member',
         totalSpent: 0,
