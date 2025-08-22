@@ -787,13 +787,14 @@ const Invoices: React.FC<InvoicesProps> = ({ selectedBranch }) => {
     return matchesSearch && matchesStatus && matchesBranch;
   });
 
-  // Calculate stats
+  // Calculate stats (filtered by branch)
+  const branchFilteredInvoices = invoices.filter(inv => selectedBranch === 'all-branches' || inv.branch === selectedBranch);
   const stats = {
-    total: invoices.length,
-    paid: invoices.filter(inv => inv.status === 'paid').length,
-    pending: invoices.filter(inv => inv.status === 'pending').length,
-    overdue: invoices.filter(inv => inv.status === 'overdue').length,
-    revenue: invoices.filter(inv => inv.status === 'paid').reduce((sum, inv) => sum + inv.total, 0)
+    total: branchFilteredInvoices.length,
+    paid: branchFilteredInvoices.filter(inv => inv.status === 'paid').length,
+    pending: branchFilteredInvoices.filter(inv => inv.status === 'pending').length,
+    overdue: branchFilteredInvoices.filter(inv => inv.status === 'overdue').length,
+    revenue: branchFilteredInvoices.filter(inv => inv.status === 'paid').reduce((sum, inv) => sum + inv.total, 0)
   };
 
   const currentTotals = formData.items ? calculateTotals(formData.items, formData.discount || 0, formData.tax || 0) : null;
