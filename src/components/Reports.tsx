@@ -249,8 +249,103 @@ const Reports: React.FC<ReportsProps> = ({ selectedBranch }) => {
       efficiency: 82,
       monthlyTarget: 20000000,
       targetAchievement: 92.5
+    },
+    // Branch 3 employees
+    {
+      id: 7,
+      name: 'Nguyễn Văn Đức',
+      position: 'Massage Therapist',
+      department: 'Massage',
+      avatar: 'https://images.pexels.com/photos/1043471/pexels-photo-1043471.jpeg?w=150',
+      revenue: 22800000,
+      revenueFormatted: '22.8M',
+      sessions: 156,
+      commission: 2280000,
+      commissionFormatted: '2.28M',
+      rating: 4.6,
+      growth: '+9%',
+      specialties: ['Massage toàn thân', 'Massage thái'],
+      customers: 78,
+      avgSessionValue: 146000,
+      branchId: 'branch-3',
+      branchName: 'Chi nhánh Thủ Đức',
+      efficiency: 87,
+      monthlyTarget: 25000000,
+      targetAchievement: 91.2
+    },
+    {
+      id: 8,
+      name: 'Trần Thị Hương',
+      position: 'Chuyên viên chăm sóc da',
+      department: 'Điều trị',
+      avatar: 'https://images.pexels.com/photos/762020/pexels-photo-762020.jpeg?w=150',
+      revenue: 26500000,
+      revenueFormatted: '26.5M',
+      sessions: 132,
+      commission: 2650000,
+      commissionFormatted: '2.65M',
+      rating: 4.7,
+      growth: '+12%',
+      specialties: ['Chăm sóc da mặt', 'Điều trị mụn'],
+      customers: 65,
+      avgSessionValue: 201000,
+      branchId: 'branch-3',
+      branchName: 'Chi nhánh Thủ Đức',
+      efficiency: 89,
+      monthlyTarget: 28000000,
+      targetAchievement: 94.6
+    },
+    // Branch 4 employees
+    {
+      id: 9,
+      name: 'Lê Thị Mai',
+      position: 'Kỹ thuật viên',
+      department: 'Làm đẹp',
+      avatar: 'https://images.pexels.com/photos/1065084/pexels-photo-1065084.jpeg?w=150',
+      revenue: 12800000,
+      revenueFormatted: '12.8M',
+      sessions: 89,
+      commission: 1280000,
+      commissionFormatted: '1.28M',
+      rating: 4.5,
+      growth: '+15%',
+      specialties: ['Tắm trắng', 'Massage mặt'],
+      customers: 42,
+      avgSessionValue: 144000,
+      branchId: 'branch-4',
+      branchName: 'Chi nhánh Gò Vấp',
+      efficiency: 85,
+      monthlyTarget: 15000000,
+      targetAchievement: 85.3
+    },
+    {
+      id: 10,
+      name: 'Phạm Văn Hải',
+      position: 'Massage Therapist',
+      department: 'Massage',
+      avatar: 'https://images.pexels.com/photos/1037915/pexels-photo-1037915.jpeg?w=150',
+      revenue: 8900000,
+      revenueFormatted: '8.9M',
+      sessions: 67,
+      commission: 890000,
+      commissionFormatted: '0.89M',
+      rating: 4.4,
+      growth: '+8%',
+      specialties: ['Massage toàn thân'],
+      customers: 34,
+      avgSessionValue: 133000,
+      branchId: 'branch-4',
+      branchName: 'Chi nhánh Gò Vấp',
+      efficiency: 82,
+      monthlyTarget: 12000000,
+      targetAchievement: 74.2
     }
   ];
+
+  // Filter employees based on selected branch
+  const employeeRevenue = selectedBranch === 'all-branches'
+    ? allEmployeeRevenue
+    : allEmployeeRevenue.filter(emp => emp.branchId === selectedBranch);
 
   // Sort employees based on selected criteria
   const sortedEmployees = [...employeeRevenue].sort((a, b) => {
@@ -485,7 +580,7 @@ const Reports: React.FC<ReportsProps> = ({ selectedBranch }) => {
               <h3 className="text-lg font-semibold text-gray-900 mb-4">Hiệu suất nhân viên</h3>
               <div className="space-y-4">
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-gray-600">Nhân viên ho���t động</span>
+                  <span className="text-sm text-gray-600">Nhân viên hoạt động</span>
                   <span className="font-semibold text-blue-600">{reportData.staff.active}</span>
                 </div>
                 <div className="flex justify-between items-center">
