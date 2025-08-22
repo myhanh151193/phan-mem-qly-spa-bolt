@@ -32,7 +32,7 @@ const Beds: React.FC<BedsProps> = ({ selectedBranch }) => {
   const [selectedRoom, setSelectedRoom] = useState<string>('all');
 
   // Reset room selection when branch changes and current room is not available
-  React.useEffect(() => {
+  useEffect(() => {
     if (selectedRoom !== 'all' && !getAvailableRooms().includes(selectedRoom)) {
       setSelectedRoom('all');
     }
@@ -163,7 +163,7 @@ const Beds: React.FC<BedsProps> = ({ selectedBranch }) => {
     {
       id: 7,
       name: 'Giường Massage 3',
-      room: 'Phòng Massage',
+      room: 'Ph��ng Massage',
       type: 'massage',
       status: 'maintenance',
       equipment: ['Hệ thống massage tự động', 'Đèn âm thanh'],
