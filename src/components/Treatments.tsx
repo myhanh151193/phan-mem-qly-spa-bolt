@@ -1089,7 +1089,7 @@ const Treatments: React.FC<TreatmentsProps> = ({ selectedBranch }) => {
                   <select
                     required
                     value={formData.branch}
-                    onChange={(e) => setFormData(prev => ({ ...prev, branch: e.target.value }))}
+                    onChange={(e) => handleBranchChange(e.target.value)}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   >
                     <option value="branch-1">{branchMap['branch-1']}</option>
@@ -1165,7 +1165,7 @@ const Treatments: React.FC<TreatmentsProps> = ({ selectedBranch }) => {
                           <div>
                             <p className="text-sm font-medium text-yellow-800">Lưu ý</p>
                             <p className="text-sm text-yellow-700">
-                              Khách hàng thuộc {branchMap[selectedCustomer.branch]} nhưng liệu trình đang được tạo cho {branchMap[formData.branch]}.
+                              Khách hàng thuộc {branchMap[selectedCustomer.branch]} nhưng li��u trình đang được tạo cho {branchMap[formData.branch]}.
                               Vui lòng chọn khách hàng phù hợp hoặc thay đổi chi nhánh.
                             </p>
                           </div>
