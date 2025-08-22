@@ -412,7 +412,7 @@ const Treatments: React.FC<TreatmentsProps> = ({ selectedBranch }) => {
   };
 
   const handleCustomerSelect = (customerId: number) => {
-    const selectedCustomer = customers.find(c => c.id === customerId);
+    const selectedCustomer = allCustomers.find(c => c.id === customerId);
     if (selectedCustomer) {
       setFormData(prev => ({
         ...prev,
@@ -420,6 +420,21 @@ const Treatments: React.FC<TreatmentsProps> = ({ selectedBranch }) => {
         customer: selectedCustomer.name
       }));
     }
+  };
+
+  const handleBranchChange = (newBranch: string) => {
+    setFormData(prev => {
+      // Reset customer selection if current customer is not from new branch
+      const currentCustomer = allCustomers.find(c => c.id === prev.customerId);
+      const shouldResetCustomer = currentCustomer && currentCustomer.branch !== newBranch;
+
+      return {
+        ...prev,
+        branch: newBranch,
+        customerId: shouldResetCustomer ? null : prev.customerId,
+        customer: shouldResetCustomer ? '' : prev.customer
+      };
+    });
   };
 
   const generateRecurringAppointments = (treatmentId: number): Appointment[] => {
@@ -1491,7 +1506,7 @@ const Treatments: React.FC<TreatmentsProps> = ({ selectedBranch }) => {
                 Xác nhận xóa liệu trình
               </h3>
               <p className="text-gray-600 mb-6">
-                Bạn có chắc ch��n muốn x��a liệu trình này? Hành động này không thể hoàn tác.
+                Bạn có chắc chắn muốn x��a liệu trình này? Hành động này không thể hoàn tác.
               </p>
               <div className="flex justify-end space-x-3">
                 <button
