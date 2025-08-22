@@ -77,7 +77,7 @@ const Treatments: React.FC<TreatmentsProps> = ({ selectedBranch }) => {
       totalAmount: 15600000,
       branch: 'branch-1',
       appointments: [
-        { id: 1, treatmentId: 1, date: '2025-01-15', time: '09:00', duration: 90, staff: 'Nguyễn Mai', status: 'scheduled', services: ['Điều trị mụn'], notes: 'Buổi 9' },
+        { id: 1, treatmentId: 1, date: '2025-01-15', time: '09:00', duration: 90, staff: 'Nguyễn Mai', status: 'scheduled', services: ['Đi��u trị mụn'], notes: 'Buổi 9' },
         { id: 2, treatmentId: 1, date: '2025-01-22', time: '09:00', duration: 90, staff: 'Nguyễn Mai', status: 'scheduled', services: ['Tái tạo da'], notes: 'Buổi 10' },
         { id: 3, treatmentId: 1, date: '2025-01-08', time: '09:00', duration: 90, staff: 'Nguyễn Mai', status: 'completed', services: ['Điều trị mụn'], notes: 'Buổi 8 - hoàn thành tốt' }
       ]
@@ -352,7 +352,9 @@ const Treatments: React.FC<TreatmentsProps> = ({ selectedBranch }) => {
       progress: editingTreatment
         ? Math.round((editingTreatment.completedSessions / formData.totalSessions) * 100)
         : 0,
-      appointments: generatedAppointments
+      appointments: generatedAppointments,
+      branch: formData.branch,
+      totalAmount: parseFloat(formData.totalValue.replace(/,/g, '')) || 0
     };
 
     if (editingTreatment) {
@@ -1222,7 +1224,7 @@ const Treatments: React.FC<TreatmentsProps> = ({ selectedBranch }) => {
                       onChange={(e) => setFormData(prev => ({ ...prev, weekDay: parseInt(e.target.value) }))}
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     >
-                      <option value="1">Th��� Hai</option>
+                      <option value="1">Thứ Hai</option>
                       <option value="2">Thứ Ba</option>
                       <option value="3">Thứ Tư</option>
                       <option value="4">Thứ Năm</option>
