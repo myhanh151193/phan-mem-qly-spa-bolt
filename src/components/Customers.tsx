@@ -159,7 +159,7 @@ const Customers: React.FC = () => {
       status: 'active',
       loyaltyPoints: 420,
       nextBirthday: '2025-12-03',
-      personalOffers: ['Giảm 10% dịch vụ đầu tiên trong tháng'],
+      personalOffers: ['Giảm 10% d���ch vụ đầu tiên trong tháng'],
       serviceHistory: [
         {
           id: 4,
@@ -187,7 +187,8 @@ const Customers: React.FC = () => {
     dateOfBirth: '',
     allergies: '',
     preferences: '',
-    skinType: ''
+    skinType: '',
+    branch: 'branch-1' // Default branch
   });
   
   const [editCustomer, setEditCustomer] = useState<Customer | null>(null);
@@ -242,7 +243,7 @@ const Customers: React.FC = () => {
     if (!editCustomer.phone.trim()) {
       newErrors.phone = 'Số điện thoại là bắt buộc';
     } else if (!/^[0-9]{10,11}$/.test(editCustomer.phone.replace(/\s/g, ''))) {
-      newErrors.phone = 'Số ��iện thoại không hợp lệ';
+      newErrors.phone = 'Số điện thoại không hợp lệ';
     }
     if (editCustomer.email.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(editCustomer.email)) {
       newErrors.email = 'Email không hợp lệ';
@@ -313,7 +314,7 @@ const Customers: React.FC = () => {
       };
       
       setCustomers(prev => [...prev, newCustomerData]);
-      setNewCustomer({ name: '', phone: '', email: '', address: '', dateOfBirth: '', allergies: '', preferences: '', skinType: '' });
+      setNewCustomer({ name: '', phone: '', email: '', address: '', dateOfBirth: '', allergies: '', preferences: '', skinType: '', branch: 'branch-1' });
       setErrors({});
       setShowModal(false);
       
