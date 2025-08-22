@@ -88,7 +88,7 @@ const Inventory: React.FC<InventoryProps> = ({ selectedBranch }) => {
       category: 'Sản phẩm chăm sóc da',
       brand: 'SkinCare Pro',
       sku: 'SKU001',
-      description: 'Serum dưỡng trắng da với Vitamin C tự nhiên',
+      description: 'Serum dưỡng tr��ng da với Vitamin C tự nhiên',
       image: 'https://images.pexels.com/photos/4041392/pexels-photo-4041392.jpeg?w=150',
       unitPrice: 450000,
       supplier: 'Beauty Supply Co.',
@@ -723,17 +723,25 @@ const Inventory: React.FC<InventoryProps> = ({ selectedBranch }) => {
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
                   {filteredInventory.map((view) => (
-                    <tr key={item.id} className="hover:bg-gray-50 transition-colors duration-200">
+                    <tr key={`${view.product.id}-${view.branchStock.branch}`} className="hover:bg-gray-50 transition-colors duration-200">
                       <td className="px-6 py-4">
                         <div className="flex items-center">
                           <img
-                            src={item.image}
-                            alt={item.name}
+                            src={view.product.image}
+                            alt={view.product.name}
                             className="w-12 h-12 rounded-lg object-cover mr-4"
                           />
                           <div>
-                            <div className="text-sm font-medium text-gray-900">{item.name}</div>
-                            <div className="text-sm text-gray-500">{item.brand} • {item.category}</div>
+                            <div className="text-sm font-medium text-gray-900">{view.product.name}</div>
+                            <div className="text-sm text-gray-500">{view.product.brand} • {view.product.category}</div>
+                            {selectedBranch === 'all-branches' && (
+                              <div className="text-xs text-blue-600 font-medium mt-1">
+                                {view.branchStock.branch === 'branch-1' && 'Quận 1'}
+                                {view.branchStock.branch === 'branch-2' && 'Quận 3'}
+                                {view.branchStock.branch === 'branch-3' && 'Thủ Đức'}
+                                {view.branchStock.branch === 'branch-4' && 'Gò Vấp'}
+                              </div>
+                            )}
                           </div>
                         </div>
                       </td>
