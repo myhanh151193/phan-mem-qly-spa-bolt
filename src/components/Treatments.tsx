@@ -469,9 +469,10 @@ const Treatments: React.FC = () => {
   };
 
   const openPaymentModal = (treatment: Treatment) => {
+    const paymentData = getTreatmentPayment(treatment.id);
     setSelectedTreatmentForPayment(treatment);
     setPaymentForm({
-      amount: treatment.remainingAmount > 0 ? treatment.remainingAmount.toString() : '',
+      amount: paymentData && paymentData.remainingAmount > 0 ? paymentData.remainingAmount.toString() : '',
       method: 'cash',
       note: ''
     });
@@ -491,44 +492,32 @@ const Treatments: React.FC = () => {
   const handlePaymentSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedTreatmentForPayment || !paymentForm.amount) {
-      alert('Vui lòng nhập số tiền thanh toán');
+      alert('Vui l��ng nhập số tiền thanh toán');
+      return;
+    }
+
+    const paymentData = getTreatmentPayment(selectedTreatmentForPayment.id);
+    if (!paymentData) {
+      alert('Không tìm thấy thông tin thanh toán');
       return;
     }
 
     const paymentAmount = parseInt(paymentForm.amount);
-    if (paymentAmount <= 0 || paymentAmount > selectedTreatmentForPayment.remainingAmount) {
+    if (paymentAmount <= 0 || paymentAmount > paymentData.remainingAmount) {
       alert('Số tiền thanh toán không hợp lệ');
       return;
     }
 
-    const newPayment = {
-      id: Date.now(),
+    // Update payment through context
+    updateTreatmentPayment(selectedTreatmentForPayment.id, {
       date: new Date().toISOString().split('T')[0],
       amount: paymentAmount,
       method: paymentForm.method,
       note: paymentForm.note
-    };
-
-    const updatedTreatment = {
-      ...selectedTreatmentForPayment,
-      paidAmount: selectedTreatmentForPayment.paidAmount + paymentAmount,
-      remainingAmount: selectedTreatmentForPayment.remainingAmount - paymentAmount,
-      paymentHistory: [...selectedTreatmentForPayment.paymentHistory, newPayment]
-    };
-
-    // Update payment status
-    if (updatedTreatment.remainingAmount === 0) {
-      updatedTreatment.paymentStatus = 'completed';
-    } else if (updatedTreatment.paidAmount > 0) {
-      updatedTreatment.paymentStatus = 'partial';
-    }
-
-    setTreatments(prev => prev.map(t =>
-      t.id === selectedTreatmentForPayment.id ? updatedTreatment : t
-    ));
+    });
 
     closePaymentModal();
-    alert('Thanh to��n đã được ghi nhận thành công!');
+    alert('Thanh toán đã được ghi nhận thành công!');
   };
 
   const openAppointmentModal = (treatment: Treatment) => {
@@ -1610,7 +1599,7 @@ const Treatments: React.FC = () => {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Nhân viên th���c hiện
+                    Nhân viên thực hiện
                   </label>
                   <input
                     type="text"
