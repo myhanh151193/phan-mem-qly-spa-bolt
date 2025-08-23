@@ -382,7 +382,17 @@ const Treatments: React.FC<TreatmentsProps> = ({ selectedBranch }) => {
         : 0,
       appointments: generatedAppointments,
       branch: formData.branch,
-      totalAmount: parseFloat(formData.totalValue.replace(/,/g, '')) || 0
+      totalAmount: parseFloat(formData.totalValue.replace(/,/g, '')) || 0,
+      recurringSchedule: formData.scheduleType !== 'manual' ? {
+        type: formData.scheduleType,
+        time: formData.recurringTime,
+        weekDay: formData.weekDay,
+        monthDay: formData.monthDay,
+        duration: formData.sessionDuration,
+        preferredStaff: formData.preferredStaff,
+        lastAutoCreated: editingTreatment?.recurringSchedule?.lastAutoCreated || '',
+        autoCreateEnabled: true
+      } : undefined
     };
 
     if (editingTreatment) {
