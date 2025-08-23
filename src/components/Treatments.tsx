@@ -1413,7 +1413,19 @@ const Treatments: React.FC<TreatmentsProps> = ({ selectedBranch }) => {
 
             {/* Scheduling Options */}
             <div className="border-t pt-4">
-              <h3 className="text-lg font-medium text-gray-900 mb-4">Lịch hẹn ��ịnh kỳ</h3>
+              <h3 className="text-lg font-medium text-gray-900 mb-2">Lịch hẹn định kỳ</h3>
+              <div className="mb-4 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-lg">
+                <div className="flex items-start space-x-3">
+                  <Clock className="w-5 h-5 text-blue-600 mt-0.5" />
+                  <div>
+                    <h4 className="text-sm font-medium text-blue-900 mb-1">Tự động tạo lịch hẹn</h4>
+                    <p className="text-sm text-blue-700">
+                      Khi bật tính năng này, hệ thống sẽ tự động tạo lịch hẹn tiếp theo theo chu kỳ đã thiết lập.
+                      Lịch hẹn sẽ được tạo vào đúng ngày và giờ định kỳ mà bạn đã cấu hình.
+                    </p>
+                  </div>
+                </div>
+              </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
                 <div>
