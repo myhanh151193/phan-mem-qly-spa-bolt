@@ -605,7 +605,7 @@ const Inventory: React.FC<InventoryProps> = ({ selectedBranch }) => {
             }`}
           >
             <Award className="w-4 h-4" />
-            <span>Thương hi��u</span>
+            <span>Thương hiệu</span>
           </button>
         </div>
       </div>
