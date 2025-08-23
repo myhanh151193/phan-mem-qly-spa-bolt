@@ -967,6 +967,30 @@ const Treatments: React.FC<TreatmentsProps> = ({ selectedBranch }) => {
         </div>
       </div>
 
+      {/* Auto-Created Appointment Notifications */}
+      {autoCreatedNotifications.length > 0 && (
+        <div className="space-y-2">
+          {autoCreatedNotifications.map((notification, index) => (
+            <div
+              key={index}
+              className="bg-green-50 border border-green-200 rounded-lg p-3 flex items-center justify-between animate-fade-in"
+            >
+              <div className="flex items-center space-x-2">
+                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                <Clock className="w-4 h-4 text-green-600" />
+                <span className="text-sm text-green-800 font-medium">{notification}</span>
+              </div>
+              <button
+                onClick={() => setAutoCreatedNotifications(prev => prev.filter((_, i) => i !== index))}
+                className="text-green-400 hover:text-green-600 transition-colors"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
+
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div className="relative flex-1 max-w-md">
@@ -2080,7 +2104,7 @@ const Treatments: React.FC<TreatmentsProps> = ({ selectedBranch }) => {
                           <p className="text-xs text-gray-500">{payment.date} - {payment.method}</p>
                           {payment.note && <p className="text-xs text-gray-400">{payment.note}</p>}
                           {payment.invoiceId && (
-                            <p className="text-xs text-blue-600">Từ hóa đơn: {payment.invoiceId}</p>
+                            <p className="text-xs text-blue-600">Từ hóa đ��n: {payment.invoiceId}</p>
                           )}
                         </div>
                         <span className="text-xs px-2 py-1 bg-green-100 text-green-800 rounded-full">
