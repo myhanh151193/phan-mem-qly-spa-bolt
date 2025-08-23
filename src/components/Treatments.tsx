@@ -86,6 +86,15 @@ const Treatments: React.FC<TreatmentsProps> = ({ selectedBranch }) => {
       totalValue: '15,600,000',
       totalAmount: 15600000,
       branch: 'branch-1',
+      recurringSchedule: {
+        type: 'weekly',
+        time: '09:00',
+        weekDay: 3, // Wednesday
+        duration: 90,
+        preferredStaff: 'Nguyễn Mai',
+        lastAutoCreated: '2025-01-08',
+        autoCreateEnabled: true
+      },
       appointments: [
         { id: 1, treatmentId: 1, date: '2025-01-15', time: '09:00', duration: 90, staff: 'Nguyễn Mai', status: 'scheduled', services: ['Điều trị mụn'], notes: 'Buổi 9' },
         { id: 2, treatmentId: 1, date: '2025-01-22', time: '09:00', duration: 90, staff: 'Nguyễn Mai', status: 'scheduled', services: ['Tái tạo da'], notes: 'Buổi 10' },
@@ -1516,7 +1525,7 @@ const Treatments: React.FC<TreatmentsProps> = ({ selectedBranch }) => {
                 Xác nhận xóa liệu trình
               </h3>
               <p className="text-gray-600 mb-6">
-                Bạn có chắc chắn muốn x��a liệu trình này? Hành động này không thể hoàn tác.
+                Bạn có chắc chắn muốn x���a liệu trình này? Hành động này không thể hoàn tác.
               </p>
               <div className="flex justify-end space-x-3">
                 <button
