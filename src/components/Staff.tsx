@@ -545,7 +545,7 @@ const Staff: React.FC<StaffProps> = ({ selectedBranch }) => {
             <option value="all">Tất cả trạng thái</option>
             <option value="active">Đang làm việc</option>
             <option value="on-leave">Nghỉ phép</option>
-            <option value="inactive">Không hoạt đ��ng</option>
+            <option value="inactive">Không hoạt động</option>
           </select>
 
           <select

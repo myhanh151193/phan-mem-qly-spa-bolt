@@ -22,6 +22,16 @@ interface Treatment {
   totalAmount: number; // Total package amount in VND
   appointments: Appointment[];
   branch: string; // Branch where the treatment is managed
+  recurringSchedule?: {
+    type: 'weekly' | 'monthly';
+    time: string;
+    weekDay?: number; // 0 = Sunday, 1 = Monday, etc.
+    monthDay?: number; // 1-31
+    duration: number;
+    preferredStaff?: string;
+    lastAutoCreated?: string; // Last date when auto appointment was created
+    autoCreateEnabled: boolean;
+  };
 }
 
 interface Customer {
@@ -76,9 +86,18 @@ const Treatments: React.FC<TreatmentsProps> = ({ selectedBranch }) => {
       totalValue: '15,600,000',
       totalAmount: 15600000,
       branch: 'branch-1',
+      recurringSchedule: {
+        type: 'weekly',
+        time: '09:00',
+        weekDay: 3, // Wednesday
+        duration: 90,
+        preferredStaff: 'Nguyễn Mai',
+        lastAutoCreated: '2025-01-08',
+        autoCreateEnabled: true
+      },
       appointments: [
-        { id: 1, treatmentId: 1, date: '2025-01-15', time: '09:00', duration: 90, staff: 'Nguyễn Mai', status: 'scheduled', services: ['Điều trị mụn'], notes: 'Buổi 9' },
-        { id: 2, treatmentId: 1, date: '2025-01-22', time: '09:00', duration: 90, staff: 'Nguyễn Mai', status: 'scheduled', services: ['Tái tạo da'], notes: 'Buổi 10' },
+        { id: 1, treatmentId: 1, date: '2025-01-15', time: '09:00', duration: 90, staff: 'Nguyễn Mai', status: 'scheduled', services: ['Điều trị mụn'], notes: 'Buổi 9 - Tự động tạo' },
+        { id: 2, treatmentId: 1, date: '2025-01-22', time: '09:00', duration: 90, staff: 'Nguyễn Mai', status: 'scheduled', services: ['Tái tạo da'], notes: 'Buổi 10 - Tự động tạo' },
         { id: 3, treatmentId: 1, date: '2025-01-08', time: '09:00', duration: 90, staff: 'Nguyễn Mai', status: 'completed', services: ['Điều trị mụn'], notes: 'Buổi 8 - hoàn thành tốt' }
       ]
     },
@@ -97,9 +116,18 @@ const Treatments: React.FC<TreatmentsProps> = ({ selectedBranch }) => {
       totalValue: '12,800,000',
       totalAmount: 12800000,
       branch: 'branch-2',
+      recurringSchedule: {
+        type: 'monthly',
+        time: '14:00',
+        monthDay: 20,
+        duration: 120,
+        preferredStaff: 'Lê Hoa',
+        lastAutoCreated: '2024-12-20',
+        autoCreateEnabled: true
+      },
       appointments: [
-        { id: 4, treatmentId: 2, date: '2025-01-20', time: '14:00', duration: 120, staff: 'Lê Hoa', status: 'scheduled', services: ['Chăm sóc da mặt', 'Massage'], notes: 'Buổi 7' },
-        { id: 5, treatmentId: 2, date: '2025-02-03', time: '14:00', duration: 120, staff: 'Lê Hoa', status: 'scheduled', services: ['T���m trắng'], notes: 'Buổi cuối' }
+        { id: 4, treatmentId: 2, date: '2025-01-20', time: '14:00', duration: 120, staff: 'Lê Hoa', status: 'scheduled', services: ['Chăm sóc da mặt', 'Massage'], notes: 'Buổi 7 - Tự động tạo' },
+        { id: 5, treatmentId: 2, date: '2025-02-20', time: '14:00', duration: 120, staff: 'Lê Hoa', status: 'scheduled', services: ['Tắm trắng'], notes: 'Buổi cuối - Tự động tạo' }
       ]
     },
     {
@@ -211,6 +239,8 @@ const Treatments: React.FC<TreatmentsProps> = ({ selectedBranch }) => {
     note: ''
   });
 
+  const [autoCreatedNotifications, setAutoCreatedNotifications] = useState<string[]>([]);
+
   // Filter customers by selected branch
   const customers = selectedBranch === 'all-branches'
     ? allCustomers
@@ -295,12 +325,12 @@ const Treatments: React.FC<TreatmentsProps> = ({ selectedBranch }) => {
       totalSessions: treatment.totalSessions,
       services: [...treatment.services],
       totalValue: treatment.totalValue,
-      scheduleType: 'manual', // Default for existing treatments
-      recurringTime: '09:00',
-      weekDay: 1,
-      monthDay: 1,
-      sessionDuration: 90,
-      preferredStaff: '',
+      scheduleType: treatment.recurringSchedule?.type || 'manual',
+      recurringTime: treatment.recurringSchedule?.time || '09:00',
+      weekDay: treatment.recurringSchedule?.weekDay || 1,
+      monthDay: treatment.recurringSchedule?.monthDay || 1,
+      sessionDuration: treatment.recurringSchedule?.duration || 90,
+      preferredStaff: treatment.recurringSchedule?.preferredStaff || '',
       branch: treatment.branch
     });
     setShowModal(true);
@@ -354,7 +384,17 @@ const Treatments: React.FC<TreatmentsProps> = ({ selectedBranch }) => {
         : 0,
       appointments: generatedAppointments,
       branch: formData.branch,
-      totalAmount: parseFloat(formData.totalValue.replace(/,/g, '')) || 0
+      totalAmount: parseFloat(formData.totalValue.replace(/,/g, '')) || 0,
+      recurringSchedule: formData.scheduleType !== 'manual' ? {
+        type: formData.scheduleType,
+        time: formData.recurringTime,
+        weekDay: formData.weekDay,
+        monthDay: formData.monthDay,
+        duration: formData.sessionDuration,
+        preferredStaff: formData.preferredStaff,
+        lastAutoCreated: editingTreatment?.recurringSchedule?.lastAutoCreated || '',
+        autoCreateEnabled: true
+      } : undefined
     };
 
     if (editingTreatment) {
@@ -740,6 +780,129 @@ const Treatments: React.FC<TreatmentsProps> = ({ selectedBranch }) => {
     }
   };
 
+  // Automatic recurring appointment creation functions
+  const checkAndCreateRecurringAppointments = () => {
+    const today = new Date();
+    const todayStr = today.toISOString().split('T')[0];
+
+    treatments.forEach(treatment => {
+      if (
+        treatment.status === 'active' &&
+        treatment.recurringSchedule &&
+        treatment.recurringSchedule.autoCreateEnabled &&
+        treatment.completedSessions < treatment.totalSessions
+      ) {
+        const schedule = treatment.recurringSchedule;
+        const nextDueDate = calculateNextRecurringDate(treatment);
+
+        if (nextDueDate && nextDueDate <= todayStr) {
+          // Check if appointment for this date already exists
+          const existingAppointment = getAppointmentsForTreatment(treatment.id)
+            .find(apt => apt.date === nextDueDate);
+
+          if (!existingAppointment) {
+            createAutoRecurringAppointment(treatment, nextDueDate);
+          }
+        }
+      }
+    });
+  };
+
+  const calculateNextRecurringDate = (treatment: Treatment): string | null => {
+    if (!treatment.recurringSchedule) return null;
+
+    const schedule = treatment.recurringSchedule;
+    const lastCreated = schedule.lastAutoCreated ? new Date(schedule.lastAutoCreated) : new Date(treatment.startDate);
+    const endDate = new Date(treatment.endDate);
+    let nextDate = new Date(lastCreated);
+
+    if (schedule.type === 'weekly') {
+      // Add 7 days for weekly
+      nextDate.setDate(nextDate.getDate() + 7);
+    } else if (schedule.type === 'monthly') {
+      // Add 1 month for monthly
+      nextDate.setMonth(nextDate.getMonth() + 1);
+      // Handle end-of-month edge cases
+      if (schedule.monthDay && schedule.monthDay > 28) {
+        const daysInMonth = new Date(nextDate.getFullYear(), nextDate.getMonth() + 1, 0).getDate();
+        nextDate.setDate(Math.min(schedule.monthDay, daysInMonth));
+      }
+    }
+
+    // Don't create appointments beyond the treatment end date
+    if (nextDate > endDate) return null;
+
+    return nextDate.toISOString().split('T')[0];
+  };
+
+  const createAutoRecurringAppointment = (treatment: Treatment, appointmentDate: string) => {
+    if (!treatment.recurringSchedule) return;
+
+    const schedule = treatment.recurringSchedule;
+    const existingAppointments = getAppointmentsForTreatment(treatment.id);
+    const sessionNumber = existingAppointments.length + 1;
+
+    // Create new appointment
+    const newAppointment: ContextAppointment = {
+      id: Date.now() + Math.random(),
+      treatmentId: treatment.id,
+      date: appointmentDate,
+      time: schedule.time,
+      duration: schedule.duration,
+      staff: schedule.preferredStaff || '',
+      notes: `Buổi ${sessionNumber} - Tự động tạo theo lịch ${schedule.type === 'weekly' ? 'hàng tuần' : 'hàng tháng'}`,
+      services: [...treatment.services],
+      status: 'scheduled',
+      customer: treatment.customer,
+      service: treatment.services.join(', '),
+      totalPrice: treatment.totalValue,
+      price: treatment.totalValue,
+      branch: treatment.branch
+    };
+
+    // Add to appointment context
+    addTreatmentAppointments([newAppointment]);
+
+    // Update treatment's last auto-created date and next session
+    setTreatments(prev => prev.map(t => {
+      if (t.id === treatment.id) {
+        const updatedSchedule = {
+          ...t.recurringSchedule!,
+          lastAutoCreated: appointmentDate
+        };
+
+        return {
+          ...t,
+          recurringSchedule: updatedSchedule,
+          nextSession: appointmentDate
+        };
+      }
+      return t;
+    }));
+
+    // Show notification
+    const notificationMessage = `Tự động tạo lịch hẹn cho ${treatment.customer} - ${treatment.name} vào ngày ${appointmentDate}`;
+    setAutoCreatedNotifications(prev => [notificationMessage, ...prev.slice(0, 4)]); // Keep last 5 notifications
+
+    // Auto-remove notification after 10 seconds
+    setTimeout(() => {
+      setAutoCreatedNotifications(prev => prev.filter(msg => msg !== notificationMessage));
+    }, 10000);
+  };
+
+  // Check for recurring appointments every minute
+  useEffect(() => {
+    // Check immediately when component mounts
+    checkAndCreateRecurringAppointments();
+
+    // Set up interval to check every minute
+    const interval = setInterval(() => {
+      checkAndCreateRecurringAppointments();
+    }, 60000); // Check every minute
+
+    return () => clearInterval(interval);
+  }, [treatments]); // Re-run when treatments change
+
   const stats = {
     active: filteredTreatments.filter(t => t.status === 'active').length,
     completed: filteredTreatments.filter(t => t.status === 'completed').length,
@@ -803,6 +966,30 @@ const Treatments: React.FC<TreatmentsProps> = ({ selectedBranch }) => {
           )}
         </div>
       </div>
+
+      {/* Auto-Created Appointment Notifications */}
+      {autoCreatedNotifications.length > 0 && (
+        <div className="space-y-2">
+          {autoCreatedNotifications.map((notification, index) => (
+            <div
+              key={index}
+              className="bg-green-50 border border-green-200 rounded-lg p-3 flex items-center justify-between animate-fade-in"
+            >
+              <div className="flex items-center space-x-2">
+                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                <Clock className="w-4 h-4 text-green-600" />
+                <span className="text-sm text-green-800 font-medium">{notification}</span>
+              </div>
+              <button
+                onClick={() => setAutoCreatedNotifications(prev => prev.filter((_, i) => i !== index))}
+                className="text-green-400 hover:text-green-600 transition-colors"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
 
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
@@ -900,10 +1087,38 @@ const Treatments: React.FC<TreatmentsProps> = ({ selectedBranch }) => {
                       )}
                     </div>
                   </div>
-                  <span className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(treatment.status)}`}>
-                    {getStatusText(treatment.status)}
-                  </span>
+                  <div className="flex items-center space-x-2">
+                    <span className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(treatment.status)}`}>
+                      {getStatusText(treatment.status)}
+                    </span>
+                    {treatment.recurringSchedule && treatment.recurringSchedule.autoCreateEnabled && (
+                      <span className="px-2 py-1 bg-indigo-100 text-indigo-700 text-xs rounded-full flex items-center space-x-1">
+                        <Clock className="w-3 h-3" />
+                        <span>Lịch định kỳ</span>
+                      </span>
+                    )}
+                  </div>
                 </div>
+
+                {/* Recurring Schedule Info */}
+                {treatment.recurringSchedule && treatment.recurringSchedule.autoCreateEnabled && (
+                  <div className="mb-3 p-3 bg-indigo-50 border border-indigo-200 rounded-lg">
+                    <div className="flex items-center space-x-2 text-sm">
+                      <Clock className="w-4 h-4 text-indigo-600" />
+                      <span className="font-medium text-indigo-900">Lịch hẹn định kỳ:</span>
+                      <span className="text-indigo-700">
+                        {treatment.recurringSchedule.type === 'weekly' ? (
+                          `Hàng tuần ${['Chủ Nhật', 'Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy'][treatment.recurringSchedule.weekDay || 0]} lúc ${treatment.recurringSchedule.time}`
+                        ) : (
+                          `Ngày ${treatment.recurringSchedule.monthDay} hàng tháng lúc ${treatment.recurringSchedule.time}`
+                        )}
+                      </span>
+                      {treatment.recurringSchedule.preferredStaff && (
+                        <span className="text-indigo-600">• {treatment.recurringSchedule.preferredStaff}</span>
+                      )}
+                    </div>
+                  </div>
+                )}
 
                 {/* Services */}
                 <div className="flex flex-wrap gap-2 mb-4">
@@ -1190,7 +1405,7 @@ const Treatments: React.FC<TreatmentsProps> = ({ selectedBranch }) => {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Ngày kết thúc *
+                    Ng��y kết thúc *
                   </label>
                   <input
                     type="date"
@@ -1230,7 +1445,19 @@ const Treatments: React.FC<TreatmentsProps> = ({ selectedBranch }) => {
 
             {/* Scheduling Options */}
             <div className="border-t pt-4">
-              <h3 className="text-lg font-medium text-gray-900 mb-4">Lịch hẹn ��ịnh kỳ</h3>
+              <h3 className="text-lg font-medium text-gray-900 mb-2">Lịch hẹn định kỳ</h3>
+              <div className="mb-4 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-lg">
+                <div className="flex items-start space-x-3">
+                  <Clock className="w-5 h-5 text-blue-600 mt-0.5" />
+                  <div>
+                    <h4 className="text-sm font-medium text-blue-900 mb-1">Tự động tạo lịch hẹn</h4>
+                    <p className="text-sm text-blue-700">
+                      Khi bật tính năng này, hệ thống sẽ tự động tạo lịch hẹn tiếp theo theo chu kỳ đã thiết lập.
+                      Lịch hẹn sẽ được tạo vào đúng ngày và giờ định kỳ mà bạn đã cấu hình.
+                    </p>
+                  </div>
+                </div>
+              </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
                 <div>
@@ -1877,7 +2104,7 @@ const Treatments: React.FC<TreatmentsProps> = ({ selectedBranch }) => {
                           <p className="text-xs text-gray-500">{payment.date} - {payment.method}</p>
                           {payment.note && <p className="text-xs text-gray-400">{payment.note}</p>}
                           {payment.invoiceId && (
-                            <p className="text-xs text-blue-600">Từ hóa đơn: {payment.invoiceId}</p>
+                            <p className="text-xs text-blue-600">Từ hóa đ��n: {payment.invoiceId}</p>
                           )}
                         </div>
                         <span className="text-xs px-2 py-1 bg-green-100 text-green-800 rounded-full">
@@ -1899,7 +2126,7 @@ const Treatments: React.FC<TreatmentsProps> = ({ selectedBranch }) => {
                     <div className="grid grid-cols-2 gap-4">
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Số tiền thanh toán *
+                          Số ti��n thanh toán *
                         </label>
                         <input
                           type="number"

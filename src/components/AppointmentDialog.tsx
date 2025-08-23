@@ -21,6 +21,8 @@ interface AppointmentData {
   customerPhone: string;
   service: string;
   staff: string;
+  bedId?: number;
+  bedName?: string;
   startTime: string;
   estimatedEndTime: string;
   notes: string;
@@ -30,11 +32,12 @@ interface AppointmentDialogProps {
   isOpen: boolean;
   onClose: () => void;
   onSave: (appointmentData: AppointmentData) => void;
-  bedName: string;
+  bedName?: string;
   timeSlot: string;
   date: string;
   existingAppointment?: AppointmentData | null;
   isEditing?: boolean;
+  selectedBranch?: string;
 }
 
 const AppointmentDialog: React.FC<AppointmentDialogProps> = ({
@@ -45,7 +48,8 @@ const AppointmentDialog: React.FC<AppointmentDialogProps> = ({
   timeSlot,
   date,
   existingAppointment,
-  isEditing = false
+  isEditing = false,
+  selectedBranch = 'branch-1'
 }) => {
   const [formData, setFormData] = useState<AppointmentData>({
     customerId: undefined,
@@ -53,6 +57,8 @@ const AppointmentDialog: React.FC<AppointmentDialogProps> = ({
     customerPhone: '',
     service: '',
     staff: '',
+    bedId: undefined,
+    bedName: bedName || '',
     startTime: timeSlot,
     estimatedEndTime: '',
     notes: ''
@@ -79,12 +85,37 @@ const AppointmentDialog: React.FC<AppointmentDialogProps> = ({
 
   const staffMembers = [
     'Nguyễn Mai',
-    'Lê Hoa', 
+    'Lê Hoa',
     'Trần An',
     'Phạm Thùy',
     'Lý Thu',
     'Vũ Lan'
   ];
+
+  // Beds/Treatment rooms data with their branches
+  const allBeds = [
+    { id: 1, name: 'Phòng VIP 1', room: 'Phòng VIP', branch: 'branch-1' },
+    { id: 2, name: 'Phòng VIP 2', room: 'Phòng VIP', branch: 'branch-1' },
+    { id: 3, name: 'Phòng thường 1', room: 'Phòng thường', branch: 'branch-1' },
+    { id: 4, name: 'Phòng thường 2', room: 'Phòng thường', branch: 'branch-1' },
+    { id: 5, name: 'Phòng VIP A', room: 'Phòng VIP', branch: 'branch-2' },
+    { id: 6, name: 'Phòng VIP B', room: 'Phòng VIP', branch: 'branch-2' },
+    { id: 7, name: 'Phòng thường A', room: 'Phòng thường', branch: 'branch-2' },
+    { id: 8, name: 'Phòng thường B', room: 'Phòng thường', branch: 'branch-2' },
+    { id: 9, name: 'Phòng đặc biệt 1', room: 'Phòng đặc biệt', branch: 'branch-3' },
+    { id: 10, name: 'Phòng đặc biệt 2', room: 'Phòng đặc biệt', branch: 'branch-3' },
+    { id: 11, name: 'Phòng cơ bản 1', room: 'Phòng cơ bản', branch: 'branch-3' },
+    { id: 12, name: 'Phòng cơ bản 2', room: 'Phòng cơ bản', branch: 'branch-3' },
+    { id: 13, name: 'Phòng spa 1', room: 'Phòng spa', branch: 'branch-4' },
+    { id: 14, name: 'Phòng spa 2', room: 'Phòng spa', branch: 'branch-4' },
+    { id: 15, name: 'Phòng massage 1', room: 'Phòng massage', branch: 'branch-4' },
+    { id: 16, name: 'Phòng massage 2', room: 'Phòng massage', branch: 'branch-4' }
+  ];
+
+  // Filter beds by selected branch
+  const filteredBeds = selectedBranch === 'all-branches'
+    ? allBeds
+    : allBeds.filter(bed => bed.branch === selectedBranch);
 
   useEffect(() => {
     if (existingAppointment) {
@@ -96,12 +127,14 @@ const AppointmentDialog: React.FC<AppointmentDialogProps> = ({
         customerPhone: '',
         service: '',
         staff: '',
+        bedId: undefined,
+        bedName: bedName || '',
         startTime: timeSlot,
         estimatedEndTime: '',
         notes: ''
       });
     }
-  }, [existingAppointment, timeSlot]);
+  }, [existingAppointment, timeSlot, bedName]);
 
   const filteredCustomers = customers.filter(customer =>
     customer.name.toLowerCase().includes(customerSearchTerm.toLowerCase()) ||
@@ -165,7 +198,7 @@ const AppointmentDialog: React.FC<AppointmentDialogProps> = ({
               {isEditing ? 'Chỉnh sửa lịch hẹn' : 'Đặt lịch hẹn'}
             </h2>
             <p className="text-sm text-gray-600 mt-1">
-              {bedName} • {date} • {timeSlot}
+              {bedName ? `${bedName} • ` : ''}{date} • {timeSlot}
             </p>
           </div>
           <button
@@ -247,6 +280,35 @@ const AppointmentDialog: React.FC<AppointmentDialogProps> = ({
               ))}
             </select>
           </div>
+
+          {/* Bed Selection (only show if not pre-selected) */}
+          {!bedName && (
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Phòng / Giường
+              </label>
+              <select
+                value={formData.bedId || ''}
+                onChange={(e) => {
+                  const selectedBedId = e.target.value ? parseInt(e.target.value) : undefined;
+                  const selectedBed = allBeds.find(bed => bed.id === selectedBedId);
+                  setFormData(prev => ({
+                    ...prev,
+                    bedId: selectedBedId,
+                    bedName: selectedBed ? selectedBed.name : ''
+                  }));
+                }}
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              >
+                <option value="">Chọn phòng/giường (không bắt buộc)</option>
+                {filteredBeds.map(bed => (
+                  <option key={bed.id} value={bed.id}>
+                    {bed.name} • {bed.room}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
 
           {/* Staff Selection */}
           <div>

@@ -10,7 +10,36 @@ const Reports: React.FC<ReportsProps> = ({ selectedBranch }) => {
   const [selectedPeriod, setSelectedPeriod] = useState('month');
   const [sortBy, setSortBy] = useState('revenue');
 
-  const reportData = {
+  // Branch-specific data
+  const branchData = {
+    'branch-1': {
+      revenue: { daily: '6.2M', weekly: '38.5M', monthly: '145.3M', growth: '+15.2%' },
+      customers: { new: 12, returning: 67, total: 456, retention: '82%' },
+      services: { completed: 67, cancelled: 3, noShow: 1, satisfaction: '4.9/5' },
+      staff: { active: 4, performance: '94%', avgRating: '4.8', utilization: '88%' }
+    },
+    'branch-2': {
+      revenue: { daily: '4.8M', weekly: '28.2M', monthly: '98.7M', growth: '+10.3%' },
+      customers: { new: 8, returning: 45, total: 312, retention: '75%' },
+      services: { completed: 52, cancelled: 2, noShow: 1, satisfaction: '4.7/5' },
+      staff: { active: 3, performance: '91%', avgRating: '4.7', utilization: '82%' }
+    },
+    'branch-3': {
+      revenue: { daily: '2.9M', weekly: '15.8M', monthly: '58.2M', growth: '+8.7%' },
+      customers: { new: 3, returning: 32, total: 287, retention: '76%' },
+      services: { completed: 21, cancelled: 2, noShow: 1, satisfaction: '4.6/5' },
+      staff: { active: 3, performance: '89%', avgRating: '4.6', utilization: '80%' }
+    },
+    'branch-4': {
+      revenue: { daily: '1.3M', weekly: '7.0M', monthly: '18.6M', growth: '+12.8%' },
+      customers: { new: 1, returning: 12, total: 179, retention: '79%' },
+      services: { completed: 8, cancelled: 1, noShow: 0, satisfaction: '4.8/5' },
+      staff: { active: 2, performance: '93%', avgRating: '4.9', utilization: '85%' }
+    }
+  };
+
+  // Calculate aggregated data for all branches
+  const aggregatedData = {
     revenue: {
       daily: '15.2M',
       weekly: '89.5M',
@@ -37,16 +66,58 @@ const Reports: React.FC<ReportsProps> = ({ selectedBranch }) => {
     }
   };
 
-  const topServices = [
-    { name: 'Chăm sóc da mặt Premium', revenue: '45.2M', sessions: 89, growth: '+15%' },
-    { name: 'Massage toàn thân', revenue: '38.7M', sessions: 76, growth: '+8%' },
-    { name: 'Tắm trắng toàn thân', revenue: '32.1M', sessions: 42, growth: '+22%' },
-    { name: 'Điều trị mụn', revenue: '28.9M', sessions: 65, growth: '+5%' },
-    { name: 'Liệu trình giảm béo', revenue: '25.3M', sessions: 28, growth: '+18%' },
+  // Get current report data based on selected branch
+  const reportData = selectedBranch === 'all-branches'
+    ? aggregatedData
+    : branchData[selectedBranch as keyof typeof branchData] || aggregatedData;
+
+  // Branch-specific top services
+  const branchTopServices = {
+    'branch-1': [
+      { name: 'Chăm sóc da mặt Premium', revenue: '18.5M', sessions: 42, growth: '+18%' },
+      { name: 'Massage toàn thân', revenue: '15.2M', sessions: 35, growth: '+12%' },
+      { name: 'Tắm trắng toàn thân', revenue: '12.8M', sessions: 28, growth: '+25%' },
+      { name: 'Điều trị mụn', revenue: '11.3M', sessions: 32, growth: '+8%' },
+      { name: 'Liệu trình giảm béo', revenue: '9.8M', sessions: 15, growth: '+22%' },
+    ],
+    'branch-2': [
+      { name: 'Massage toàn thân', revenue: '12.8M', sessions: 28, growth: '+10%' },
+      { name: 'Chăm sóc da mặt Premium', revenue: '11.2M', sessions: 24, growth: '+15%' },
+      { name: 'Tắm trắng toàn thân', revenue: '9.8M', sessions: 18, growth: '+20%' },
+      { name: 'Điều trị mụn', revenue: '8.5M', sessions: 22, growth: '+5%' },
+      { name: 'Liệu trình giảm béo', revenue: '7.2M', sessions: 8, growth: '+15%' },
+    ],
+    'branch-3': [
+      { name: 'Chăm sóc da mặt Premium', revenue: '9.8M', sessions: 18, growth: '+12%' },
+      { name: 'Massage toàn thân', revenue: '7.5M', sessions: 15, growth: '+8%' },
+      { name: 'Điều trị mụn', revenue: '6.2M', sessions: 12, growth: '+3%' },
+      { name: 'Tắm trắng toàn thân', revenue: '5.8M', sessions: 8, growth: '+18%' },
+      { name: 'Liệu trình giảm béo', revenue: '4.5M', sessions: 6, growth: '+10%' },
+    ],
+    'branch-4': [
+      { name: 'Massage toàn thân', revenue: '3.2M', sessions: 8, growth: '+15%' },
+      { name: 'Chăm sóc da mặt Premium', revenue: '2.8M', sessions: 6, growth: '+12%' },
+      { name: 'Điều trị mụn', revenue: '2.1M', sessions: 5, growth: '+8%' },
+      { name: 'Tắm trắng toàn thân', revenue: '1.8M', sessions: 3, growth: '+20%' },
+      { name: 'Liệu trình giảm béo', revenue: '1.2M', sessions: 2, growth: '+25%' },
+    ]
+  };
+
+  // All branches aggregated
+  const allBranchesTopServices = [
+    { name: 'Chăm sóc da mặt Premium', revenue: '42.3M', sessions: 90, growth: '+15%' },
+    { name: 'Massage toàn thân', revenue: '38.7M', sessions: 86, growth: '+11%' },
+    { name: 'Tắm trắng toàn thân', revenue: '30.2M', sessions: 57, growth: '+21%' },
+    { name: 'Điều trị mụn', revenue: '28.1M', sessions: 71, growth: '+6%' },
+    { name: 'Liệu trình giảm béo', revenue: '22.7M', sessions: 31, growth: '+18%' },
   ];
 
-  // Employee revenue data
-  const employeeRevenue = [
+  const topServices = selectedBranch === 'all-branches'
+    ? allBranchesTopServices
+    : branchTopServices[selectedBranch as keyof typeof branchTopServices] || allBranchesTopServices;
+
+  // All employee revenue data with branch information
+  const allEmployeeRevenue = [
     {
       id: 1,
       name: 'Nguyễn Thị Mai',
@@ -63,7 +134,8 @@ const Reports: React.FC<ReportsProps> = ({ selectedBranch }) => {
       specialties: ['Chăm sóc da mặt', 'Điều trị mụn', 'Tái tạo da'],
       customers: 89,
       avgSessionValue: 272000,
-      branch: 'Chi nhánh Quận 1',
+      branchId: 'branch-1',
+      branchName: 'Chi nhánh Quận 1',
       efficiency: 92,
       monthlyTarget: 45000000,
       targetAchievement: 94.4
@@ -84,7 +156,8 @@ const Reports: React.FC<ReportsProps> = ({ selectedBranch }) => {
       specialties: ['Massage toàn thân', 'Massage thái', 'Massage đá nóng'],
       customers: 102,
       avgSessionValue: 163000,
-      branch: 'Chi nhánh Quận 3',
+      branchId: 'branch-2',
+      branchName: 'Chi nhánh Quận 3',
       efficiency: 96,
       monthlyTarget: 35000000,
       targetAchievement: 109.1
@@ -105,7 +178,8 @@ const Reports: React.FC<ReportsProps> = ({ selectedBranch }) => {
       specialties: ['Tắm trắng', 'Triệt lông', 'Căng da'],
       customers: 76,
       avgSessionValue: 191000,
-      branch: 'Chi nhánh Quận 1',
+      branchId: 'branch-1',
+      branchName: 'Chi nhánh Quận 1',
       efficiency: 88,
       monthlyTarget: 40000000,
       targetAchievement: 89.5
@@ -126,7 +200,8 @@ const Reports: React.FC<ReportsProps> = ({ selectedBranch }) => {
       specialties: ['Tư vấn làm đẹp', 'Liệu trình cá nhân', 'Chăm sóc sau điều trị'],
       customers: 67,
       avgSessionValue: 202000,
-      branch: 'Chi nhánh Quận 3',
+      branchId: 'branch-2',
+      branchName: 'Chi nhánh Quận 3',
       efficiency: 85,
       monthlyTarget: 30000000,
       targetAchievement: 96.3
@@ -147,7 +222,8 @@ const Reports: React.FC<ReportsProps> = ({ selectedBranch }) => {
       specialties: ['Giảm béo RF', 'Massage giảm béo', 'Tư vấn dinh dưỡng'],
       customers: 45,
       avgSessionValue: 339000,
-      branch: 'Chi nhánh Quận 1',
+      branchId: 'branch-1',
+      branchName: 'Chi nhánh Quận 1',
       efficiency: 94,
       monthlyTarget: 32000000,
       targetAchievement: 103.8
@@ -168,12 +244,108 @@ const Reports: React.FC<ReportsProps> = ({ selectedBranch }) => {
       specialties: ['Nail art', 'Gel nails', 'Manicure/Pedicure'],
       customers: 98,
       avgSessionValue: 111000,
-      branch: 'Chi nhánh Quận 3',
+      branchId: 'branch-2',
+      branchName: 'Chi nhánh Quận 3',
       efficiency: 82,
       monthlyTarget: 20000000,
       targetAchievement: 92.5
+    },
+    // Branch 3 employees
+    {
+      id: 7,
+      name: 'Nguyễn Văn Đức',
+      position: 'Massage Therapist',
+      department: 'Massage',
+      avatar: 'https://images.pexels.com/photos/1043471/pexels-photo-1043471.jpeg?w=150',
+      revenue: 22800000,
+      revenueFormatted: '22.8M',
+      sessions: 156,
+      commission: 2280000,
+      commissionFormatted: '2.28M',
+      rating: 4.6,
+      growth: '+9%',
+      specialties: ['Massage toàn thân', 'Massage thái'],
+      customers: 78,
+      avgSessionValue: 146000,
+      branchId: 'branch-3',
+      branchName: 'Chi nhánh Thủ Đức',
+      efficiency: 87,
+      monthlyTarget: 25000000,
+      targetAchievement: 91.2
+    },
+    {
+      id: 8,
+      name: 'Trần Thị Hương',
+      position: 'Chuyên viên chăm sóc da',
+      department: 'Điều trị',
+      avatar: 'https://images.pexels.com/photos/762020/pexels-photo-762020.jpeg?w=150',
+      revenue: 26500000,
+      revenueFormatted: '26.5M',
+      sessions: 132,
+      commission: 2650000,
+      commissionFormatted: '2.65M',
+      rating: 4.7,
+      growth: '+12%',
+      specialties: ['Chăm sóc da mặt', 'Điều trị mụn'],
+      customers: 65,
+      avgSessionValue: 201000,
+      branchId: 'branch-3',
+      branchName: 'Chi nhánh Thủ Đức',
+      efficiency: 89,
+      monthlyTarget: 28000000,
+      targetAchievement: 94.6
+    },
+    // Branch 4 employees
+    {
+      id: 9,
+      name: 'Lê Thị Mai',
+      position: 'Kỹ thuật viên',
+      department: 'Làm đẹp',
+      avatar: 'https://images.pexels.com/photos/1065084/pexels-photo-1065084.jpeg?w=150',
+      revenue: 12800000,
+      revenueFormatted: '12.8M',
+      sessions: 89,
+      commission: 1280000,
+      commissionFormatted: '1.28M',
+      rating: 4.5,
+      growth: '+15%',
+      specialties: ['Tắm trắng', 'Massage mặt'],
+      customers: 42,
+      avgSessionValue: 144000,
+      branchId: 'branch-4',
+      branchName: 'Chi nhánh Gò Vấp',
+      efficiency: 85,
+      monthlyTarget: 15000000,
+      targetAchievement: 85.3
+    },
+    {
+      id: 10,
+      name: 'Phạm Văn Hải',
+      position: 'Massage Therapist',
+      department: 'Massage',
+      avatar: 'https://images.pexels.com/photos/1037915/pexels-photo-1037915.jpeg?w=150',
+      revenue: 8900000,
+      revenueFormatted: '8.9M',
+      sessions: 67,
+      commission: 890000,
+      commissionFormatted: '0.89M',
+      rating: 4.4,
+      growth: '+8%',
+      specialties: ['Massage toàn thân'],
+      customers: 34,
+      avgSessionValue: 133000,
+      branchId: 'branch-4',
+      branchName: 'Chi nhánh Gò Vấp',
+      efficiency: 82,
+      monthlyTarget: 12000000,
+      targetAchievement: 74.2
     }
   ];
+
+  // Filter employees based on selected branch
+  const employeeRevenue = selectedBranch === 'all-branches'
+    ? allEmployeeRevenue
+    : allEmployeeRevenue.filter(emp => emp.branchId === selectedBranch);
 
   // Sort employees based on selected criteria
   const sortedEmployees = [...employeeRevenue].sort((a, b) => {
@@ -217,8 +389,32 @@ const Reports: React.FC<ReportsProps> = ({ selectedBranch }) => {
     { month: 'T1', value: 365 },
   ];
 
+  // Helper function to get branch name
+  const getBranchName = (branchId: string) => {
+    const branchNames = {
+      'branch-1': 'Chi nhánh Quận 1',
+      'branch-2': 'Chi nhánh Quận 3',
+      'branch-3': 'Chi nhánh Thủ Đức',
+      'branch-4': 'Chi nhánh Gò Vấp',
+      'all-branches': 'Tất cả chi nhánh'
+    };
+    return branchNames[branchId as keyof typeof branchNames] || 'Không xác định';
+  };
+
   return (
     <div className="space-y-6">
+      {/* Branch Info */}
+      {selectedBranch !== 'all-branches' && (
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+          <div className="flex items-center space-x-2">
+            <div className="w-2 h-2 bg-blue-600 rounded-full"></div>
+            <p className="text-blue-800 font-medium">
+              Báo cáo cho: {getBranchName(selectedBranch)}
+            </p>
+          </div>
+        </div>
+      )}
+
       {/* Tab Navigation */}
       <div className="bg-white rounded-lg border border-gray-200 p-1">
         <div className="flex space-x-1">
@@ -619,6 +815,9 @@ const Reports: React.FC<ReportsProps> = ({ selectedBranch }) => {
                             </div>
                             <p className="text-xs text-gray-500">{employee.position}</p>
                             <p className="text-xs text-gray-400">{employee.department}</p>
+                            {selectedBranch === 'all-branches' && (
+                              <p className="text-xs text-blue-600 font-medium">{employee.branchName}</p>
+                            )}
                           </div>
                         </div>
                       </td>

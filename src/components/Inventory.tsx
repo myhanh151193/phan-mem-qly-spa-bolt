@@ -288,26 +288,43 @@ const Inventory: React.FC<InventoryProps> = ({ selectedBranch }) => {
   const createInventoryViews = (): InventoryView[] => {
     const views: InventoryView[] = [];
 
-    // Filter branch stocks by selected branch
-    const relevantStocks = branchStocks.filter(stock =>
-      selectedBranch === 'all-branches' || stock.branch === selectedBranch
-    );
-
     // For each product, find its stock in the relevant branches
     products.filter(product => product.status === 'active').forEach(product => {
       if (selectedBranch === 'all-branches') {
-        // Show all branches for this product
+        // Aggregate stock across all branches for this product
         const productStocks = branchStocks.filter(stock => stock.productId === product.id);
-        productStocks.forEach(branchStock => {
-          const status = calculateStatus(branchStock.stock, branchStock.minStock);
-          const totalValue = branchStock.stock * product.unitPrice;
+
+        if (productStocks.length > 0) {
+          // Calculate total stock across all branches
+          const totalStock = productStocks.reduce((sum, stock) => sum + stock.stock, 0);
+          const totalMinStock = productStocks.reduce((sum, stock) => sum + stock.minStock, 0);
+          const totalMaxStock = productStocks.reduce((sum, stock) => sum + stock.maxStock, 0);
+
+          // Create aggregated view with total values
+          const aggregatedBranchStock: BranchStock = {
+            id: 0, // Dummy ID for aggregated view
+            productId: product.id,
+            branch: 'all-branches',
+            stock: totalStock,
+            minStock: totalMinStock,
+            maxStock: totalMaxStock,
+            location: 'Tổng hợp tất cả chi nhánh',
+            lastRestocked: productStocks.reduce((latest, stock) =>
+              stock.lastRestocked > latest ? stock.lastRestocked : latest,
+              productStocks[0].lastRestocked
+            )
+          };
+
+          const status = calculateStatus(totalStock, totalMinStock);
+          const totalValue = totalStock * product.unitPrice;
+
           views.push({
             product,
-            branchStock,
+            branchStock: aggregatedBranchStock,
             status,
             totalValue
           });
-        });
+        }
       } else {
         // Show only selected branch stock
         const branchStock = branchStocks.find(stock =>
@@ -588,7 +605,7 @@ const Inventory: React.FC<InventoryProps> = ({ selectedBranch }) => {
             }`}
           >
             <Award className="w-4 h-4" />
-            <span>Thương hi��u</span>
+            <span>Thương hiệu</span>
           </button>
         </div>
       </div>
@@ -615,7 +632,7 @@ const Inventory: React.FC<InventoryProps> = ({ selectedBranch }) => {
                 onChange={(e) => setFilterStatus(e.target.value)}
                 className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               >
-                <option value="all">Tất c�� trạng thái</option>
+                <option value="all">Tất cả trạng thái</option>
                 <option value="in-stock">Còn hàng</option>
                 <option value="low-stock">Sắp hết</option>
                 <option value="out-of-stock">Hết hàng</option>
@@ -723,7 +740,7 @@ const Inventory: React.FC<InventoryProps> = ({ selectedBranch }) => {
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
                   {filteredInventory.map((view) => (
-                    <tr key={`${view.product.id}-${view.branchStock.branch}`} className="hover:bg-gray-50 transition-colors duration-200">
+                    <tr key={selectedBranch === 'all-branches' ? view.product.id : `${view.product.id}-${view.branchStock.branch}`} className="hover:bg-gray-50 transition-colors duration-200">
                       <td className="px-6 py-4">
                         <div className="flex items-center">
                           <img
@@ -734,14 +751,6 @@ const Inventory: React.FC<InventoryProps> = ({ selectedBranch }) => {
                           <div>
                             <div className="text-sm font-medium text-gray-900">{view.product.name}</div>
                             <div className="text-sm text-gray-500">{view.product.brand} • {view.product.category}</div>
-                            {selectedBranch === 'all-branches' && (
-                              <div className="text-xs text-blue-600 font-medium mt-1">
-                                {view.branchStock.branch === 'branch-1' && 'Quận 1'}
-                                {view.branchStock.branch === 'branch-2' && 'Quận 3'}
-                                {view.branchStock.branch === 'branch-3' && 'Thủ Đức'}
-                                {view.branchStock.branch === 'branch-4' && 'Gò Vấp'}
-                              </div>
-                            )}
                           </div>
                         </div>
                       </td>
@@ -881,14 +890,14 @@ const Inventory: React.FC<InventoryProps> = ({ selectedBranch }) => {
           <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
             <h2 className="text-2xl font-bold text-gray-900 flex items-center space-x-2">
               <Award className="w-6 h-6" />
-              <span>Qu���n lý thương hi���u</span>
+              <span>Quản lý thưowng hiệu</span>
             </h2>
             <button 
               onClick={openCreateBrandModal}
               className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition-colors duration-200"
             >
               <Plus className="w-4 h-4" />
-              <span>Thêm thương hi��u</span>
+              <span>Thêm thương hiệu</span>
             </button>
           </div>
 
@@ -930,7 +939,7 @@ const Inventory: React.FC<InventoryProps> = ({ selectedBranch }) => {
                 
                 <div className="flex justify-between items-center text-sm">
                   <div className="text-gray-500">
-                    Ngày t��o: {brand.createdDate}
+                    Ngày tạo: {brand.createdDate}
                   </div>
                   <div className="flex items-center space-x-1 text-blue-600 font-medium">
                     <Package className="w-4 h-4" />
