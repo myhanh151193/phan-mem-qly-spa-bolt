@@ -1055,10 +1055,38 @@ const Treatments: React.FC<TreatmentsProps> = ({ selectedBranch }) => {
                       )}
                     </div>
                   </div>
-                  <span className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(treatment.status)}`}>
-                    {getStatusText(treatment.status)}
-                  </span>
+                  <div className="flex items-center space-x-2">
+                    <span className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(treatment.status)}`}>
+                      {getStatusText(treatment.status)}
+                    </span>
+                    {treatment.recurringSchedule && treatment.recurringSchedule.autoCreateEnabled && (
+                      <span className="px-2 py-1 bg-indigo-100 text-indigo-700 text-xs rounded-full flex items-center space-x-1">
+                        <Clock className="w-3 h-3" />
+                        <span>Lịch định kỳ</span>
+                      </span>
+                    )}
+                  </div>
                 </div>
+
+                {/* Recurring Schedule Info */}
+                {treatment.recurringSchedule && treatment.recurringSchedule.autoCreateEnabled && (
+                  <div className="mb-3 p-3 bg-indigo-50 border border-indigo-200 rounded-lg">
+                    <div className="flex items-center space-x-2 text-sm">
+                      <Clock className="w-4 h-4 text-indigo-600" />
+                      <span className="font-medium text-indigo-900">Lịch hẹn định kỳ:</span>
+                      <span className="text-indigo-700">
+                        {treatment.recurringSchedule.type === 'weekly' ? (
+                          `Hàng tuần ${['Chủ Nhật', 'Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy'][treatment.recurringSchedule.weekDay || 0]} lúc ${treatment.recurringSchedule.time}`
+                        ) : (
+                          `Ngày ${treatment.recurringSchedule.monthDay} hàng tháng lúc ${treatment.recurringSchedule.time}`
+                        )}
+                      </span>
+                      {treatment.recurringSchedule.preferredStaff && (
+                        <span className="text-indigo-600">• {treatment.recurringSchedule.preferredStaff}</span>
+                      )}
+                    </div>
+                  </div>
+                )}
 
                 {/* Services */}
                 <div className="flex flex-wrap gap-2 mb-4">
