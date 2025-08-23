@@ -323,12 +323,12 @@ const Treatments: React.FC<TreatmentsProps> = ({ selectedBranch }) => {
       totalSessions: treatment.totalSessions,
       services: [...treatment.services],
       totalValue: treatment.totalValue,
-      scheduleType: 'manual', // Default for existing treatments
-      recurringTime: '09:00',
-      weekDay: 1,
-      monthDay: 1,
-      sessionDuration: 90,
-      preferredStaff: '',
+      scheduleType: treatment.recurringSchedule?.type || 'manual',
+      recurringTime: treatment.recurringSchedule?.time || '09:00',
+      weekDay: treatment.recurringSchedule?.weekDay || 1,
+      monthDay: treatment.recurringSchedule?.monthDay || 1,
+      sessionDuration: treatment.recurringSchedule?.duration || 90,
+      preferredStaff: treatment.recurringSchedule?.preferredStaff || '',
       branch: treatment.branch
     });
     setShowModal(true);
@@ -1345,7 +1345,7 @@ const Treatments: React.FC<TreatmentsProps> = ({ selectedBranch }) => {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Ngày kết thúc *
+                    Ng��y kết thúc *
                   </label>
                   <input
                     type="date"
@@ -2054,7 +2054,7 @@ const Treatments: React.FC<TreatmentsProps> = ({ selectedBranch }) => {
                     <div className="grid grid-cols-2 gap-4">
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Số tiền thanh toán *
+                          Số ti��n thanh toán *
                         </label>
                         <input
                           type="number"
