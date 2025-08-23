@@ -881,7 +881,13 @@ const Treatments: React.FC<TreatmentsProps> = ({ selectedBranch }) => {
     }));
 
     // Show notification
-    console.log(`Tự động tạo lịch hẹn cho ${treatment.customer} - ${treatment.name} vào ngày ${appointmentDate}`);
+    const notificationMessage = `Tự động tạo lịch hẹn cho ${treatment.customer} - ${treatment.name} vào ngày ${appointmentDate}`;
+    setAutoCreatedNotifications(prev => [notificationMessage, ...prev.slice(0, 4)]); // Keep last 5 notifications
+
+    // Auto-remove notification after 10 seconds
+    setTimeout(() => {
+      setAutoCreatedNotifications(prev => prev.filter(msg => msg !== notificationMessage));
+    }, 10000);
   };
 
   // Check for recurring appointments every minute
