@@ -239,6 +239,8 @@ const Treatments: React.FC<TreatmentsProps> = ({ selectedBranch }) => {
     note: ''
   });
 
+  const [autoCreatedNotifications, setAutoCreatedNotifications] = useState<string[]>([]);
+
   // Filter customers by selected branch
   const customers = selectedBranch === 'all-branches'
     ? allCustomers
