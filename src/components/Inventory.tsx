@@ -632,7 +632,7 @@ const Inventory: React.FC<InventoryProps> = ({ selectedBranch }) => {
                 onChange={(e) => setFilterStatus(e.target.value)}
                 className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               >
-                <option value="all">Tất c�� trạng thái</option>
+                <option value="all">Tất cả trạng thái</option>
                 <option value="in-stock">Còn hàng</option>
                 <option value="low-stock">Sắp hết</option>
                 <option value="out-of-stock">Hết hàng</option>
