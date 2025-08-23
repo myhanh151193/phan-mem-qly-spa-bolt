@@ -22,6 +22,16 @@ interface Treatment {
   totalAmount: number; // Total package amount in VND
   appointments: Appointment[];
   branch: string; // Branch where the treatment is managed
+  recurringSchedule?: {
+    type: 'weekly' | 'monthly';
+    time: string;
+    weekDay?: number; // 0 = Sunday, 1 = Monday, etc.
+    monthDay?: number; // 1-31
+    duration: number;
+    preferredStaff?: string;
+    lastAutoCreated?: string; // Last date when auto appointment was created
+    autoCreateEnabled: boolean;
+  };
 }
 
 interface Customer {
@@ -99,7 +109,7 @@ const Treatments: React.FC<TreatmentsProps> = ({ selectedBranch }) => {
       branch: 'branch-2',
       appointments: [
         { id: 4, treatmentId: 2, date: '2025-01-20', time: '14:00', duration: 120, staff: 'Lê Hoa', status: 'scheduled', services: ['Chăm sóc da mặt', 'Massage'], notes: 'Buổi 7' },
-        { id: 5, treatmentId: 2, date: '2025-02-03', time: '14:00', duration: 120, staff: 'Lê Hoa', status: 'scheduled', services: ['T���m trắng'], notes: 'Buổi cuối' }
+        { id: 5, treatmentId: 2, date: '2025-02-03', time: '14:00', duration: 120, staff: 'Lê Hoa', status: 'scheduled', services: ['T���m trắng'], notes: 'Buổi cu��i' }
       ]
     },
     {
