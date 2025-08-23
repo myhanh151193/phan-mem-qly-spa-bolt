@@ -939,7 +939,7 @@ const Inventory: React.FC<InventoryProps> = ({ selectedBranch }) => {
                 
                 <div className="flex justify-between items-center text-sm">
                   <div className="text-gray-500">
-                    Ngày t��o: {brand.createdDate}
+                    Ngày tạo: {brand.createdDate}
                   </div>
                   <div className="flex items-center space-x-1 text-blue-600 font-medium">
                     <Package className="w-4 h-4" />
