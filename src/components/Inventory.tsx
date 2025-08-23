@@ -897,7 +897,7 @@ const Inventory: React.FC<InventoryProps> = ({ selectedBranch }) => {
               className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition-colors duration-200"
             >
               <Plus className="w-4 h-4" />
-              <span>Thêm thương hi��u</span>
+              <span>Thêm thương hiệu</span>
             </button>
           </div>
 
