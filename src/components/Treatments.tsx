@@ -96,8 +96,8 @@ const Treatments: React.FC<TreatmentsProps> = ({ selectedBranch }) => {
         autoCreateEnabled: true
       },
       appointments: [
-        { id: 1, treatmentId: 1, date: '2025-01-15', time: '09:00', duration: 90, staff: 'Nguyễn Mai', status: 'scheduled', services: ['Điều trị mụn'], notes: 'Buổi 9' },
-        { id: 2, treatmentId: 1, date: '2025-01-22', time: '09:00', duration: 90, staff: 'Nguyễn Mai', status: 'scheduled', services: ['Tái tạo da'], notes: 'Buổi 10' },
+        { id: 1, treatmentId: 1, date: '2025-01-15', time: '09:00', duration: 90, staff: 'Nguyễn Mai', status: 'scheduled', services: ['Điều trị mụn'], notes: 'Buổi 9 - Tự động tạo' },
+        { id: 2, treatmentId: 1, date: '2025-01-22', time: '09:00', duration: 90, staff: 'Nguyễn Mai', status: 'scheduled', services: ['Tái tạo da'], notes: 'Buổi 10 - Tự động tạo' },
         { id: 3, treatmentId: 1, date: '2025-01-08', time: '09:00', duration: 90, staff: 'Nguyễn Mai', status: 'completed', services: ['Điều trị mụn'], notes: 'Buổi 8 - hoàn thành tốt' }
       ]
     },
@@ -1763,7 +1763,7 @@ const Treatments: React.FC<TreatmentsProps> = ({ selectedBranch }) => {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Nh��n viên thực hiện
+                    Nhân viên thực hiện
                   </label>
                   <input
                     type="text"
@@ -1998,7 +1998,7 @@ const Treatments: React.FC<TreatmentsProps> = ({ selectedBranch }) => {
                       <DollarSign className="w-8 h-8 text-green-600" />
                     </div>
                     <h3 className="text-lg font-semibold text-green-600 mb-2">Đã thanh toán đầy đủ</h3>
-                    <p className="text-gray-600">Liệu trình này đã đ��ợc thanh toán hoàn tất.</p>
+                    <p className="text-gray-600">Liệu trình này đã được thanh toán hoàn tất.</p>
                   </div>
                 )}
               </div>
