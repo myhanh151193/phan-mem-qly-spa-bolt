@@ -116,6 +116,15 @@ const Treatments: React.FC<TreatmentsProps> = ({ selectedBranch }) => {
       totalValue: '12,800,000',
       totalAmount: 12800000,
       branch: 'branch-2',
+      recurringSchedule: {
+        type: 'monthly',
+        time: '14:00',
+        monthDay: 20,
+        duration: 120,
+        preferredStaff: 'Lê Hoa',
+        lastAutoCreated: '2024-12-20',
+        autoCreateEnabled: true
+      },
       appointments: [
         { id: 4, treatmentId: 2, date: '2025-01-20', time: '14:00', duration: 120, staff: 'Lê Hoa', status: 'scheduled', services: ['Chăm sóc da mặt', 'Massage'], notes: 'Buổi 7' },
         { id: 5, treatmentId: 2, date: '2025-02-03', time: '14:00', duration: 120, staff: 'Lê Hoa', status: 'scheduled', services: ['T���m trắng'], notes: 'Buổi cu��i' }
@@ -1525,7 +1534,7 @@ const Treatments: React.FC<TreatmentsProps> = ({ selectedBranch }) => {
                 Xác nhận xóa liệu trình
               </h3>
               <p className="text-gray-600 mb-6">
-                Bạn có chắc chắn muốn x���a liệu trình này? Hành động này không thể hoàn tác.
+                Bạn có chắc chắn muốn x��a liệu trình này? Hành động này không thể hoàn tác.
               </p>
               <div className="flex justify-end space-x-3">
                 <button
@@ -1754,7 +1763,7 @@ const Treatments: React.FC<TreatmentsProps> = ({ selectedBranch }) => {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Nhân viên thực hiện
+                    Nh��n viên thực hiện
                   </label>
                   <input
                     type="text"
@@ -1989,7 +1998,7 @@ const Treatments: React.FC<TreatmentsProps> = ({ selectedBranch }) => {
                       <DollarSign className="w-8 h-8 text-green-600" />
                     </div>
                     <h3 className="text-lg font-semibold text-green-600 mb-2">Đã thanh toán đầy đủ</h3>
-                    <p className="text-gray-600">Liệu trình này đã được thanh toán hoàn tất.</p>
+                    <p className="text-gray-600">Liệu trình này đã đ��ợc thanh toán hoàn tất.</p>
                   </div>
                 )}
               </div>
