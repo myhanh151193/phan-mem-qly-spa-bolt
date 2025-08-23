@@ -768,6 +768,123 @@ const Treatments: React.FC<TreatmentsProps> = ({ selectedBranch }) => {
     }
   };
 
+  // Automatic recurring appointment creation functions
+  const checkAndCreateRecurringAppointments = () => {
+    const today = new Date();
+    const todayStr = today.toISOString().split('T')[0];
+
+    treatments.forEach(treatment => {
+      if (
+        treatment.status === 'active' &&
+        treatment.recurringSchedule &&
+        treatment.recurringSchedule.autoCreateEnabled &&
+        treatment.completedSessions < treatment.totalSessions
+      ) {
+        const schedule = treatment.recurringSchedule;
+        const nextDueDate = calculateNextRecurringDate(treatment);
+
+        if (nextDueDate && nextDueDate <= todayStr) {
+          // Check if appointment for this date already exists
+          const existingAppointment = getAppointmentsForTreatment(treatment.id)
+            .find(apt => apt.date === nextDueDate);
+
+          if (!existingAppointment) {
+            createAutoRecurringAppointment(treatment, nextDueDate);
+          }
+        }
+      }
+    });
+  };
+
+  const calculateNextRecurringDate = (treatment: Treatment): string | null => {
+    if (!treatment.recurringSchedule) return null;
+
+    const schedule = treatment.recurringSchedule;
+    const lastCreated = schedule.lastAutoCreated ? new Date(schedule.lastAutoCreated) : new Date(treatment.startDate);
+    const endDate = new Date(treatment.endDate);
+    let nextDate = new Date(lastCreated);
+
+    if (schedule.type === 'weekly') {
+      // Add 7 days for weekly
+      nextDate.setDate(nextDate.getDate() + 7);
+    } else if (schedule.type === 'monthly') {
+      // Add 1 month for monthly
+      nextDate.setMonth(nextDate.getMonth() + 1);
+      // Handle end-of-month edge cases
+      if (schedule.monthDay && schedule.monthDay > 28) {
+        const daysInMonth = new Date(nextDate.getFullYear(), nextDate.getMonth() + 1, 0).getDate();
+        nextDate.setDate(Math.min(schedule.monthDay, daysInMonth));
+      }
+    }
+
+    // Don't create appointments beyond the treatment end date
+    if (nextDate > endDate) return null;
+
+    return nextDate.toISOString().split('T')[0];
+  };
+
+  const createAutoRecurringAppointment = (treatment: Treatment, appointmentDate: string) => {
+    if (!treatment.recurringSchedule) return;
+
+    const schedule = treatment.recurringSchedule;
+    const existingAppointments = getAppointmentsForTreatment(treatment.id);
+    const sessionNumber = existingAppointments.length + 1;
+
+    // Create new appointment
+    const newAppointment: ContextAppointment = {
+      id: Date.now() + Math.random(),
+      treatmentId: treatment.id,
+      date: appointmentDate,
+      time: schedule.time,
+      duration: schedule.duration,
+      staff: schedule.preferredStaff || '',
+      notes: `Buổi ${sessionNumber} - Tự động tạo theo lịch ${schedule.type === 'weekly' ? 'hàng tuần' : 'hàng tháng'}`,
+      services: [...treatment.services],
+      status: 'scheduled',
+      customer: treatment.customer,
+      service: treatment.services.join(', '),
+      totalPrice: treatment.totalValue,
+      price: treatment.totalValue,
+      branch: treatment.branch
+    };
+
+    // Add to appointment context
+    addTreatmentAppointments([newAppointment]);
+
+    // Update treatment's last auto-created date and next session
+    setTreatments(prev => prev.map(t => {
+      if (t.id === treatment.id) {
+        const updatedSchedule = {
+          ...t.recurringSchedule!,
+          lastAutoCreated: appointmentDate
+        };
+
+        return {
+          ...t,
+          recurringSchedule: updatedSchedule,
+          nextSession: appointmentDate
+        };
+      }
+      return t;
+    }));
+
+    // Show notification
+    console.log(`Tự động tạo lịch hẹn cho ${treatment.customer} - ${treatment.name} vào ngày ${appointmentDate}`);
+  };
+
+  // Check for recurring appointments every minute
+  useEffect(() => {
+    // Check immediately when component mounts
+    checkAndCreateRecurringAppointments();
+
+    // Set up interval to check every minute
+    const interval = setInterval(() => {
+      checkAndCreateRecurringAppointments();
+    }, 60000); // Check every minute
+
+    return () => clearInterval(interval);
+  }, [treatments]); // Re-run when treatments change
+
   const stats = {
     active: filteredTreatments.filter(t => t.status === 'active').length,
     completed: filteredTreatments.filter(t => t.status === 'completed').length,
