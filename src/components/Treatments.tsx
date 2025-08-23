@@ -126,8 +126,8 @@ const Treatments: React.FC<TreatmentsProps> = ({ selectedBranch }) => {
         autoCreateEnabled: true
       },
       appointments: [
-        { id: 4, treatmentId: 2, date: '2025-01-20', time: '14:00', duration: 120, staff: 'Lê Hoa', status: 'scheduled', services: ['Chăm sóc da mặt', 'Massage'], notes: 'Buổi 7' },
-        { id: 5, treatmentId: 2, date: '2025-02-03', time: '14:00', duration: 120, staff: 'Lê Hoa', status: 'scheduled', services: ['T���m trắng'], notes: 'Buổi cu��i' }
+        { id: 4, treatmentId: 2, date: '2025-01-20', time: '14:00', duration: 120, staff: 'Lê Hoa', status: 'scheduled', services: ['Chăm sóc da mặt', 'Massage'], notes: 'Buổi 7 - Tự động tạo' },
+        { id: 5, treatmentId: 2, date: '2025-02-20', time: '14:00', duration: 120, staff: 'Lê Hoa', status: 'scheduled', services: ['Tắm trắng'], notes: 'Buổi cuối - Tự động tạo' }
       ]
     },
     {
